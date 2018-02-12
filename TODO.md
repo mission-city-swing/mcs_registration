@@ -1,0 +1,1 @@
+# Implement Authentication so we can modify database.rules.json
