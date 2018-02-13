@@ -7,7 +7,7 @@ class DanceForm extends Component {
     return (
       <div className="App">
         <h1>Dance Form</h1>
-        <p>HELLO TEST TEST</p>
+        
       </div>
     );
   }

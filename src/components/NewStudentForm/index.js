@@ -1,69 +1,177 @@
+// @flow
 // src/components/NewStudentForm/index.js
-import React, { PropTypes, Component } from 'react';
+import React, { PropTypes, PureComponent } from "react";
+import type { User } from "../../types.js";
+import { addNewUser } from "../../lib/api.js";
 
-class Home extends Component {
+type State = User;
+
+type Props = {};
+
+class Home extends PureComponent<Props, State> {
+  state: State = {
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
+    discoveryMethod: ""
+  };
+
+  onChange = (event: any) => {
+    const { target: { name, value } } = event;
+    this.setState({
+      [name]: value
+    });
+  };
+
+  onSubmit = (event: any) => {
+    event.preventDefault();
+    // Validate form
+    addNewUser(this.state);
+  };
+
   render() {
     const { ...props } = this.props;
     return (
       <div className="App">
         <h1>New Student</h1>
         <p>Some text about the new student stuff</p>
-        <form>
+        <form onSubmit={this.onSubmit}>
           <div className="formItem">
-            <label for="firstName">First Name</label>
-            <input type="text" id="firstName" name="firstName" />	
+            <label>
+              First Name:
+              <input onChange={this.onChange} type="text" name="firstName" />
+            </label>
           </div>
           <div className="formItem">
-            <label for="lastName">First Name</label>
-            <input type="text" id="lastName" name="lastName" />	
+            <label>
+              Last Name:
+              <input onChange={this.onChange} type="text" name="lastName" />
+            </label>
           </div>
           <div className="formItem">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" />	
+            <label>
+              Email:
+              <input
+                onChange={this.onChange}
+                type="email"
+                id="email"
+                name="email"
+              />
+            </label>
           </div>
           <div className="formItem">
-            <label for="phoneNumber">First Name</label>
-            <input type="tel" id="phoneNumber" name="phoneNumber" />
+            <label>
+              Phone Number:
+              <input
+                onChange={this.onChange}
+                type="tel"
+                id="phoneNumber"
+                name="phoneNumber"
+              />
+            </label>
           </div>
           <div className="formItem">
-            <label for="discoveryMethod">How did you hear about us?</label>
-            <div>
-              <input type="radio" name="discoveryMethod" value="friend" />
-              <label for="friend">Friend</label>
-            </div>
-            <div>
-              <input type="radio" name="discoveryMethod" value="work" />
-              <label for="work">Work</label>
-            </div>
-            <div>
-              <input type="radio" name="discoveryMethod" value="flyer" />
-              <label for="flyer">Flyer</label>
-            </div>
-            <div>
-              <input type="radio" name="discoveryMethod" value="facebook" />
-              <label for="facebook">Facebook Ad</label>
-            </div>
-            <div>
-              <input type="radio" name="discoveryMethod" value="yelp" />
-              <label for="yelp">Yelp</label>
-            </div>
-            <div>
-              <input type="radio" name="discoveryMethod" value="sosh" />
-              <label for="sosh">Sosh</label>
-            </div>
-            <div>
-              <input type="radio" name="discoveryMethod" value="meetup" />
-              <label for="meetup">Meetup</label>
-            </div>
-            <div>
-              <input type="radio" name="discoveryMethod" value="yelp" />
-              <label for="friend">Yelp</label>
-            </div>
-            <div>
-              <input type="radio" name="discoveryMethod" value="" />
-              <label for="other">Other</label>
-              <input type="text" name="otherReason" />            
-            </div>
+            <label>
+              How did you hear about us?
+              <div>
+                <label>
+                  <input
+                    onChange={this.onChange}
+                    type="radio"
+                    name="discoveryMethod"
+                    value="friend"
+                  />
+                  Friend
+                </label>
+              </div>
+              <div>
+                <label>
+                  <input
+                    onChange={this.onChange}
+                    type="radio"
+                    name="discoveryMethod"
+                    value="work"
+                  />
+                  Work
+                </label>
+              </div>
+              <div>
+                <label>
+                  <input
+                    onChange={this.onChange}
+                    type="radio"
+                    name="discoveryMethod"
+                    value="flyer"
+                  />
+                  Flyer
+                </label>
+              </div>
+              <div>
+                <label>
+                  <input
+                    onChange={this.onChange}
+                    type="radio"
+                    name="discoveryMethod"
+                    value="facebook"
+                  />
+                  Facebook Ad
+                </label>
+              </div>
+              <div>
+                <label>
+                  <input
+                    onChange={this.onChange}
+                    type="radio"
+                    name="discoveryMethod"
+                    value="yelp"
+                  />
+                  Yelp
+                </label>
+              </div>
+              <div>
+                <label>
+                  <input
+                    onChange={this.onChange}
+                    type="radio"
+                    name="discoveryMethod"
+                    value="sosh"
+                  />
+                  Sosh
+                </label>
+              </div>
+              <div>
+                <label>
+                  <input
+                    onChange={this.onChange}
+                    type="radio"
+                    name="discoveryMethod"
+                    value="meetup"
+                  />
+                  Meetup
+                </label>
+              </div>
+              <div>
+                <label>
+                  <input
+                    onChange={this.onChange}
+                    type="radio"
+                    name="discoveryMethod"
+                  />
+                  Other
+                  <input
+                    onChange={this.onChange}
+                    type="text"
+                    name="discoveryMethod"
+                  />
+                </label>
+              </div>
+            </label>
+          </div>
+          <div>
+            <button type="submit" value="Submit">
+              Submit
+            </button>
           </div>
         </form>
       </div>
