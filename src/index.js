@@ -9,6 +9,7 @@ import { injectDatabaseForApi } from "./lib/api.js";
 import Routes from "./routes";
 
 import "./index.css";
+import 'bootstrap/dist/css/bootstrap.css';
 
 // Initialize Firebase
 const config = {
