@@ -9,9 +9,11 @@ class Home extends Component {
       <div className="App">
         <h1>Mission City Swing Registration</h1>
         <div className="">
-          <Link className="option" to="/new">New Student</Link>
-          <Link className="option" to="/returning">Returning Student</Link>
-          <Link className="option" to="/dance">Dance</Link>
+          <ul>
+            <li><Link className="option" to="/new">New Student</Link></li>
+            <li><Link className="option" to="/returning">Returning Student</Link></li>
+            <li><Link className="option" to="/dance">Dance</Link></li>
+          </ul>
         </div>
       </div>
     );
