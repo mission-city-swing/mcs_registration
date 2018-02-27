@@ -51,8 +51,8 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     const { ...props } = this.props;
     return (
       <div className="App">
-        <h1>New Student</h1>
-        <p>Some text about returning  students</p>
+        <h1>Returning Student</h1>
+        <p>Welcome back! Please select today's date and enter your email to sign in!</p>
         <Form onSubmit={this.onSubmit}>
           <FormGroup>
             <Label for="date">Dance Date</Label>
@@ -69,6 +69,13 @@ class ReturningStudentForm extends PureComponent<Props, State> {
           </FormGroup>
           <Button type="submit" value="Submit">Submit</Button>
         </Form>
+
+        <br></br>
+        <div>
+        <code>{JSON.stringify(this.state)}</code>
+        </div>
+        <br></br>
+
       </div>
     );
   }

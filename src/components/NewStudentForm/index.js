@@ -119,6 +119,13 @@ class NewStudentForm extends PureComponent<Props, State> {
           </FormGroup>
           <Button type="submit" value="Submit">Submit</Button>
         </Form>
+
+        <br></br>
+        <div>
+        <code>{JSON.stringify(this.state)}</code>
+        </div>
+        <br></br>
+
       </div>
     );
   }

@@ -68,11 +68,17 @@ class DanceForm extends PureComponent<Props, State> {
             />
           </FormGroup>
           <FormGroup>
-            <Label for="info">Dance Info</Label><Input type="textarea" placeholder="Dance info" onChange={this.onChange} value={this.state.info} name="info" />
+            <Label for="info">Dance Info</Label><Input type="textarea" placeholder="Whatever dance info you want, maybe a FB link" onChange={this.onChange} value={this.state.info} name="info" />
           </FormGroup>
           <Button type="submit" value="Submit">Submit</Button>
         </Form>
+
         <br></br>
+        <div>
+        <code>{JSON.stringify(this.state)}</code>
+        </div>
+        <br></br>
+
         <div>
         <h2>List Dances</h2>
         <ul>
