@@ -10,6 +10,7 @@ import Routes from "./routes";
 
 import "./index.css";
 import 'bootstrap/dist/css/bootstrap.css';
+import 'react-widgets/dist/css/react-widgets.css'
 
 // Initialize Firebase
 const config = {

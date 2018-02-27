@@ -5,10 +5,14 @@
   "dependencies": {
     "bootstrap": "^4.0.0",
     "firebase": "^4.9.1",
+    "moment": "^2.20.1",
     "react": "^16.0.0",
     "react-dom": "^16.2.0",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.0.14",
+    "react-transition-group": "^2.2.1",
+    "react-widgets": "^4.2.0",
+    "react-widgets-moment": "^4.0.7",
     "reactstrap": "^4.8.0",
     "uuid": "^3.2.1"
   },
