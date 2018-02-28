@@ -1,5 +1,5 @@
 // src/components/App/index.js
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
 
 import Routes from './routes';
 import MyNavbar from './navbar';
@@ -10,7 +10,7 @@ class App extends Component {
   // state = {}
 
   render() {
-    const { ...props } = this.props;
+
     return (
       <div>
         <MyNavbar />

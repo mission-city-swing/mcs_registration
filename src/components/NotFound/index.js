@@ -1,5 +1,5 @@
 // src/components/NotFound/index.js
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
 
 import './style.css';
 
