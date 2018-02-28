@@ -2,6 +2,7 @@
 import React, { PropTypes, Component } from 'react';
 
 import Routes from './routes';
+import MyNavbar from './navbar';
 
 class App extends Component {
   // static propTypes = {}
@@ -11,10 +12,12 @@ class App extends Component {
   render() {
     const { ...props } = this.props;
     return (
-      <Routes />
+      <div>
+        <MyNavbar />
+        <Routes />
+      </div>
     );
   }
 }
 
 export default App;
-
