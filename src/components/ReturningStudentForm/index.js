@@ -1,10 +1,8 @@
 // @flow
 // src/components/DanceForm/index.js
-import React, { PropTypes, PureComponent } from "react";
-import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+import React, { PureComponent } from "react";
+import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { DateTimePicker } from 'react-widgets';
-import Moment from 'moment';
-import momentLocalizer from 'react-widgets-moment';
 import type { Checkin } from "../../types.js";
 // import { addNewDance } from "../../lib/api.js";
 
@@ -27,7 +25,7 @@ class ReturningStudentForm extends PureComponent<Props, State> {
 
   onDateChange = (value) => {
     this.setState({
-      ['date']: value
+      date: value
     });
   };
 
@@ -48,7 +46,7 @@ class ReturningStudentForm extends PureComponent<Props, State> {
   };
 
   render() {
-    const { ...props } = this.props;
+
     return (
       <div className="App">
         <h1>Returning Student</h1>

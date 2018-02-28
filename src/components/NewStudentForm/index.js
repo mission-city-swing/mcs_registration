@@ -1,7 +1,7 @@
 // @flow
 // src/components/NewStudentForm/index.js
-import React, { PropTypes, PureComponent } from "react";
-import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+import React, { PureComponent } from "react";
+import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import type { User } from "../../types.js";
 import { addNewUser } from "../../lib/api.js";
 
@@ -48,7 +48,7 @@ class NewStudentForm extends PureComponent<Props, State> {
   };
 
   render() {
-    const { ...props } = this.props;
+
     return (
       <div className="App">
         <h1>New Student</h1>

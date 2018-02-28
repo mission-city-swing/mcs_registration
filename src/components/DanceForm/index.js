@@ -1,15 +1,10 @@
 // @flow
 // src/components/DanceForm/index.js
-import React, { PropTypes, PureComponent } from "react";
-import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+import React, { PureComponent } from "react";
+import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { DateTimePicker } from 'react-widgets';
-import Moment from 'moment';
-import momentLocalizer from 'react-widgets-moment';
 import type { Dance } from "../../types.js";
 // import { addNewDance } from "../../lib/api.js";
-
-Moment.locale('en');
-momentLocalizer();
 
 type State = Dance;
 
@@ -30,7 +25,7 @@ class DanceForm extends PureComponent<Props, State> {
 
   onDateChange = (value) => {
     this.setState({
-      ['date']: value
+      date: value
     });
   };
 
@@ -51,7 +46,7 @@ class DanceForm extends PureComponent<Props, State> {
   };
 
   render() {
-    const { ...props } = this.props;
+
     return (
       <div className="App">
         <h1>Dance</h1>

@@ -1,16 +1,22 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
+import Moment from 'moment';
+import momentLocalizer from 'react-widgets-moment';
+
 import registerServiceWorker from "./registerServiceWorker";
 import App from "./App";
 import firebase from "firebase";
 import { injectDatabaseForApi } from "./lib/api.js";
 
-import Routes from "./routes";
-
 import "./index.css";
 import 'bootstrap/dist/css/bootstrap.css';
 import 'react-widgets/dist/css/react-widgets.css'
+
+// localize for date dropdown
+Moment.locale('en');
+momentLocalizer();
+
 
 // Initialize Firebase
 const config = {
