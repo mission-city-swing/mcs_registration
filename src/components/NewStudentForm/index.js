@@ -16,6 +16,8 @@ class NewStudentForm extends PureComponent<Props, State> {
     email: "",
     phoneNumber: "",
     discoveryMethod: "",
+    otherDances: [],
+    classes: [],
     student: false
   };
 
@@ -27,6 +29,23 @@ class NewStudentForm extends PureComponent<Props, State> {
     });
   };
 
+  onMultiChange = (event: any) => {
+    const name = event.target.name;
+    const checked = event.target.checked;
+    const value = event.target.value;
+
+    var newArray = this.state[name].slice()
+    if (checked) {
+      newArray.push(value);
+    } else {
+      var index = newArray.indexOf(value);
+      newArray.splice(index, 1);
+    }
+    this.setState({
+      [name]: newArray
+    });
+  };
+
   clearForm() {
     this.setState({
       firstName: "",
@@ -34,6 +53,8 @@ class NewStudentForm extends PureComponent<Props, State> {
       email: "",
       phoneNumber: "",
       discoveryMethod: "",
+      otherDances: [],
+      classes: [],
       student: false
     });
   };
@@ -117,6 +138,75 @@ class NewStudentForm extends PureComponent<Props, State> {
               </Label>
             </FormGroup>
           </FormGroup>
+          <br></br>
+          <FormGroup tag="fieldset">
+            <legend>Do you already know any of these partner dances? (Select all that apply.)</legend>
+            <FormGroup check>
+              <Label check>
+                <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('Lindy hop') !== -1} value="Lindy hop" /> {' '} Lindy hop
+              </Label>
+            </FormGroup>
+            <FormGroup check>
+              <Label check>
+                <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('Blues') !== -1} value="Blues" /> {' '} Blues
+              </Label>
+            </FormGroup>
+            <FormGroup check>
+              <Label check>
+                <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('Country') !== -1} value="Country" /> {' '} Country
+              </Label>
+            </FormGroup>
+            <FormGroup check>
+              <Label check>
+                <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('Tango') !== -1} value="Tango" /> {' '} Tango
+              </Label>
+            </FormGroup>
+            <FormGroup check>
+              <Label check>
+                <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('Salsa') !== -1} value="Salsa" /> {' '} Salsa
+              </Label>
+            </FormGroup>
+            <FormGroup check>
+              <Label check>
+                <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('Other Latin') !== -1} value="Other Latin" /> {' '} Other Latin
+              </Label>
+            </FormGroup>
+            <FormGroup check>
+              <Label check>
+                <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('Ballroom') !== -1} value="Ballroom" /> {' '} Ballroom
+              </Label>
+            </FormGroup>
+            <FormGroup check>
+              <Label check>
+                <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('Other') !== -1} value="Other" /> {' '} Other
+              </Label>
+            </FormGroup>
+          </FormGroup>
+          <br></br>
+          <FormGroup tag="fieldset">
+            <legend>What classes would you like to register for? (Select all that apply.)</legend>
+            <FormGroup check>
+              <Label check>
+                <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('WCS Fundamentals Drop-in') !== -1} value="WCS Fundamentals Drop-in" /> {' '} WCS Fundamentals Drop-in
+              </Label>
+            </FormGroup>
+            <FormGroup check>
+              <Label check>
+                <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('WCS Fundamentals Monthly Series') !== -1} value="WCS Fundamentals Monthly Series" /> {' '} WCS Fundamentals Monthly Series
+              </Label>
+            </FormGroup>
+            <FormGroup check>
+              <Label check>
+                <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('Intermediate WCS Drop-in') !== -1} value="Intermediate WCS Drop-in" /> {' '} Intermediate WCS Drop-in
+              </Label>
+            </FormGroup>
+            <FormGroup check>
+              <Label check>
+                <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('Intermediate WCS Monthly Series') !== -1} value="Intermediate WCS Monthly Series" /> {' '} Intermediate WCS Monthly Series
+              </Label>
+            </FormGroup>
+          </FormGroup>
+          <br></br>
           <Button type="submit" value="Submit">Submit</Button>
         </Form>
 
