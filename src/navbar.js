@@ -28,7 +28,7 @@ export default class MyNavbar extends Component {
     return (
       <div>
         <Navbar color="faded" light expand="md">
-          <NavbarBrand href="/">MCS Registration App</NavbarBrand>
+          <NavbarBrand href="/">Mission City Swing Registration</NavbarBrand>
           <NavbarToggler onClick={this.toggle} />
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav className="ml-auto" navbar>
