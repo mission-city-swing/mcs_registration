@@ -13,7 +13,9 @@ type Props = {};
 class ReturningStudentForm extends PureComponent<Props, State> {
   state: State = {
     date: new Date(),
-    email: ""
+    email: "",
+    info: "",
+    checkinType: []
   };
 
   onChange = (event: any) => {
@@ -29,10 +31,47 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     });
   };
 
+  // For use with multi-change with response types, e.g., Fundamentals vs Intermediate
+  getTypeIndex = (list, typeStr) => {
+    for (var i = 0; i < list.length; i++) {
+        if (list[i].indexOf(typeStr) !== -1 ) {
+          return(i);
+        }
+    }
+    return(-1);
+  };
+
+  onMultiTypeChange = (event: any) => {
+    const name = event.target.name;
+    const checked = event.target.checked;
+    const value = event.target.value;
+    const valueType = value.split(', ')[0];
+
+    var newArray = this.state[name].slice()
+    var typeIndex = this.getTypeIndex(newArray, valueType);
+    var valueIndex = newArray.indexOf(value);
+    if (checked) {
+      if (typeIndex === -1) {
+        newArray.push(value);
+      } else {
+        newArray.splice(typeIndex, 1);
+        newArray.push(value);
+      }
+    } else {
+      newArray.splice(valueIndex, 1);
+    }
+
+    this.setState({
+      [name]: newArray
+    });
+  };
+
   clearForm() {
     this.setState({
       date: new Date(),
-      email: ""
+      email: "",
+      info: "",
+      checkinType: []
     });
   };
 
@@ -65,6 +104,35 @@ class ReturningStudentForm extends PureComponent<Props, State> {
           <FormGroup>
             <Label for="email">Student Email</Label><Input type="email" placeholder="me@example.com" onChange={this.onChange} value={this.state.email} name="email" />
           </FormGroup>
+          <br></br>
+          <FormGroup tag="fieldset">
+            <legend>Checking in for... (Select all that apply.)</legend>
+            <FormGroup check>
+              <Label check>
+                <Input onChange={this.onMultiTypeChange} type="checkbox" name="checkinType" checked={this.state.checkinType.indexOf('WCS Fundamentals, Drop-in') !== -1} value="WCS Fundamentals, Drop-in" /> {' '} WCS Fundamentals, Drop-in
+              </Label>
+            </FormGroup>
+            <FormGroup check>
+              <Label check>
+                <Input onChange={this.onMultiTypeChange} type="checkbox" name="checkinType" checked={this.state.checkinType.indexOf('WCS Fundamentals, Monthly Series') !== -1} value="WCS Fundamentals, Monthly Series" /> {' '} WCS Fundamentals, Monthly Series
+              </Label>
+            </FormGroup>
+            <FormGroup check>
+              <Label check>
+                <Input onChange={this.onMultiTypeChange} type="checkbox" name="checkinType" checked={this.state.checkinType.indexOf('Intermediate WCS, Drop-in') !== -1} value="Intermediate WCS, Drop-in" /> {' '} Intermediate WCS, Drop-in
+              </Label>
+            </FormGroup>
+            <FormGroup check>
+              <Label check>
+                <Input onChange={this.onMultiTypeChange} type="checkbox" name="checkinType" checked={this.state.checkinType.indexOf('Intermediate WCS, Monthly Series') !== -1} value="Intermediate WCS, Monthly Series" /> {' '} Intermediate WCS, Monthly Series
+              </Label>
+            </FormGroup>
+          </FormGroup>
+          <br></br>
+          <FormGroup>
+            <Label for="info">Additional Info</Label><Input type="textarea" placeholder="Not necessary, but if you need to make a note about this check-in event, you can!" onChange={this.onChange} value={this.state.info} name="info" />
+          </FormGroup>
+          <br></br>
           <Button type="submit" value="Submit">Submit</Button>
         </Form>
 
