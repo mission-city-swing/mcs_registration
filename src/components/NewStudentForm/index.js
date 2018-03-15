@@ -16,7 +16,9 @@ class NewStudentForm extends PureComponent<Props, State> {
     email: "",
     phoneNumber: "",
     discoveryMethod: "",
+    discoveryMethodOther: "",
     otherDances: [],
+    otherDancesOther: "",
     classes: [],
     student: false
   };
@@ -100,6 +102,7 @@ class NewStudentForm extends PureComponent<Props, State> {
             <FormGroup check>
               <Label check>
                 <Input onChange={this.onChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'friend'} value="friend" /> {' '} Friend
+                <Input onChange={this.onChange} name="discoveryMethodFriend" value={this.state.discoveryMethodFriend} />
               </Label>
             </FormGroup>
             <FormGroup check>
@@ -135,6 +138,7 @@ class NewStudentForm extends PureComponent<Props, State> {
             <FormGroup check>
               <Label check>
                 <Input onChange={this.onChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'other'} value="other" /> {' '} Other
+                <Input onChange={this.onChange} name="discoveryMethodOther" value={this.state.discoveryMethodOther} />
               </Label>
             </FormGroup>
           </FormGroup>
@@ -179,6 +183,7 @@ class NewStudentForm extends PureComponent<Props, State> {
             <FormGroup check>
               <Label check>
                 <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('Other') !== -1} value="Other" /> {' '} Other
+                <Input onChange={this.onChange} name="otherDancesOther" value={this.state.otherDancesOther} />
               </Label>
             </FormGroup>
           </FormGroup>
