@@ -2,10 +2,10 @@
 // src/components/NewStudentForm/index.js
 import React, { PureComponent } from "react";
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
-import type { User } from "../../types.js";
-import { addNewUser } from "../../lib/api.js";
+import type { Profile } from "../../types.js";
+import { addNewProfile } from "../../lib/api.js";
 
-type State = User;
+type State = Profile;
 
 type Props = {};
 
@@ -55,7 +55,9 @@ class NewStudentForm extends PureComponent<Props, State> {
       email: "",
       phoneNumber: "",
       discoveryMethod: "",
+      discoveryMethodOther: "",
       otherDances: [],
+      otherDancesOther: "",
       classes: [],
       student: false
     });
@@ -65,7 +67,7 @@ class NewStudentForm extends PureComponent<Props, State> {
     event.preventDefault();
     // Validate form
     console.log(this.state);
-    addNewUser(this.state);
+    addNewProfile(this.state);
     // Clear the form
     this.clearForm();
   };
