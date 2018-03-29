@@ -1,2 +1,8 @@
+# do not check in keys
+fire.js
+# build files
+build/
+build/*
+# external packages
 node_modules/
 node_modules/*

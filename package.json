@@ -4,7 +4,8 @@
   "private": true,
   "dependencies": {
     "bootstrap": "^4.0.0",
-    "firebase": "^4.9.1",
+    "firebase": "^4.12.0",
+    "firebase-tools": "^3.17.7",
     "moment": "^2.20.1",
     "react": "^16.0.0",
     "react-dom": "^16.2.0",
@@ -14,6 +15,7 @@
     "react-widgets": "^4.2.0",
     "react-widgets-moment": "^4.0.7",
     "reactstrap": "^4.8.0",
+    "universal-cookie": "^2.1.2",
     "uuid": "^3.2.1"
   },
   "scripts": {

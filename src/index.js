@@ -6,8 +6,8 @@ import momentLocalizer from 'react-widgets-moment';
 
 import registerServiceWorker from "./registerServiceWorker";
 import App from "./App";
-import firebase from "firebase";
-import { injectDatabaseForApi } from "./lib/api.js";
+// import firebase from "firebase";
+// import { injectDatabaseForApi } from "./lib/api.js";
 
 import "./index.css";
 import 'bootstrap/dist/css/bootstrap.css';
@@ -17,18 +17,7 @@ import 'react-widgets/dist/css/react-widgets.css'
 Moment.locale('en');
 momentLocalizer();
 
-
-// Initialize Firebase
-const config = {
-  apiKey: "AIzaSyBijDLEM0Kt9ZOdDqri7G-MLloMZwLnMFo",
-  authDomain: "mcs-registration.firebaseapp.com",
-  databaseURL: "https://mcs-registration.firebaseio.com",
-  projectId: "mcs-registration",
-  storageBucket: "mcs-registration.appspot.com",
-  messagingSenderId: "319728031692"
-};
-const firebaseApp = firebase.initializeApp(config);
-injectDatabaseForApi(firebaseApp);
+// injectDatabaseForApi(firebaseApp);
 
 ReactDOM.render(
   <BrowserRouter>

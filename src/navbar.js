@@ -33,7 +33,13 @@ export default class MyNavbar extends Component {
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav className="ml-auto" navbar>
               <NavItem>
-                <NavLink href="/new">New Student Form</NavLink>
+                <NavLink href="/new-user">New User Form</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink href="/signin">Sign In Form</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink href="/new-student">New Student Form</NavLink>
               </NavItem>
               <NavItem>
                 <NavLink href="/returning">Returning Student Checkin</NavLink>

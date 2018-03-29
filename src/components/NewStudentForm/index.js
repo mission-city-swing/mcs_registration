@@ -2,10 +2,10 @@
 // src/components/NewStudentForm/index.js
 import React, { PureComponent } from "react";
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
-import type { User } from "../../types.js";
-import { addNewUser } from "../../lib/api.js";
+import type { Profile } from "../../types.js";
+import { addNewProfile } from "../../lib/api.js";
 
-type State = User;
+type State = Profile;
 
 type Props = {};
 
@@ -16,12 +16,17 @@ class NewStudentForm extends PureComponent<Props, State> {
     email: "",
     phoneNumber: "",
     discoveryMethod: "",
+    discoveryMethodFriend: "",
     discoveryMethodOther: "",
     otherDances: [],
     otherDancesOther: "",
     classes: [],
-    student: false
+    student: false,
+    info: ""
   };
+
+  // This doesn't work and I don't know why-- attach to the state
+  // profiles = getProfiles();
 
   onChange = (event: any) => {
     const name = event.target.name;
@@ -48,6 +53,41 @@ class NewStudentForm extends PureComponent<Props, State> {
     });
   };
 
+  // For use with multi-change with response types, e.g., Fundamentals vs Intermediate
+  getTypeIndex = (list, typeStr) => {
+    for (var i = 0; i < list.length; i++) {
+        if (list[i].indexOf(typeStr) !== -1 ) {
+          return(i);
+        }
+    }
+    return(-1);
+  };
+
+  onMultiTypeChange = (event: any) => {
+    const name = event.target.name;
+    const checked = event.target.checked;
+    const value = event.target.value;
+    const valueType = value.split(', ')[0];
+
+    var newArray = this.state[name].slice()
+    var typeIndex = this.getTypeIndex(newArray, valueType);
+    var valueIndex = newArray.indexOf(value);
+    if (checked) {
+      if (typeIndex === -1) {
+        newArray.push(value);
+      } else {
+        newArray.splice(typeIndex, 1);
+        newArray.push(value);
+      }
+    } else {
+      newArray.splice(valueIndex, 1);
+    }
+
+    this.setState({
+      [name]: newArray
+    });
+  };
+
   clearForm() {
     this.setState({
       firstName: "",
@@ -55,9 +95,13 @@ class NewStudentForm extends PureComponent<Props, State> {
       email: "",
       phoneNumber: "",
       discoveryMethod: "",
+      discoveryMethodFriend: "",
+      discoveryMethodOther: "",
       otherDances: [],
+      otherDancesOther: "",
       classes: [],
-      student: false
+      student: false,
+      info: ""
     });
   };
 
@@ -65,7 +109,7 @@ class NewStudentForm extends PureComponent<Props, State> {
     event.preventDefault();
     // Validate form
     console.log(this.state);
-    addNewUser(this.state);
+    addNewProfile(this.state);
     // Clear the form
     this.clearForm();
   };
@@ -192,24 +236,27 @@ class NewStudentForm extends PureComponent<Props, State> {
             <legend>What classes would you like to register for? (Select all that apply.)</legend>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('WCS Fundamentals Drop-in') !== -1} value="WCS Fundamentals Drop-in" /> {' '} WCS Fundamentals Drop-in
+                <Input onChange={this.onMultiTypeChange} type="checkbox" name="classes" checked={this.state.classes.indexOf('WCS Fundamentals, Drop-in') !== -1} value="WCS Fundamentals, Drop-in" /> {' '} WCS Fundamentals, Drop-in
               </Label>
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('WCS Fundamentals Monthly Series') !== -1} value="WCS Fundamentals Monthly Series" /> {' '} WCS Fundamentals Monthly Series
+                <Input onChange={this.onMultiTypeChange} type="checkbox" name="classes" checked={this.state.classes.indexOf('WCS Fundamentals, Monthly Series') !== -1} value="WCS Fundamentals, Monthly Series" /> {' '} WCS Fundamentals, Monthly Series
               </Label>
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('Intermediate WCS Drop-in') !== -1} value="Intermediate WCS Drop-in" /> {' '} Intermediate WCS Drop-in
+                <Input onChange={this.onMultiTypeChange} type="checkbox" name="classes" checked={this.state.classes.indexOf('Intermediate WCS, Drop-in') !== -1} value="Intermediate WCS, Drop-in" /> {' '} Intermediate WCS, Drop-in
               </Label>
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('Intermediate WCS Monthly Series') !== -1} value="Intermediate WCS Monthly Series" /> {' '} Intermediate WCS Monthly Series
+                <Input onChange={this.onMultiTypeChange} type="checkbox" name="classes" checked={this.state.classes.indexOf('Intermediate WCS, Monthly Series') !== -1} value="Intermediate WCS, Monthly Series" /> {' '} Intermediate WCS, Monthly Series
               </Label>
             </FormGroup>
+          </FormGroup>
+          <FormGroup>
+            <Label for="info">Other Info</Label><Input type="textarea" placeholder="Misc info" onChange={this.onChange} value={this.state.info} name="info" />
           </FormGroup>
           <br></br>
           <Button type="submit" value="Submit">Submit</Button>
