@@ -4,7 +4,7 @@ import React, { PureComponent } from "react";
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { DateTimePicker } from 'react-widgets';
 import type { Dance } from "../../types.js";
-// import { addNewDance } from "../../lib/api.js";
+import { addNewDance } from "../../lib/api.js";
 
 type State = Dance;
 
@@ -13,6 +13,7 @@ type Props = {};
 class DanceForm extends PureComponent<Props, State> {
   state: State = {
     date: new Date(),
+    fbLink: "",
     info: ""
   };
 
@@ -32,6 +33,7 @@ class DanceForm extends PureComponent<Props, State> {
   clearForm() {
     this.setState({
       date: new Date(),
+      fbLink: "",
       info: ""
     });
   };
@@ -40,7 +42,7 @@ class DanceForm extends PureComponent<Props, State> {
     event.preventDefault();
     // Validate form
     console.log(this.state);
-    // addNewDance(this.state);
+    addNewDance(this.state);
     // Clear the form
     this.clearForm();
   };
@@ -61,6 +63,9 @@ class DanceForm extends PureComponent<Props, State> {
               name="date"
               onChange={this.onDateChange}
             />
+          </FormGroup>
+          <FormGroup>
+            <Label for="fbLink">FB Link</Label><Input placeholder="FB Link" value={this.state.fbLink} onChange={this.onChange} name="fbLink" />
           </FormGroup>
           <FormGroup>
             <Label for="info">Dance Info</Label><Input type="textarea" placeholder="Whatever dance info you want, maybe a FB link" onChange={this.onChange} value={this.state.info} name="info" />
