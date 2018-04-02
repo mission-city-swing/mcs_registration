@@ -14,7 +14,7 @@
     "react-transition-group": "^2.2.1",
     "react-widgets": "^4.2.0",
     "react-widgets-moment": "^4.0.7",
-    "reactstrap": "^5.0.0-beta.3",
+    "reactstrap": "^4.8.0",
     "universal-cookie": "^2.1.2",
     "uuid": "^3.2.1"
   },
