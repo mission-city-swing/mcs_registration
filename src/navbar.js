@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 
 import {
   Collapse,
-  ButtonDropdown,
   UncontrolledDropdown,
-  Dropdown,
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
@@ -12,10 +10,9 @@ import {
   NavbarToggler,
   NavbarBrand,
   Nav,
-  NavItem,
   NavLink } from 'reactstrap';
 
-import { getCurrentUser, logOutCurrentUser } from "./lib/api.js";
+import { logOutCurrentUser } from "./lib/api.js";
 
 
 export default class MyNavbar extends Component {
@@ -82,7 +79,7 @@ export default class MyNavbar extends Component {
                   </DropdownItem>
                   <DropdownItem divider />
                   <DropdownItem>
-                    <NavLink href="#" onClick={logOutCurrentUser()}>Sign Out</NavLink>
+                    <NavLink href="#" onClick={logOutCurrentUser}>Sign Out</NavLink>
                   </DropdownItem>
                 </DropdownMenu>
               </UncontrolledDropdown>

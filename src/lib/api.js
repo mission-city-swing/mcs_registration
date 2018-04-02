@@ -26,6 +26,9 @@ export const getProfile = (options: Profile) => {
 };
 
 export const createOrUpdateProfile = (options: Profile) => {
+  var currentUser = getCurrentUser();
+  options.author = currentUser.uuid;
+
   const profileId = uuidv3(options.email, MCS_APP);
   fireDB.database().ref("profiles/" + profileId).set(options);
 };
@@ -33,6 +36,9 @@ export const createOrUpdateProfile = (options: Profile) => {
 export const getProfiles = fireDB.database().ref("profiles/").orderByChild('lastName');
 
 export const addNewProfile = (options: Profile) => {
+  var currentUser = getCurrentUser();
+  options.author = currentUser.uuid;
+
   console.log(options);
   console.log(options.email);
   const profileId = uuidv3(options.email, MCS_APP);
@@ -40,6 +46,9 @@ export const addNewProfile = (options: Profile) => {
 };
 
 export const addNewDance = (options: Dance) => {
+  var currentUser = getCurrentUser();
+  options.author = currentUser.uuid;
+
   console.log(options);
   // we just care about the day
   options.date = options.date.toDateString();
@@ -50,6 +59,9 @@ export const addNewDance = (options: Dance) => {
 };
 
 export const addNewDanceCheckin = (options: DanceCheckin) => {
+  var currentUser = getCurrentUser();
+  options.author = currentUser.uuid;
+
   console.log(options);
   // we just care about the day
   options.date = options.date.toDateString();
@@ -65,6 +77,9 @@ export const addNewDanceCheckin = (options: DanceCheckin) => {
 };
 
 export const addNewClassCheckin = (options: DanceCheckin) => {
+  var currentUser = getCurrentUser();
+  options.author = currentUser.uuid;
+
   console.log(options);
   // we just care about the day
   options.date = options.date.toDateString();
@@ -82,13 +97,10 @@ export const addNewClassCheckin = (options: DanceCheckin) => {
 // User functions for _Auth_
 // Question: What is the difference between exporting function and exporting const?
 function setCurrentUser(user: User) {
-  var currentUser = {
-    firstName: user.firstName,
-    lastName: user.lastName,
-    email: user.email
-  };
-  cookies.set('currentUser', currentUser, { path: '/' });
-  console.log('set current user');
+  var currentUser = user;
+  let d = new Date();
+  d.setDate(d.getDate() + 2);
+  cookies.set('currentUser', currentUser, { path: '/', expires: d});
 };
 
 export function getCurrentUser() {
@@ -115,6 +127,7 @@ export const addNewUser = (options: User) => {
     };
     const userId = uuidv3(options.email, MCS_APP);
     fireDB.database().ref("users/" + userId).set(currentUser);
+    currentUser.uuid = userId;
     setCurrentUser(currentUser);
     console.log(getCurrentUser());
     return currentUser;
@@ -131,11 +144,8 @@ export const signInUser = (options: User) => {
   fireDB.auth().signInWithEmailAndPassword(options.email, options.password).then(function(){
     const userId = uuidv3(options.email, MCS_APP);
     fireDB.database().ref("users/" + userId).once('value').then(function(snapshot){
-      var currentUser = {
-        firstName: snapshot.val().firstName,
-        lastName: snapshot.val().lastName,
-        email: snapshot.val().email
-      };
+      var currentUser = snapshot.val();
+      currentUser.uuid = userId;
       setCurrentUser(currentUser);
       console.log(getCurrentUser());
       return currentUser;
