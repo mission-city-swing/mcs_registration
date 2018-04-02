@@ -11,27 +11,31 @@ export type Profile = {
   otherDances: [],
   otherDancesOther: string,
   classes: [],
-  student: boolean
+  student: boolean,
+  author: string
 };
 
 export type Dance = {
   date: string,
   fbLink: string,
-  info: string
+  info: string,
+  author: string
 };
 
 export type DanceCheckin = {
   date: Date,
   firstName: string,
   lastName: string,
-  email: string  
+  email: string,
+  author: string
 };
 
 export type ClassCheckin = {
   date: Date,
   firstName: string,
   lastName: string,
-  email: string
+  email: string,
+  author: string
 };
 
 export type User = {
