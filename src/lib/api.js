@@ -17,20 +17,25 @@ const MCS_APP = "9f9e25a0-3087-11e8-9d77-e3d459600d35";
 // Dancers have profiles
 // "User" is a special word implying auth permissions
 
-export const getProfile = (options: Profile) => {
-  // Not quite implemented yet-- should  be able to update profile
-  const profileId = uuidv3(options.email, MCS_APP);
-  return fireDB.database().ref("profiles/" + profileId).once('value').then(function(snapshot){
-    return snapshot.val();
-  });
+
+// Dancer Profile API
+export const getProfileById = (prodileId) => {
+  return fireDB.database().ref("profiles/" + prodileId);
+};
+
+export const getProfileByEmail = (profileEmail) => {
+  const profileId = uuidv3(profileEmail, MCS_APP);
+  return fireDB.database().ref("profiles/" + profileId);
 };
 
 export const createOrUpdateProfile = (options: Profile) => {
   var currentUser = getCurrentUser();
   options.author = currentUser.uuid;
 
-  const profileId = uuidv3(options.email, MCS_APP);
-  fireDB.database().ref("profiles/" + profileId).set(options);
+  if (options.email) {
+    const profileId = uuidv3(options.email, MCS_APP);
+    fireDB.database().ref("profiles/" + profileId).set(options);
+  }
 };
 
 export const getProfiles = fireDB.database().ref("profiles/").orderByChild('lastName');
@@ -45,35 +50,51 @@ export const addNewProfile = (options: Profile) => {
   fireDB.database().ref("profiles/" + profileId).set(options);
 };
 
+// Dance API
+export const getDances = fireDB.database().ref("dances/").orderByChild('date');
+
+export const getDance = (danceId) => {
+  return fireDB.database().ref("dances/" + danceId);
+};
+
+export const deleteDance = (danceId) => {
+  return fireDB.database().ref("dances/" + danceId).remove();
+};
+
 export const addNewDance = (options: Dance) => {
   var currentUser = getCurrentUser();
   options.author = currentUser.uuid;
 
   console.log(options);
-  // we just care about the day
-  options.date = options.date.toDateString();
-  console.log(options.date);
-  // can't add 2 dances to the same day
-  const danceId = uuidv3(options.date, MCS_APP);
-  fireDB.database().ref("dances/" + danceId).set(options);
+  if (options.date) {
+    // we just care about the day
+    options.date = options.date.toDateString();
+    console.log(options.date);
+    // can't add 2 dances to the same day
+    const danceId = uuidv3(options.date, MCS_APP);
+    fireDB.database().ref("dances/" + danceId).set(options);
+  }
 };
 
+// Checkins
 export const addNewDanceCheckin = (options: DanceCheckin) => {
   var currentUser = getCurrentUser();
   options.author = currentUser.uuid;
 
   console.log(options);
-  // we just care about the day
-  options.date = options.date.toDateString();
-  const checkin = uuidv3(options.date + options.email, MCS_APP);
-  fireDB.database().ref("dance-checkins/" + checkin).set(options);
-  const profileId = uuidv3(options.email, MCS_APP);
-  fireDB.database().ref("profiles/" + profileId).once('value').then(function(snapshot){
-    if (snapshot.val() == null) {
-      fireDB.database().ref("profiles/" + profileId).set(options);
-    }
-  });
-  console.log(options);
+  if (options.date && options.email) {
+    // we just care about the day
+    options.date = options.date.toDateString();
+    const checkin = uuidv3(options.date + options.email, MCS_APP);
+    fireDB.database().ref("dance-checkins/" + checkin).set(options);
+    const profileId = uuidv3(options.email, MCS_APP);
+    fireDB.database().ref("profiles/" + profileId).once('value').then(function(snapshot){
+      if (snapshot.val() == null) {
+        fireDB.database().ref("profiles/" + profileId).set(options);
+      }
+    });
+    console.log(options);
+  }
 };
 
 export const addNewClassCheckin = (options: DanceCheckin) => {
@@ -81,20 +102,22 @@ export const addNewClassCheckin = (options: DanceCheckin) => {
   options.author = currentUser.uuid;
 
   console.log(options);
-  // we just care about the day
-  options.date = options.date.toDateString();
-  const checkin = uuidv3(options.date + options.email, MCS_APP);
-  fireDB.database().ref("class-checkins/" + checkin).set(options);
-  const profileId = uuidv3(options.email, MCS_APP);
-  fireDB.database().ref("profiles/" + profileId).once('value').then(function(snapshot){
-    if (snapshot.val() == null) {
-      fireDB.database().ref("profiles/" + profileId).set(options);
-    }
-  });
-  console.log(options);
+  if (options.date && options.email) {
+    // we just care about the day
+    options.date = options.date.toDateString();
+    const checkin = uuidv3(options.date + options.email, MCS_APP);
+    fireDB.database().ref("class-checkins/" + checkin).set(options);
+    const profileId = uuidv3(options.email, MCS_APP);
+    fireDB.database().ref("profiles/" + profileId).once('value').then(function(snapshot){
+      if (snapshot.val() == null) {
+        fireDB.database().ref("profiles/" + profileId).set(options);
+      }
+    });
+    console.log(options);
+  }
 };
 
-// User functions for _Auth_
+// User API for _Auth_
 // Question: What is the difference between exporting function and exporting const?
 function setCurrentUser(user: User) {
   var currentUser = user;
@@ -119,7 +142,7 @@ export const addNewUser = (options: User) => {
   console.log(options);
   console.log(options.email);
   var currentUser = {};
-  fireDB.auth().createUserWithEmailAndPassword(options.email, options.password).then(function(){
+  return fireDB.auth().createUserWithEmailAndPassword(options.email, options.password).then(function(){
     currentUser = {
       firstName: options.firstName,
       lastName: options.lastName,
@@ -128,9 +151,7 @@ export const addNewUser = (options: User) => {
     const userId = uuidv3(options.email, MCS_APP);
     fireDB.database().ref("users/" + userId).set(currentUser);
     currentUser.uuid = userId;
-    setCurrentUser(currentUser);
-    console.log(getCurrentUser());
-    return currentUser;
+    return setCurrentUser(currentUser);
   }).catch(function(error) {
     var errorCode = error.code;
     var errorMessage = error.message;
@@ -141,14 +162,12 @@ export const addNewUser = (options: User) => {
 export const signInUser = (options: User) => {
   console.log(options);
   console.log(options.email);
-  fireDB.auth().signInWithEmailAndPassword(options.email, options.password).then(function(){
+  return fireDB.auth().signInWithEmailAndPassword(options.email, options.password).then(function(){
     const userId = uuidv3(options.email, MCS_APP);
-    fireDB.database().ref("users/" + userId).once('value').then(function(snapshot){
+    return fireDB.database().ref("users/" + userId).once('value').then(function(snapshot){
       var currentUser = snapshot.val();
       currentUser.uuid = userId;
       setCurrentUser(currentUser);
-      console.log(getCurrentUser());
-      return currentUser;
     });
   }).catch(function(error) {
     var errorCode = error.code;
@@ -159,8 +178,8 @@ export const signInUser = (options: User) => {
 
 export const logOutCurrentUser = () => {
   console.log(getCurrentUser());
-  firebase.auth().signOut().then(function() {
-    removeCurrentUser();
+  return firebase.auth().signOut().then(function() {
+    return removeCurrentUser();
   }).catch(function(error) {
     var errorCode = error.code;
     var errorMessage = error.message;

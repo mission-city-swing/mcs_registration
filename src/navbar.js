@@ -64,6 +64,9 @@ export default class MyNavbar extends Component {
                   <DropdownItem>
                     <NavLink href="/returning">Returning Student Checkin</NavLink>
                   </DropdownItem>
+                  <DropdownItem>
+                    <NavLink href="/student">Update Student Info</NavLink>
+                  </DropdownItem>
                 </DropdownMenu>
               </UncontrolledDropdown>
               <UncontrolledDropdown nav inNavbar>
@@ -79,7 +82,7 @@ export default class MyNavbar extends Component {
                   </DropdownItem>
                   <DropdownItem divider />
                   <DropdownItem>
-                    <NavLink href="#" onClick={logOutCurrentUser}>Sign Out</NavLink>
+                    <NavLink href="/" onClick={logOutCurrentUser}>Sign Out</NavLink>
                   </DropdownItem>
                 </DropdownMenu>
               </UncontrolledDropdown>
