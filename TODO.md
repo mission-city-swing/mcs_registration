@@ -2,13 +2,13 @@
 
 ### Finishing the necessary features
 
-[ ] Profile editing page-- need to be able to add info about the dancer
+[x] Profile editing page-- need to be able to add info about the dancer
 
-[ ] Search for a dancer page-- need to be able to validate that a person has created a profile
+[x] Search for a dancer page-- need to be able to validate that a person has created a profile
 
-[ ] Way to show that a student has passed out of fundamentals
+[ ] Way to show that a student has passed out of fundamentals - user can make a note that they've passed out of fundamentals, but can't see the student's class checkins
 
-[ ] New student form also checks the student into the class for the day- or maybe add that as an option?-- this is actually what the class selector is for, should just add payment type info ot that
+[x] New student form also checks the student into the class for the day- or maybe add that as an option?-- this is actually what the class selector is for, should just add payment type info ot that
 
 [ ] Clean up nav bar
 

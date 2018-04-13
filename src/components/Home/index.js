@@ -1,4 +1,5 @@
-// src/components/DanceForm/index.js
+// @flow
+// src/components/Home/index.js
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Container, Row, Col, Button, Card, CardTitle, CardText } from 'reactstrap';
@@ -6,6 +7,15 @@ import { getCurrentUser } from "../../lib/api.js";
 
 
 class Home extends Component {
+  state: State = {
+    currentUser: {}
+  };
+
+  componentDidMount() {
+    this.setState({
+      currentUser: getCurrentUser()
+    });
+  }
 
   render() {
 
@@ -30,9 +40,9 @@ class Home extends Component {
               </Col>
               <Col>
                 <Card className="card-body text-center">
-                  <CardTitle>Dance Event</CardTitle>
-                  <CardText>Create a new dance event.</CardText>
-                  <Link to="/dance"><Button size="lg">Dance</Button></Link>
+                  <CardTitle>Dance Checkin</CardTitle>
+                  <CardText>Check into the dance.</CardText>
+                  <Link to="/dance-checkin"><Button size="lg">Dance Checkin</Button></Link>
                 </Card>
 
               </Col>
@@ -41,7 +51,7 @@ class Home extends Component {
         </div>
         <br></br>
         <div>
-        <code>Current User: {JSON.stringify(getCurrentUser())}</code>
+        Current User: { this.state.currentUser.email || "Not Signed In" }
         </div>
         <br></br>
       </div>
