@@ -122,13 +122,6 @@ class DanceCheckinForm extends PureComponent<Props, State> {
           <Button outline color="success" type="submit" value="Submit">Submit</Button>
           <Button outline value="clear" onClick={this.clearFormEvent}>Clear Form</Button>
         </Form>
-
-{/*        <br></br>
-        <div>
-        <code>{JSON.stringify(this.state)}</code>
-        </div>
-        <br></br>
-*/}
       </div>
     );
   }
