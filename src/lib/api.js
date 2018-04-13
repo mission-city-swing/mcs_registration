@@ -117,6 +117,17 @@ export const addNewClassCheckin = (options: DanceCheckin) => {
   }
 };
 
+export const getClassCheckinByEmail = (studentEmail) => {
+  // get checkins for a student
+  return fireDB.database().ref("class-checkins").orderByChild("email").equalTo(studentEmail)
+};
+
+export const getClassCheckinByDate = (classDate) => {
+  // get checkins for a specific date
+  return fireDB.database().ref("class-checkins").orderByChild("date").equalTo(classDate)
+};
+
+
 // User API for _Auth_
 // Question: What is the difference between exporting function and exporting const?
 function setCurrentUser(user: User) {
