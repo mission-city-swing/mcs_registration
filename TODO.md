@@ -6,11 +6,12 @@
 
 [x] Search for a dancer page-- need to be able to validate that a person has created a profile
 
-[ ] Way to show that a student has passed out of fundamentals - user can make a note that they've passed out of fundamentals, but can't see the student's class checkins
+[~] Way to show that a student has passed out of fundamentals - user can make a note that they've passed out of fundamentals
+[x] Can view class checkins per student
 
 [x] New student form also checks the student into the class for the day- or maybe add that as an option?-- this is actually what the class selector is for, should just add payment type info ot that
 
-[ ] Clean up nav bar
+[x] Clean up nav bar - I've made some adjustments in the last few updates, and I'm satisfied with the nav bar for now
 
 ### Auth
 

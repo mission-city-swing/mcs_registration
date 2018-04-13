@@ -5,7 +5,7 @@ import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { DateTimePicker } from 'react-widgets';
 import { addNewDanceCheckin, getProfiles } from "../../lib/api.js";
 
-// type State = Dance;
+type State = {};
 
 type Props = {};
 
@@ -59,7 +59,7 @@ class DanceCheckinForm extends PureComponent<Props, State> {
 
   onCheckinDateChange = (value) => {
     var newStateCheckin = {...this.state.checkin};
-    newStateCheckin.date = value.toDateString();
+    newStateCheckin.date = value;
     this.setState({checkin: newStateCheckin});
   };
 

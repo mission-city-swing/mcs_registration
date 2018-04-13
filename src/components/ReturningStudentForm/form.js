@@ -57,7 +57,7 @@ class ReturningStudentForm extends PureComponent<Props, State> {
 
   onCheckinDateChange = (value) => {
     var newStateCheckin = {...this.state.checkin};
-    newStateCheckin.date = value.toDateString();
+    newStateCheckin.date = value;
     this.setState({checkin: newStateCheckin});
   };
 

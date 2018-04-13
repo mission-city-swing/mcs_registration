@@ -4,6 +4,9 @@
     ".write": "auth != null",
     "profiles": {
       ".indexOn": ["email"]
+    },
+    "class-checkins": {
+      ".indexOn": ["email"]
     }
   }
 }

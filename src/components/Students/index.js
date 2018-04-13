@@ -5,6 +5,7 @@ import React, { PureComponent } from "react";
 import { Form, FormGroup, } from 'reactstrap';
 import queryString from 'query-string';
 import StudentInfoForm from "../NewStudentForm/form.js"
+import StudentCheckinList from "./checkins.js"
 import { getProfiles } from "../../lib/api.js";
 
 type State = {};
@@ -58,20 +59,31 @@ class StudentPage extends PureComponent<Props, State> {
     return (
       <div className="App">
         <h1>Students</h1>
-        <p>Update student Info!</p>
-        <Form>
-          <FormGroup>
-            <select onChange={this.onCheckinSelectChange} value={this.state.selected}>
-              <option value="">Please Select a Student</option>
-              {Object.keys(this.state.profileList).map((uid) => {
-                return(
-                  <option key={uid} value={uid}>{this.state.profileList[uid].firstName} {this.state.profileList[uid].lastName}, {this.state.profileList[uid].email}</option>
-                )
-              })}
-            </select>
-          </FormGroup>
-        </Form>
-        <StudentInfoForm {...this.props} ></StudentInfoForm>
+        <div>
+          <p>Select a student to update... </p>
+          <Form>
+            <FormGroup>
+              <select onChange={this.onCheckinSelectChange} value={this.state.selected}>
+                <option value="">Please Select a Student</option>
+                {Object.keys(this.state.profileList).map((uid) => {
+                  return(
+                    <option key={uid} value={uid}>{this.state.profileList[uid].firstName} {this.state.profileList[uid].lastName}, {this.state.profileList[uid].email}</option>
+                  )
+                })}
+              </select>
+            </FormGroup>
+          </Form>
+        </div>
+        <br></br>
+        <div>
+          <h4>Past Dance Checkins</h4>
+          <StudentCheckinList {...this.props} ></StudentCheckinList>
+        </div>
+        <br></br>
+        <div>
+          <h4>Update Student Info</h4>
+          <StudentInfoForm {...this.props} ></StudentInfoForm>
+        </div>
       </div>
     );
   }
