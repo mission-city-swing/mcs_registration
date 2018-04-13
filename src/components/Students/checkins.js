@@ -2,7 +2,7 @@
 // src/components/NewStudentForm/form.js
 import React, { PureComponent } from "react";
 import queryString from 'query-string';
-import { getClassCheckinByEmail } from "../../lib/api.js";
+import { getClassCheckinByEmail, getDanceCheckinByEmail } from "../../lib/api.js";
 
 type State = {};
 
@@ -10,7 +10,8 @@ type Props = {};
 
 class StudentCheckinList extends PureComponent<Props, State> {
   state: State = {
-    checkinList: {}
+    danceCheckinList: {},
+    classCheckinList: {}
   };
 
   getStudentFromQuery = () => {
@@ -28,7 +29,13 @@ class StudentCheckinList extends PureComponent<Props, State> {
     getClassCheckinByEmail(studentEmail).on("value", (snapshot) => {
       console.log(snapshot.val())
       this.setState({
-        checkinList: snapshot.val() || {}
+        classCheckinList: snapshot.val() || {}
+      });
+    });
+    getDanceCheckinByEmail(studentEmail).on("value", (snapshot) => {
+      console.log(snapshot.val())
+      this.setState({
+        danceCheckinList: snapshot.val() || {}
       });
     });
   };
@@ -41,9 +48,17 @@ class StudentCheckinList extends PureComponent<Props, State> {
 
     return (
       <div>
-        {Object.keys(this.state.checkinList).map((uid) => {
+        <h5>Class Checkins</h5>
+        {Object.keys(this.state.classCheckinList).map((uid) => {
           return(
-            <div key={uid} value={uid}> Date: {this.state.checkinList[uid].date} | Classes: {this.state.checkinList[uid].classes.join(', ')}</div>
+            <div key={uid} value={uid}>Date: {this.state.classCheckinList[uid].date} | Classes: {this.state.classCheckinList[uid].classes.join(', ')}</div>
+          )
+        })}
+        <br></br>
+        <h5>Dance Checkins</h5>
+        {Object.keys(this.state.danceCheckinList).map((uid) => {
+          return(
+            <div key={uid} value={uid}>{this.state.danceCheckinList[uid].date}</div>
           )
         })}
       </div>

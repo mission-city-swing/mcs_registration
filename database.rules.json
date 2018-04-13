@@ -6,7 +6,10 @@
       ".indexOn": ["email"]
     },
     "class-checkins": {
-      ".indexOn": ["email"]
+      ".indexOn": ["email", "date"]
+    },
+    "dance-checkins": {
+      ".indexOn": ["email", "date"]
     }
   }
 }

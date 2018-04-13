@@ -17,6 +17,7 @@ export type Profile = {
 
 export type Dance = {
   date: string,
+  title: string,
   fbLink: string,
   info: string,
   author: string

@@ -75,11 +75,13 @@ class StudentPage extends PureComponent<Props, State> {
           </Form>
         </div>
         <br></br>
+        <hr/>
         <div>
-          <h4>Past Dance Checkins</h4>
+          <h4>Past Checkins</h4>
           <StudentCheckinList {...this.props} ></StudentCheckinList>
         </div>
         <br></br>
+        <hr/>
         <div>
           <h4>Update Student Info</h4>
           <StudentInfoForm {...this.props} ></StudentInfoForm>
