@@ -10,7 +10,7 @@ import { MiscException, getMonthString } from './utils.js'
 
 
 const cookies = new Cookies();
-const fireDB = StageDB;
+const fireDB = ProductionDB;
 // generated with UUID cli
 const MCS_APP = "9f9e25a0-3087-11e8-9d77-e3d459600d35";
 
