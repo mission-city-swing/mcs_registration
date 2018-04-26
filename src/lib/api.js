@@ -5,11 +5,11 @@ import Cookies from 'universal-cookie';
 // I don't know if I need this
 import firebase from 'firebase';
 // I have purposely added fire.js to the .gitignore so we don't check in our keys
-import stage from '../fire.js';
+import { StageDB, ProductionDB } from '../fire.js'
 
 
 const cookies = new Cookies();
-const fireDB = stage;
+const fireDB = StageDB;
 // generated with UUID cli
 const MCS_APP = "9f9e25a0-3087-11e8-9d77-e3d459600d35";
 

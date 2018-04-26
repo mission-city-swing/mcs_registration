@@ -17,7 +17,8 @@
 
 [x] Current user signs actions with uuid
 
-[ ] Current user better displayed-- like in the nev bar
+[~] Current user better displayed-- like in the nav bar
+I mean, it's displayed on the home page...
 
 [x] Sign out button-- be careful because unless you auth, you can't write to the test DB -- see nav dropdown
 

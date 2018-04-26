@@ -15,7 +15,8 @@ class DanceCheckinForm extends PureComponent<Props, State> {
       date: new Date(),
       firstName: "",
       lastName: "",
-      email: ""
+      email: "",
+      info: ""
     },
     profileList: {}
   };
@@ -69,7 +70,8 @@ class DanceCheckinForm extends PureComponent<Props, State> {
         date: new Date(),
         firstName: "",
         lastName: "",
-        email: ""  
+        email: "",
+        info: ""
       }
     });
   };
@@ -119,6 +121,11 @@ class DanceCheckinForm extends PureComponent<Props, State> {
           <FormGroup>
             <Label for="email">Email</Label><Input placeholder="Email" value={this.state.checkin.email} onChange={this.onCheckinChange} name="email" />
           </FormGroup>
+          <br></br>
+          <FormGroup>
+            <Label for="info">Other Info</Label><Input type="textarea" placeholder="Misc info, e.g., a note if this person is a guest" onChange={this.onCheckinChange} value={this.state.checkin.info} name="info" />
+          </FormGroup>
+          <br></br>
           <Button outline color="success" type="submit" value="Submit">Submit</Button>
           <Button outline value="clear" onClick={this.clearFormEvent}>Clear Form</Button>
         </Form>
