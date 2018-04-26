@@ -166,7 +166,7 @@ class ReturningStudentForm extends PureComponent<Props, State> {
           </FormGroup>
           <br></br>
           <FormGroup>
-            <Label for="info">Additional Info</Label><Input type="textarea" placeholder="Not necessary, but if you need to make a note about this check-in event, you can!" onChange={this.onChange} value={this.state.checkin.info} name="info" />
+            <Label for="info">Additional Info</Label><Input type="textarea" placeholder="Not necessary, but if you need to make a note about this check-in event, you can!" onChange={this.onCheckinChange} value={this.state.checkin.info} name="info" />
           </FormGroup>
           <br></br>
           <Button outline color="success" type="submit" value="Submit">Submit</Button>

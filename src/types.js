@@ -12,6 +12,7 @@ export type Profile = {
   otherDancesOther: string,
   classes: [],
   student: boolean,
+  emailOptIn: boolean,
   author: string
 };
 
@@ -28,6 +29,7 @@ export type DanceCheckin = {
   firstName: string,
   lastName: string,
   email: string,
+  info: string,
   author: string
 };
 
@@ -36,6 +38,7 @@ export type ClassCheckin = {
   firstName: string,
   lastName: string,
   email: string,
+  info: string,
   author: string
 };
 

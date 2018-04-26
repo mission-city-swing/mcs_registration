@@ -22,6 +22,7 @@ class StudentInfoForm extends PureComponent<Props, State> {
     otherDances: [],
     otherDancesOther: "",
     student: false,
+    emailOptIn: false,
     info: ""
   };
 
@@ -87,6 +88,7 @@ class StudentInfoForm extends PureComponent<Props, State> {
       otherDances: [],
       otherDancesOther: "",
       student: false,
+      emailOptIn: false,
       info: ""
     });
   };
@@ -129,43 +131,48 @@ class StudentInfoForm extends PureComponent<Props, State> {
             <legend>How did you hear about us?</legend>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'friend'} value="friend" /> {' '} Friend
+                <Input onChange={this.onChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'friend'} value="friend" /> Friend
                 <Input onChange={this.onChange} name="discoveryMethodFriend" value={this.state.discoveryMethodFriend} />
               </Label>
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'work'} value="work" /> {' '} Work
+                <Input onChange={this.onChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'work'} value="work" /> Work
               </Label>
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'flyer'} value="flyer" /> {' '} Flyer
+                <Input onChange={this.onChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'web search'} value="web search" /> Web Search
               </Label>
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'facebook'} value="facebook" /> {' '} Facebook Ad
+                <Input onChange={this.onChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'flyer'} value="flyer" /> Flyer
               </Label>
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'yelp'} value="yelp" /> {' '} Yelp
+                <Input onChange={this.onChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'postcard'} value="postcard" /> Postcard
               </Label>
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'sosh'} value="sosh" /> {' '} Sosh
+                <Input onChange={this.onChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'facebook'} value="facebook" /> Facebook
               </Label>
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'meetup'} value="meetup" /> {' '} Meetup
+                <Input onChange={this.onChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'yelp'} value="yelp" /> Yelp
               </Label>
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'other'} value="other" /> {' '} Other
+                <Input onChange={this.onChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'meetup'} value="meetup" /> Meetup
+              </Label>
+            </FormGroup>
+            <FormGroup check>
+              <Label check>
+                <Input onChange={this.onChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'other'} value="other" /> Other
                 <Input onChange={this.onChange} name="discoveryMethodOther" value={this.state.discoveryMethodOther} />
               </Label>
             </FormGroup>
@@ -214,6 +221,13 @@ class StudentInfoForm extends PureComponent<Props, State> {
                 <Input onChange={this.onChange} name="otherDancesOther" value={this.state.otherDancesOther} />
               </Label>
             </FormGroup>
+          </FormGroup>
+          <br></br>
+          <FormGroup check>
+            <Label check>
+              <Input onChange={this.onChange} name="emailOptIn" type="checkbox" checked={this.state.emailOptIn} />
+              I would like to receive email from Mission City Swing
+            </Label>
           </FormGroup>
           <br></br>
           <FormGroup>
