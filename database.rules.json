@@ -3,8 +3,7 @@
     ".read": "auth != null",
     ".write": "auth != null",
     "profiles": {
-      ".indexOn": ["email"],
-      ".validate": "newData.child('email').val().length > 0"
+      ".indexOn": ["email"]
     },
     "class-checkins": {
       ".indexOn": ["email", "date"]
