@@ -6,6 +6,7 @@ import Cookies from 'universal-cookie';
 import firebase from 'firebase';
 // I have purposely added fire.js to the .gitignore so we don't check in our keys
 import { StageDB, ProductionDB } from '../fire.js'
+import { MiscException } from './utils.js'
 
 
 const cookies = new Cookies();
@@ -31,24 +32,14 @@ export const getProfileByEmail = (profileEmail) => {
 export const createOrUpdateProfile = (options: Profile) => {
   var currentUser = getCurrentUser();
   options.author = currentUser.uuid;
-
-  if (options.email) {
-    const profileId = uuidv3(options.email, MCS_APP);
-    fireDB.database().ref("profiles/" + profileId).set(options);
+  if (!options.email) {
+    throw MiscException("Email required", "FormException")
   }
+  const profileId = uuidv3(options.email, MCS_APP);
+  return fireDB.database().ref("profiles/" + profileId).set(options);
 };
 
 export const getProfiles = fireDB.database().ref("profiles/").orderByChild('lastName');
-
-export const addNewProfile = (options: Profile) => {
-  var currentUser = getCurrentUser();
-  options.author = currentUser.uuid;
-
-  console.log(options);
-  console.log(options.email);
-  const profileId = uuidv3(options.email, MCS_APP);
-  fireDB.database().ref("profiles/" + profileId).set(options);
-};
 
 // Dance API
 export const getDances = fireDB.database().ref("dances/").orderByChild('date');
@@ -65,11 +56,9 @@ export const addNewDance = (options: Dance) => {
   var currentUser = getCurrentUser();
   options.author = currentUser.uuid;
 
-  console.log(options);
   if (options.date) {
     // we just care about the day
     options.date = options.date.toDateString();
-    console.log(options.date);
     // can't add 2 dances to the same day
     const danceId = uuidv3(options.date, MCS_APP);
     fireDB.database().ref("dances/" + danceId).set(options);
@@ -81,7 +70,6 @@ export const addNewDanceCheckin = (options: DanceCheckin) => {
   var currentUser = getCurrentUser();
   options.author = currentUser.uuid;
 
-  console.log(options);
   if (options.date && options.email) {
     // we just care about the day
     options.date = options.date.toDateString();
@@ -93,7 +81,6 @@ export const addNewDanceCheckin = (options: DanceCheckin) => {
         fireDB.database().ref("profiles/" + profileId).set(options);
       }
     });
-    console.log(options);
   }
 };
 
@@ -111,7 +98,6 @@ export const addNewClassCheckin = (options: DanceCheckin) => {
   var currentUser = getCurrentUser();
   options.author = currentUser.uuid;
 
-  console.log(options);
   if (options.date && options.email) {
     // we just care about the day
     options.date = options.date.toDateString();
@@ -123,7 +109,6 @@ export const addNewClassCheckin = (options: DanceCheckin) => {
         fireDB.database().ref("profiles/" + profileId).set(options);
       }
     });
-    console.log(options);
   }
 };
 
@@ -159,8 +144,6 @@ export function removeCurrentUser() {
 };
 
 export const addNewUser = (options: User) => {
-  console.log(options);
-  console.log(options.email);
   var currentUser = {};
   return fireDB.auth().createUserWithEmailAndPassword(options.email, options.password).then(function(){
     currentUser = {
@@ -180,8 +163,6 @@ export const addNewUser = (options: User) => {
 };
 
 export const signInUser = (options: User) => {
-  console.log(options);
-  console.log(options.email);
   return fireDB.auth().signInWithEmailAndPassword(options.email, options.password).then(function(){
     const userId = uuidv3(options.email, MCS_APP);
     return fireDB.database().ref("users/" + userId).once('value').then(function(snapshot){
@@ -197,13 +178,15 @@ export const signInUser = (options: User) => {
 };
 
 export const logOutCurrentUser = () => {
-  console.log(getCurrentUser());
   return firebase.auth().signOut().then(function() {
     return removeCurrentUser();
   }).catch(function(error) {
     var errorCode = error.code;
     var errorMessage = error.message;
     console.log([errorCode, errorMessage]);
-    console.log(getCurrentUser());
   });
+};
+
+export const sendResetEmail = (options) => {
+  return firebase.auth().sendPasswordResetEmail(options.email)
 };

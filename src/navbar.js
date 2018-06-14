@@ -35,11 +35,11 @@ export default class MyNavbar extends Component {
   render() {
     return (
       <div>
-        <Navbar color="faded" light>
+        <Navbar color="faded" light expand="md">
           <NavbarBrand href="/">Mission City Swing Registration</NavbarBrand>
           <NavbarToggler onClick={this.toggle} />
           <Collapse isOpen={this.state.isOpen} navbar>
-            <Nav navbar>
+            <Nav className="ml-auto" navbar>
               <UncontrolledDropdown nav inNavbar>
                 <DropdownToggle nav caret>
                   Dance

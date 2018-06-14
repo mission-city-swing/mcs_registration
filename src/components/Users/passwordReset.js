@@ -3,7 +3,8 @@
 import React, { PureComponent } from "react";
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import type { User } from "../../types.js";
-import { signInUser } from "../../lib/api.js";
+import { sendResetEmail } from "../../lib/api.js";
+import McsAlert from "../Utilities/alert.js"
 
 type State = User;
 
@@ -12,7 +13,8 @@ type Props = {};
 class SignInUserForm extends PureComponent<Props, State> {
   state: State = {
     email: "",
-    password: ""
+    success: "",
+    error: ""
   };
 
   onChange = (event: any) => {
@@ -24,16 +26,22 @@ class SignInUserForm extends PureComponent<Props, State> {
 
   clearForm() {
     this.setState({
-      email: "",
-      password: ""
+      email: ""
     });
   };
 
+  setSuccess() {
+    this.setState({success: "An email has been sent to " + this.state.email});
+  }
+
   onSubmit = (event: any) => {
     event.preventDefault();
-    signInUser(this.state).then(function() {
-      window.location.href = "/";
-    });
+    try {
+      sendResetEmail({email: this.state.email})
+      this.setSuccess()
+    } catch(error) {
+      this.setState({error: error.toString()})
+    }
     // Clear the form
     this.clearForm();
   };
@@ -44,13 +52,11 @@ class SignInUserForm extends PureComponent<Props, State> {
       <div className="App">
         <h1>Sign In</h1>
         <p>Admins only</p>
-        <p>Forgot your password? <a href="/reset-password">Reset it here.</a></p>
+        <McsAlert color="success" text={this.state.success} visible={this.state.success.length > 0}></McsAlert>
+        <McsAlert color="danger" text={this.state.error} visible={this.state.error.length > 0}></McsAlert>
         <Form onSubmit={this.onSubmit}>
           <FormGroup>
             <Label form="email" type="email">Email</Label><Input placeholder="me@example.com" onChange={this.onChange} value={this.state.email} type="email" id="email" name="email" />
-          </FormGroup>
-          <FormGroup>
-            <Label form="password" type="password">Password</Label><Input onChange={this.onChange} value={this.state.password} type="password" id="password" name="password" />
           </FormGroup>
           <br></br>
           <Button type="submit" value="Submit">Submit</Button>

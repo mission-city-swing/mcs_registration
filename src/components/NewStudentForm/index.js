@@ -6,6 +6,7 @@ import type { Profile } from "../../types.js";
 // import { addNewProfile } from "../../lib/api.js";
 import StudentInfoForm from "./form.js"
 import ReturningStudentForm from "../ReturningStudentForm/form.js"
+import ErrorBoundary from "../Utilities/catch.js"
 
 type State = Profile;
 
@@ -19,7 +20,9 @@ class NewStudentPage extends PureComponent<Props, State> {
       <div className="App">
         <h1>New Student</h1>
         <p>Add a new student!</p>
-        <StudentInfoForm></StudentInfoForm>
+        <ErrorBoundary>
+          <StudentInfoForm></StudentInfoForm>
+        </ErrorBoundary>
         <br></br>
         <hr/>
         <br></br>

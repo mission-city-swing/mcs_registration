@@ -4,7 +4,9 @@ import React, { PureComponent } from "react";
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import queryString from 'query-string';
 import type { Profile } from "../../types.js";
-import { addNewProfile, getProfileByEmail } from "../../lib/api.js";
+import { createOrUpdateProfile, getProfileByEmail } from "../../lib/api.js";
+import McsAlert from "../Utilities/alert.js"
+
 
 type State = Profile;
 
@@ -22,12 +24,13 @@ class StudentInfoForm extends PureComponent<Props, State> {
     otherDances: [],
     otherDancesOther: "",
     student: false,
-    emailOptIn: false,
-    info: ""
+    emailOptIn: true,
+    info: "",
+    success: "",
+    error: ""
   };
 
   getStudentFromQuery = () => {
-    console.log(this.props);
     if (this.props.location) {
       var parsedSearch = queryString.parse(this.props.location.search);
       if (this.props.location.search) {
@@ -96,16 +99,50 @@ class StudentInfoForm extends PureComponent<Props, State> {
   onSubmit = (event: any) => {
     event.preventDefault();
     // Validate form
-    console.log(this.state);
-    addNewProfile(this.state);
-    // Clear the form
-    this.clearForm();
+    var onSuccess = () => {
+      var successText = "Added profile for " + this.state.email
+      console.log("Success! " + successText);
+      this.setState({success: successText});
+    }
+    var onError = (errorText) => {
+      console.log("Error! " + errorText);
+      this.setState({error: errorText});
+    }
+    var clearForm = () => {
+      this.clearForm();
+    }
+    try {
+      createOrUpdateProfile({
+        firstName: this.state.firstName,
+        lastName: this.state.lastName,
+        email: this.state.email,
+        phoneNumber: this.state.phoneNumber,
+        discoveryMethod: this.state.discoveryMethod,
+        discoveryMethodFriend: this.state.discoveryMethodFriend,
+        discoveryMethodOther: this.state.discoveryMethodOther,
+        otherDances: this.state.otherDances,
+        otherDancesOther: this.state.otherDancesOther,
+        student: this.state.student,
+        info: this.state.info
+      }).then(function(success) {
+        onSuccess();
+        clearForm();
+      }).catch(function(error) {
+        console.log(error)
+        onError(error.toString());
+      })
+    } catch(error) {
+      console.log(error)
+      onError(error.toString());
+    }
   };
 
   render() {
 
     return (
       <div>
+        <McsAlert color="success" text={this.state.success} visible={this.state.success.length > 0}></McsAlert>
+        <McsAlert color="danger" text={this.state.error} visible={this.state.error.length > 0}></McsAlert>
         <Form onSubmit={this.onSubmit}>
           <FormGroup>
             <Label for="firstName">First Name</Label><Input placeholder="First Name" value={this.state.firstName} onChange={this.onChange} name="firstName" />
@@ -238,13 +275,6 @@ class StudentInfoForm extends PureComponent<Props, State> {
           <Button outline value="clear" onClick={this.clearFormEvent}>Clear Form</Button>
 
         </Form>
-
-{/*        <br></br>
-        <div>
-        <code>{JSON.stringify(this.state)}</code>
-        </div>
-        <br></br>
-*/}
       </div>
     );
   }
