@@ -10,4 +10,13 @@ function getSubstringIndex(list, subStr) {
   return(-1);
 };
 
-export { getSubstringIndex }
+
+function MiscException(message, name = "MiscException") {
+	return {
+    message: message,
+    toString: function() { return name + ": " + message },
+    name: name
+	}
+}
+
+export { getSubstringIndex, MiscException }
