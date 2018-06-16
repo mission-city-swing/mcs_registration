@@ -1,11 +1,8 @@
 // @flow
 // src/components/NewStudentForm/index.js
 import React, { PureComponent } from "react";
-// import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import type { Profile } from "../../types.js";
-// import { addNewProfile } from "../../lib/api.js";
 import StudentInfoForm from "./form.js"
-import ReturningStudentForm from "../ReturningStudentForm/form.js"
 import ErrorBoundary from "../Utilities/catch.js"
 
 type State = Profile;
@@ -14,6 +11,11 @@ type Props = {};
 
 class NewStudentPage extends PureComponent<Props, State> {
 
+  addActionsOnSubmit = () => {
+    this.props.history.push('/dance-checkin');
+    window.scrollTo(0, 0);
+  }
+
   render() {
 
     return (
@@ -21,13 +23,9 @@ class NewStudentPage extends PureComponent<Props, State> {
         <h1>New Student</h1>
         <p>Add a new student!</p>
         <ErrorBoundary>
-          <StudentInfoForm></StudentInfoForm>
+          <StudentInfoForm addActionsOnSubmit={this.addActionsOnSubmit}></StudentInfoForm>
         </ErrorBoundary>
         <br></br>
-        <hr/>
-        <br></br>
-        <h2>Class Checkin</h2>
-        <ReturningStudentForm></ReturningStudentForm>
       </div>
     );
   }

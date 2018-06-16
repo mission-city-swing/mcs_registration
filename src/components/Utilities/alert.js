@@ -1,3 +1,5 @@
+// @flow
+// src/components/Utilities/alert.js
 import React from 'react';
 import { Alert } from 'reactstrap';
 

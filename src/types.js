@@ -13,6 +13,7 @@ export type Profile = {
   classes: [],
   student: boolean,
   emailOptIn: boolean,
+  waiverAgree: boolean,
   author: string
 };
 

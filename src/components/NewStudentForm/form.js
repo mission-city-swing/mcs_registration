@@ -1,11 +1,13 @@
 // @flow
 // src/components/NewStudentForm/form.js
 import React, { PureComponent } from "react";
+import { withRouter } from 'react-router-dom';
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import queryString from 'query-string';
 import type { Profile } from "../../types.js";
 import { createOrUpdateProfile, getProfileByEmail } from "../../lib/api.js";
 import McsAlert from "../Utilities/alert.js"
+import ConfirmButton from "../Utilities/confirmButton.js"
 
 
 type State = Profile;
@@ -25,10 +27,23 @@ class StudentInfoForm extends PureComponent<Props, State> {
     otherDancesOther: "",
     student: false,
     emailOptIn: true,
+    waiverAgree: false,
     info: "",
     success: "",
     error: ""
   };
+
+  componentDidMount() {
+    this.getStudentFromQuery();
+
+    if (this.props.addActionsOnSubmit) {
+      this.addActionsOnSubmit = this.props.addActionsOnSubmit
+    } else {
+      this.addActionsOnSubmit = () => {}
+    }
+
+  };
+
 
   getStudentFromQuery = () => {
     if (this.props.location) {
@@ -45,10 +60,6 @@ class StudentInfoForm extends PureComponent<Props, State> {
       this.setState(snapshot.val())
     });
   }
-
-  componentDidMount() {
-    this.getStudentFromQuery();
-  };
 
   onChange = (event: any) => {
     const name = event.target.name;
@@ -91,25 +102,27 @@ class StudentInfoForm extends PureComponent<Props, State> {
       otherDances: [],
       otherDancesOther: "",
       student: false,
-      emailOptIn: false,
+      emailOptIn: true,
+      waiverAgree: false,
       info: ""
     });
   };
 
   onSubmit = (event: any) => {
-    event.preventDefault();
+    if (event) {
+      event.preventDefault();
+    }
     // Validate form
     var onSuccess = () => {
       var successText = "Added profile for " + this.state.email
       console.log("Success! " + successText);
       this.setState({success: successText});
+      this.addActionsOnSubmit();
     }
     var onError = (errorText) => {
       console.log("Error! " + errorText);
       this.setState({error: errorText});
-    }
-    var clearForm = () => {
-      this.clearForm();
+      window.scrollTo(0, 0);
     }
     try {
       createOrUpdateProfile({
@@ -123,10 +136,11 @@ class StudentInfoForm extends PureComponent<Props, State> {
         otherDances: this.state.otherDances,
         otherDancesOther: this.state.otherDancesOther,
         student: this.state.student,
-        info: this.state.info
+        info: this.state.info,
+        emailOptIn: this.state.emailOptIn,
+        waiverAgree: this.state.waiverAgree
       }).then(function(success) {
         onSuccess();
-        clearForm();
       }).catch(function(error) {
         console.log(error)
         onError(error.toString());
@@ -271,13 +285,20 @@ class StudentInfoForm extends PureComponent<Props, State> {
             <Label for="info">Other Info</Label><Input type="textarea" placeholder="Misc info" onChange={this.onChange} value={this.state.info} name="info" />
           </FormGroup>
           <br></br>
-          <Button outline color="success" type="submit" value="Submit">Submit</Button>
-          <Button outline value="clear" onClick={this.clearFormEvent}>Clear Form</Button>
-
+          <FormGroup check>
+            <Label check>
+              <Input onChange={this.onChange} name="waiverAgree" type="checkbox" checked={this.state.waiverAgree} />
+              Waiver: I realize that partner dancing is a full-contact sport, and I promise not to sue Mission City Swing if I happen to get hurt. <a href="#">Read full text here (but not yet)</a>
+            </Label>
+          </FormGroup>
+          <br></br>
+          <ConfirmButton buttonOptions={{color: "primary"}} popoverOptions={{placement: "top"}} afterConfirm={this.onSubmit} popoverHeader="Confirm" popoverBody="Did you agree to the waiver?">Submit</ConfirmButton>
+          <span className="mr-1"></span>
+          <Button value="clear" onClick={this.clearFormEvent}>Clear Form</Button>
         </Form>
       </div>
     );
   }
 }
 
-export default StudentInfoForm;
+export default withRouter(StudentInfoForm);
