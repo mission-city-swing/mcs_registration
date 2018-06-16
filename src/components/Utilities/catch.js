@@ -1,5 +1,5 @@
 // @flow
-// src/components/Home/catch.js
+// src/components/Utilities/catch.js
 import React from "react";
 import McsAlert from "./alert.js"
 
