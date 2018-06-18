@@ -1,10 +1,14 @@
 # TODO
 
+### Known bugs
+
+[ ] On dance checkin, at least one user seems to have a date field, which breaks the datepicker because it's stored as a string-- need to pull date info out of checkin state object so that it's not altered accidentally, and then add it when I send the checkin object to the API call
+
 ### Finishing the necessary features
 
 [ ] Way to show that a student has passed out of fundamentals - need to have a clear check box
 
-[ ] History of classes that the student has attended
+[x] History of classes that the student has attended -- class checkins list on student info
 
 
 ### UI flow
@@ -19,14 +23,16 @@
 
 [x] Admin confirms, hits submit, and then the class checkin is submitted— this should probably be one big full-screen modal
 
-[ ] Replicate class checkin flow with modal confirm for dance checkin
+[x] Replicate class checkin flow with modal confirm for dance checkin
 
-[ ] Home page should be directions for students and dancers-- new student, class checkin, dance checkin, all flows confirmed by admin at end
+[x] Home page should be directions for students and dancers-- new student, class checkin, dance checkin, all flows confirmed by admin at end
 
 
 #### Other
 
-[ ] Form validation, especially for new student form— everything should check for name and email, new student form should check for waiver
+[ ] Add success/failure to admin sign in
+
+[x] Form validation, especially for new student form— everything should check for name and email, new student form should check for waiver
 
 [ ] Code of conduct and waiver should be in app and need to be signed— need to be included in the app
 

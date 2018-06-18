@@ -9,7 +9,17 @@ type Props = {};
 class ReturningStudentPage extends PureComponent<Props, State> {
 
   addActionsOnSubmit = (options = null) => {
-    this.props.history.push('/');
+    var toUrl = "/";
+    if (options.success || options.error) {
+      toUrl = toUrl + "?"
+      if (options.success) {
+        toUrl = toUrl + "success=" + options.success
+      }
+      if (options.error) {
+        toUrl = toUrl + "error=" + options.error
+      }
+    }
+    this.props.history.push(toUrl);
     window.scrollTo(0, 0);
   }
 

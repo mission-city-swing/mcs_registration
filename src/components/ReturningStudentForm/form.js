@@ -8,23 +8,27 @@ import type { ClassCheckin } from "../../types.js";
 import { addNewClassCheckin, getProfiles, getProfileByEmail } from "../../lib/api.js";
 import { getSubstringIndex } from "../../lib/utils.js";
 import McsAlert from "../Utilities/alert.js";
-import { AdminConfirmButtonModal } from "../Utilities/confirmButton.js";
+import { AdminConfirmButtonModal } from "../Utilities/confirmCheckinModal.js";
 
 type State = ClassCheckin;
 
 type Props = {};
 
 class ReturningStudentForm extends PureComponent<Props, State> {
+
+  defaultCheckin = {
+    date: new Date(),
+    firstName: "",
+    lastName: "",
+    email: "",
+    info: "New Dancer",
+    student: false,
+    waiverAgree: false,
+    classes: []
+  }
+
   state: State = {
-    checkin: {
-      date: new Date(),
-      firstName: "",
-      lastName: "",
-      email: "",
-      info: "",
-      student: false,
-      classes: []
-    },
+    checkin: {...this.defaultCheckin},
     profileList: {},
     success: "",
     error: ""
@@ -35,21 +39,21 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     getProfiles.on("value", (snapshot) => {
       var snapshotVal = snapshot.val();
       var profiles = {};
-      Object.keys(snapshotVal).forEach(function(key) {
-        profiles[snapshotVal[key].email] = {
-          firstName: snapshotVal[key].firstName,
-          lastName: snapshotVal[key].lastName,
-          email: snapshotVal[key].email,
-          student: snapshotVal[key].student
-        }
+      var defaultCheckin = this.defaultCheckin;
+      Object.keys(snapshotVal).forEach(function(key1) {
+        var thisProfile = snapshotVal[key1];
+        profiles[thisProfile.email] = {...defaultCheckin};
+        // For all fields in checkin, set those values, if they exist
+        Object.keys(defaultCheckin).forEach(function(key2){
+          profiles[thisProfile.email][key2] = thisProfile[key2] ? thisProfile[key2] : profiles[thisProfile.email][key2]
+        });
+        profiles[thisProfile.email].info = "";
       });
       this.setState({profileList: profiles});
     });
-
     // Get student if redirected from new student form
     this.getStudentFromQuery();
-
-    // Addition actions after submit, like a redirect
+    // Set function for additional actions on submit, like a redirect
     if (this.props.addActionsOnSubmit) {
       this.addActionsOnSubmit = this.props.addActionsOnSubmit
     } else {
@@ -61,20 +65,17 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     if (this.props.location) {
       if (this.props.location.search) {
         var parsedSearch = queryString.parse(this.props.location.search);
-        if (parsedSearch["new-dancer"]) {
-          var newStateCheckin = {...this.state.checkin};
-          newStateCheckin["info"] = "New dancer";
-          this.setState({checkin: newStateCheckin});
-        }
         if (parsedSearch["email"]) {
+          // Get student info from their email
           getProfileByEmail(parsedSearch["email"]).on("value", (snapshot) => {
             var student = snapshot.val();
             if (student) {
               var newStateCheckin = {...this.state.checkin};
-              newStateCheckin["firstName"] = student.firstName;
-              newStateCheckin["lastName"] = student.lastName;
-              newStateCheckin["email"] = student.email;
-              newStateCheckin["student"] = student.student;
+              Object.keys(newStateCheckin).forEach(function(key){
+                newStateCheckin[key] = student[key] ? student[key] : newStateCheckin[key]
+              });
+              // Make sure to note if they're a new dancer
+              newStateCheckin.info = parsedSearch["new-dancer"] ? "New Dancer" : "";
               this.setState({checkin: newStateCheckin});
             }
           });
@@ -87,7 +88,16 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     const name = event.target.name;
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
     var newStateCheckin = {...this.state.checkin};
-    newStateCheckin[name] = value;
+    if (name === "email") {
+      // Fixes an issue where updating the email wouldn't properly update other fields
+      if (this.state.profileList[value]) {
+        newStateCheckin = Object.assign(newStateCheckin, this.state.profileList[value]);
+      } else {
+        newStateCheckin = Object.assign({...this.defaultCheckin}, {email: value});
+      }
+    } else {
+      newStateCheckin[name] = value;
+    }
     this.setState({checkin: newStateCheckin});
   };
 
@@ -95,17 +105,9 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     var value = event.target.value;
     var newStateCheckin = {...this.state.checkin};
     if (value) {
-      newStateCheckin.email = this.state.profileList[value].email;
-      newStateCheckin.firstName = this.state.profileList[value].firstName;
-      newStateCheckin.lastName = this.state.profileList[value].lastName;
-      newStateCheckin.student = this.state.profileList[value].student;
-      newStateCheckin.info = "";
+      newStateCheckin = Object.assign(newStateCheckin, this.state.profileList[value]);
     } else {
-      newStateCheckin.email = "";
-      newStateCheckin.firstName = "";
-      newStateCheckin.lastName = "";
-      newStateCheckin.student = false;
-      newStateCheckin.info = "";
+      newStateCheckin = {...this.defaultCheckin}
     }
     this.setState({checkin: newStateCheckin});
   };
@@ -145,15 +147,7 @@ class ReturningStudentForm extends PureComponent<Props, State> {
 
   clearForm() {
     this.setState({
-      checkin: {
-        date: new Date(),
-        firstName: "",
-        lastName: "",
-        email: "",
-        info: "",
-        student: false,
-        classes: [],
-      }
+      checkin: {...this.defaultCheckin}
     });
   };
 
@@ -178,7 +172,7 @@ class ReturningStudentForm extends PureComponent<Props, State> {
         success: successText,
         error: ""
       });
-      this.addActionsOnSubmit();
+      this.addActionsOnSubmit({success: successText});
     }
     var onError = (errorText) => {
       console.log("Error! " + errorText);
@@ -239,6 +233,13 @@ class ReturningStudentForm extends PureComponent<Props, State> {
             <Label check>
               <Input onChange={this.onCheckinChange} name="student" type="checkbox" checked={this.state.checkin.student} />
               Full time student, must show valid student ID
+            </Label>
+          </FormGroup>
+          <br></br>
+          <FormGroup check>
+            <Label check>
+              <Input onChange={this.onCheckinChange} name="waiverAgree" type="checkbox" checked={this.state.checkin.waiverAgree} />
+              Waiver: I realize that partner dancing is a full-contact sport, and I promise not to sue Mission City Swing if I happen to get hurt. <a href="#">Read full text here (but not yet)</a>
             </Label>
           </FormGroup>
           <br></br>

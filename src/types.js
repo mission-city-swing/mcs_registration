@@ -32,6 +32,7 @@ export type DanceCheckin = {
   email: string,
   student: boolean,
   info: string,
+  waiverAgree: boolean,
   author: string
 };
 
@@ -42,6 +43,7 @@ export type ClassCheckin = {
   email: string,
   student: boolean,
   info: string,
+  waiverAgree: boolean,
   author: string
 };
 
