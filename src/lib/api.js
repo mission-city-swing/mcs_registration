@@ -31,9 +31,15 @@ export const getProfileByEmail = (profileEmail) => {
 
 export const createOrUpdateProfile = (options: Profile) => {
   var currentUser = getCurrentUser();
+  if (currentUser.uuid == null) {
+    throw MiscException("Admin must log in to authorize this event", "AuthException")
+  }
   options.author = currentUser.uuid;
-  if (!options.email) {
-    throw MiscException("Email required", "FormException")
+  if (!options.waiverAgree) {
+    throw MiscException("Must agree to liability waiver", "FormException")
+  }
+  if (!(options.email && options.firstName && options.lastName)) {
+    throw MiscException("First name, last name, and email required", "FormException")
   }
   const profileId = uuidv3(options.email, MCS_APP);
   return fireDB.database().ref("profiles/" + profileId).set(options);
@@ -68,20 +74,29 @@ export const addNewDance = (options: Dance) => {
 // Checkins
 export const addNewDanceCheckin = (options: DanceCheckin) => {
   var currentUser = getCurrentUser();
-  options.author = currentUser.uuid;
-
-  if (options.date && options.email) {
-    // we just care about the day
-    options.date = options.date.toDateString();
-    const checkin = uuidv3(options.date + options.email, MCS_APP);
-    fireDB.database().ref("dance-checkins/" + checkin).set(options);
-    const profileId = uuidv3(options.email, MCS_APP);
-    fireDB.database().ref("profiles/" + profileId).once('value').then(function(snapshot){
-      if (snapshot.val() == null) {
-        fireDB.database().ref("profiles/" + profileId).set(options);
-      }
-    });
+  if (currentUser.uuid == null) {
+    throw MiscException("Admin must log in to authorize this checkin event", "AuthException")
   }
+  options.author = currentUser.uuid;
+  // check for name, email, and date
+  if (!(options.date && options.email && options.firstName && options.lastName)) {
+    throw MiscException("First name, last name, email, and date required", "FormException")
+  }
+  if (!options.waiverAgree) {
+    throw MiscException("Must agree to liability waiver", "FormException")
+  }
+  // we just care about the day
+  options.date = options.date.toDateString();
+  const checkin = uuidv3(options.date + options.email, MCS_APP);
+  fireDB.database().ref("dance-checkins/" + checkin).set(options);
+  const profileId = uuidv3(options.email, MCS_APP);
+  return fireDB.database().ref("profiles/" + profileId).once("value").then(function(snapshot){
+    if (snapshot.val() == null) {
+      return fireDB.database().ref("profiles/" + profileId).set(options);
+    } else {
+      return fireDB.database().ref("profiles/" + profileId).once("value");
+    }
+  });
 };
 
 export const getDanceCheckinByEmail = (studentEmail) => {
@@ -98,15 +113,18 @@ export const addNewClassCheckin = (options: ClassCheckin) => {
   // set author
   var currentUser = getCurrentUser();
   if (currentUser.uuid == null) {
-    throw MiscException("Admin must log in", "AuthException")
+    throw MiscException("Admin must log in to authorize this checkin event", "AuthException")
   }
   options.author = currentUser.uuid;
-  // check for date and email
-  if (!(options.date && options.email)) {
-    throw MiscException("Email and date required", "FormException")
+  // check for name, email, and date
+  if (!(options.date && options.email && options.firstName && options.lastName)) {
+    throw MiscException("First name, last name, email, and date required", "FormException")
   }
   if (options.classes.length < 1) {
     throw MiscException("Must check in for at least one class", "FormException")
+  }
+  if (!options.waiverAgree) {
+    throw MiscException("Must agree to liability waiver", "FormException")
   }
   // we just care about the day
   options.date = options.date.toDateString();

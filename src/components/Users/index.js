@@ -35,7 +35,7 @@ class SignInUserForm extends PureComponent<Props, State> {
       window.location.href = "/";
     });
     // Clear the form
-    this.clearForm();
+    // this.clearForm();
   };
 
   render() {
