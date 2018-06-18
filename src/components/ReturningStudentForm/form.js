@@ -3,11 +3,13 @@
 import React, { PureComponent } from "react";
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { DateTimePicker } from 'react-widgets';
-import type { Checkin } from "../../types.js";
-import { addNewClassCheckin, getProfiles } from "../../lib/api.js";
+import queryString from 'query-string';
+import type { ClassCheckin } from "../../types.js";
+import { addNewClassCheckin, getProfiles, getProfileByEmail } from "../../lib/api.js";
 import { getSubstringIndex } from "../../lib/utils.js";
+import McsAlert from "../Utilities/alert.js";
 
-type State = Checkin;
+type State = ClassCheckin;
 
 type Props = {};
 
@@ -15,14 +17,19 @@ class ReturningStudentForm extends PureComponent<Props, State> {
   state: State = {
     checkin: {
       date: new Date(),
+      firstName: "",
+      lastName: "",
       email: "",
       info: "",
       classes: []
     },
-    profileList: {}
+    profileList: {},
+    success: "",
+    error: ""
   };
 
   componentDidMount() {
+    // Get list of profiles
     getProfiles.on("value", (snapshot) => {
       var snapshotVal = snapshot.val();
       var profiles = {};
@@ -35,6 +42,36 @@ class ReturningStudentForm extends PureComponent<Props, State> {
       });
       this.setState({profileList: profiles});
     });
+
+    // Get student if redirected from new student form
+    this.getStudentFromQuery();
+
+    // Addition actions after submit, like a redirect
+    if (this.props.addActionsOnSubmit) {
+      this.addActionsOnSubmit = this.props.addActionsOnSubmit
+    } else {
+      this.addActionsOnSubmit = () => {}
+    }
+  };
+
+  getStudentFromQuery = () => {
+    console.log(this.props.location)
+    if (this.props.location) {
+      if (this.props.location.search) {
+        var parsedSearch = queryString.parse(this.props.location.search);
+        console.log(parsedSearch["email"])
+        getProfileByEmail(parsedSearch["email"]).on("value", (snapshot) => {
+          var student = snapshot.val();
+          if (student) {
+            var newStateCheckin = {...this.state.checkin};
+            newStateCheckin["firstName"] = student.firstName;
+            newStateCheckin["lastName"] = student.lastName;
+            newStateCheckin["email"] = student.email;
+            this.setState({checkin: newStateCheckin});
+          }
+        });
+      }
+    }
   };
 
   onCheckinChange = (event: any) => {
@@ -49,8 +86,12 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     var newStateCheckin = {...this.state.checkin};
     if (value) {
       newStateCheckin.email = this.state.profileList[value].email;
+      newStateCheckin.firstName = this.state.profileList[value].firstName;
+      newStateCheckin.lastName = this.state.profileList[value].lastName;
     } else {
       newStateCheckin.email = "";
+      newStateCheckin.firstName = "";
+      newStateCheckin.lastName = "";
     }
     this.setState({checkin: newStateCheckin});
   };
@@ -92,6 +133,8 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     this.setState({
       checkin: {
         date: new Date(),
+        firstName: "",
+        lastName: "",
         email: "",
         info: "",
         classes: [],
@@ -104,18 +147,44 @@ class ReturningStudentForm extends PureComponent<Props, State> {
   };
 
   onSubmit = (event: any) => {
-    event.preventDefault();
-    // Validate form
-    console.log(this.state);
-    addNewClassCheckin(this.state.checkin);
-    // Clear the form
-    this.clearForm();
+    if (event) {
+      event.preventDefault();
+    }
+    // Error handling
+    var onSuccess = () => {
+      var successText = "Added class checkin for " + this.state.email
+      console.log("Success! " + successText);
+      this.setState({
+        success: successText,
+        error: ""
+      });
+      this.addActionsOnSubmit();
+    }
+    var onError = (errorText) => {
+      console.log("Error! " + errorText);
+      this.setState({error: errorText});
+      window.scrollTo(0, 0);
+    }
+    // DB request
+    try {
+      addNewClassCheckin({...this.state.checkin}).then(function(success) {
+        onSuccess();
+      }).catch(function(error) {
+        console.log(error);
+        onError(error.toString());
+      });
+    } catch(error) {
+      console.log(error);
+      onError(error.toString());
+    }
   };
 
   render() {
 
     return (
       <div>
+        <McsAlert color="success" text={this.state.success} visible={this.state.success.length > 0}></McsAlert>
+        <McsAlert color="danger" text={this.state.error} visible={this.state.error.length > 0}></McsAlert>
         <Form onSubmit={this.onSubmit}>
           <FormGroup>
             <Label for="date">Dance Date</Label>
@@ -138,7 +207,13 @@ class ReturningStudentForm extends PureComponent<Props, State> {
             </select>
           </FormGroup>
           <FormGroup>
-            <Label for="email">Student Email</Label><Input type="email" placeholder="me@example.com" onChange={this.onCheckinChange} value={this.state.checkin.email} name="email" />
+            <Label for="firstName">First Name</Label><Input placeholder="First Name" value={this.state.checkin.firstName} onChange={this.onCheckinChange} name="firstName" />
+          </FormGroup>
+          <FormGroup>
+            <Label for="lastName">Last Name</Label><Input placeholder="Last Name" onChange={this.onCheckinChange} value={this.state.checkin.lastName} name="lastName" />
+          </FormGroup>
+          <FormGroup>
+            <Label form="email" type="email">Email</Label><Input placeholder="me@example.com" onChange={this.onCheckinChange} value={this.state.checkin.email} type="email" id="email" name="email" />
           </FormGroup>
           <br></br>
           <FormGroup tag="fieldset">
@@ -173,13 +248,6 @@ class ReturningStudentForm extends PureComponent<Props, State> {
           <Button outline value="clear" onClick={this.clearFormEvent}>Clear Form</Button>
 
         </Form>
-
-{/*        <br></br>
-        <div>
-        <code>{JSON.stringify(this.state)}</code>
-        </div>
-        <br></br>
-*/}
       </div>
     );
   }
