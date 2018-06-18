@@ -8,6 +8,7 @@ import type { ClassCheckin } from "../../types.js";
 import { addNewClassCheckin, getProfiles, getProfileByEmail } from "../../lib/api.js";
 import { getSubstringIndex } from "../../lib/utils.js";
 import McsAlert from "../Utilities/alert.js";
+import { AdminConfirmButtonModal } from "../Utilities/confirmButton.js";
 
 type State = ClassCheckin;
 
@@ -21,6 +22,7 @@ class ReturningStudentForm extends PureComponent<Props, State> {
       lastName: "",
       email: "",
       info: "",
+      student: false,
       classes: []
     },
     profileList: {},
@@ -37,7 +39,8 @@ class ReturningStudentForm extends PureComponent<Props, State> {
         profiles[snapshotVal[key].email] = {
           firstName: snapshotVal[key].firstName,
           lastName: snapshotVal[key].lastName,
-          email: snapshotVal[key].email
+          email: snapshotVal[key].email,
+          student: snapshotVal[key].student
         }
       });
       this.setState({profileList: profiles});
@@ -55,27 +58,34 @@ class ReturningStudentForm extends PureComponent<Props, State> {
   };
 
   getStudentFromQuery = () => {
-    console.log(this.props.location)
     if (this.props.location) {
       if (this.props.location.search) {
         var parsedSearch = queryString.parse(this.props.location.search);
-        console.log(parsedSearch["email"])
-        getProfileByEmail(parsedSearch["email"]).on("value", (snapshot) => {
-          var student = snapshot.val();
-          if (student) {
-            var newStateCheckin = {...this.state.checkin};
-            newStateCheckin["firstName"] = student.firstName;
-            newStateCheckin["lastName"] = student.lastName;
-            newStateCheckin["email"] = student.email;
-            this.setState({checkin: newStateCheckin});
-          }
-        });
+        if (parsedSearch["new-dancer"]) {
+          var newStateCheckin = {...this.state.checkin};
+          newStateCheckin["info"] = "New dancer";
+          this.setState({checkin: newStateCheckin});
+        }
+        if (parsedSearch["email"]) {
+          getProfileByEmail(parsedSearch["email"]).on("value", (snapshot) => {
+            var student = snapshot.val();
+            if (student) {
+              var newStateCheckin = {...this.state.checkin};
+              newStateCheckin["firstName"] = student.firstName;
+              newStateCheckin["lastName"] = student.lastName;
+              newStateCheckin["email"] = student.email;
+              newStateCheckin["student"] = student.student;
+              this.setState({checkin: newStateCheckin});
+            }
+          });
+        }
       }
     }
   };
 
   onCheckinChange = (event: any) => {
-    const { target: { name, value } } = event;
+    const name = event.target.name;
+    const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
     var newStateCheckin = {...this.state.checkin};
     newStateCheckin[name] = value;
     this.setState({checkin: newStateCheckin});
@@ -88,10 +98,14 @@ class ReturningStudentForm extends PureComponent<Props, State> {
       newStateCheckin.email = this.state.profileList[value].email;
       newStateCheckin.firstName = this.state.profileList[value].firstName;
       newStateCheckin.lastName = this.state.profileList[value].lastName;
+      newStateCheckin.student = this.state.profileList[value].student;
+      newStateCheckin.info = "";
     } else {
       newStateCheckin.email = "";
       newStateCheckin.firstName = "";
       newStateCheckin.lastName = "";
+      newStateCheckin.student = false;
+      newStateCheckin.info = "";
     }
     this.setState({checkin: newStateCheckin});
   };
@@ -137,6 +151,7 @@ class ReturningStudentForm extends PureComponent<Props, State> {
         lastName: "",
         email: "",
         info: "",
+        student: false,
         classes: [],
       }
     });
@@ -146,13 +161,18 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     this.clearForm();
   };
 
-  onSubmit = (event: any) => {
-    if (event) {
-      event.preventDefault();
+  onSubmit = (options) => {
+    // If additional info added by admin
+    if (options.info) {
+      var newCheckin = {...this.state.checkin}
+      newCheckin.info = options.info
+      this.setState({
+        checkin: newCheckin
+      })
     }
     // Error handling
     var onSuccess = () => {
-      var successText = "Added class checkin for " + this.state.email
+      var successText = "Added class checkin for " + this.state.checkin.email
       console.log("Success! " + successText);
       this.setState({
         success: successText,
@@ -215,6 +235,12 @@ class ReturningStudentForm extends PureComponent<Props, State> {
           <FormGroup>
             <Label form="email" type="email">Email</Label><Input placeholder="me@example.com" onChange={this.onCheckinChange} value={this.state.checkin.email} type="email" id="email" name="email" />
           </FormGroup>
+          <FormGroup check>
+            <Label check>
+              <Input onChange={this.onCheckinChange} name="student" type="checkbox" checked={this.state.checkin.student} />
+              Full time student, must show valid student ID
+            </Label>
+          </FormGroup>
           <br></br>
           <FormGroup tag="fieldset">
             <legend>Checking in for... (Select all that apply.)</legend>
@@ -240,13 +266,13 @@ class ReturningStudentForm extends PureComponent<Props, State> {
             </FormGroup>
           </FormGroup>
           <br></br>
-          <FormGroup>
-            <Label for="info">Additional Info</Label><Input type="textarea" placeholder="Not necessary, but if you need to make a note about this check-in event, you can!" onChange={this.onCheckinChange} value={this.state.checkin.info} name="info" />
-          </FormGroup>
-          <br></br>
-          <Button outline color="success" type="submit" value="Submit">Submit</Button>
-          <Button outline value="clear" onClick={this.clearFormEvent}>Clear Form</Button>
-
+          {this.state.checkin.email.length > 0 &&
+            <div>
+            <AdminConfirmButtonModal buttonOptions={{color: "primary"}} afterConfirm={this.onSubmit} modalHeader="Confirm" modalBody="Please hand the tablet to the desk attendant for confirmation and payment. Thank you!" modalData={this.state.checkin}>Submit</AdminConfirmButtonModal>
+            <span className="mr-1"></span>
+            <Button outline value="clear" onClick={this.clearFormEvent}>Clear Form</Button>
+            </div>
+          }
         </Form>
       </div>
     );

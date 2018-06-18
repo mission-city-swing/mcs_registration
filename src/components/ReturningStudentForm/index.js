@@ -8,14 +8,18 @@ type Props = {};
 
 class ReturningStudentPage extends PureComponent<Props, State> {
 
-  render() {
+  addActionsOnSubmit = (options = null) => {
+    this.props.history.push('/');
+    window.scrollTo(0, 0);
+  }
 
+  render() {
     return (
       <div className="App">
         <h1>Returning Student</h1>
         <p>Welcome back! Please select today's date and enter your email to sign in!</p>
         <ErrorBoundary>
-	        <ReturningStudentForm {...this.props}></ReturningStudentForm>
+	        <ReturningStudentForm {...this.props} addActionsOnSubmit={this.addActionsOnSubmit}></ReturningStudentForm>
         </ErrorBoundary>
 
       </div>

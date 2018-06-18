@@ -7,7 +7,7 @@ import queryString from 'query-string';
 import type { Profile } from "../../types.js";
 import { createOrUpdateProfile, getProfileByEmail } from "../../lib/api.js";
 import McsAlert from "../Utilities/alert.js"
-import ConfirmButton from "../Utilities/confirmButton.js"
+import { ConfirmButtonPopover } from "../Utilities/confirmButton.js"
 
 
 type State = Profile;
@@ -174,7 +174,7 @@ class StudentInfoForm extends PureComponent<Props, State> {
           <FormGroup check>
             <Label check>
               <Input onChange={this.onChange} name="student" type="checkbox" checked={this.state.student} />
-              Student (with valid student ID)
+              Full time student, must show valid student ID
             </Label>
           </FormGroup>
           <br></br>
@@ -292,7 +292,7 @@ class StudentInfoForm extends PureComponent<Props, State> {
             </Label>
           </FormGroup>
           <br></br>
-          <ConfirmButton buttonOptions={{color: "primary"}} popoverOptions={{placement: "top"}} afterConfirm={this.onSubmit} popoverHeader="Confirm" popoverBody="Did you agree to the waiver?">Submit</ConfirmButton>
+          <ConfirmButtonPopover buttonOptions={{color: "primary"}} popoverOptions={{placement: "top"}} afterConfirm={this.onSubmit} popoverHeader="Confirm" popoverBody="Did you agree to the waiver?">Submit</ConfirmButtonPopover>
           <span className="mr-1"></span>
           <Button value="clear" onClick={this.clearFormEvent}>Clear Form</Button>
         </Form>
