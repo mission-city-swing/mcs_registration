@@ -11,13 +11,15 @@
 
 #### Flow oriented towards the student signing themselves in, with the admin checking and receiving payment
 
-[x] New student form redirects to dance checkin (returning student form)
+[x] New student form redirects to class checkin (returning student form)
 
 [x] Dance checkin, when redirected by new student form, should show student data
 
-[ ] Dance checkin redirects to a page saying how much the student should pay and asking for confirmation from admin
+[x] Dance checkin redirects to a page saying how much the student should pay and asking for confirmation from admin
 
-[ ] Admin confirms, hits submit, and then the dance checkin is submitted— this should probably be one big full-screen modal
+[x] Admin confirms, hits submit, and then the class checkin is submitted— this should probably be one big full-screen modal
+
+[ ] Replicate class checkin flow with modal confirm for dance checkin
 
 [ ] Home page should be directions for students and dancers-- new student, class checkin, dance checkin, all flows confirmed by admin at end
 
