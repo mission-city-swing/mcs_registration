@@ -62,7 +62,7 @@ export default class MyNavbar extends Component {
                     <NavLink href="/new-student">New Student Form</NavLink>
                   </DropdownItem>
                   <DropdownItem>
-                    <NavLink href="/returning">Returning Student Checkin</NavLink>
+                    <NavLink href="/class-checkin">Class Checkin</NavLink>
                   </DropdownItem>
                   <DropdownItem>
                     <NavLink href="/student">Update Student Info</NavLink>
@@ -78,7 +78,7 @@ export default class MyNavbar extends Component {
                     <NavLink href="/new-user">New Admin User</NavLink>
                   </DropdownItem>
                   <DropdownItem>
-                    <NavLink href="/signin">Sign In Form</NavLink>
+                    <NavLink href="/signin">Sign In</NavLink>
                   </DropdownItem>
                   <DropdownItem divider />
                   <DropdownItem>

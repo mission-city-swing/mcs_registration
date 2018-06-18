@@ -94,22 +94,33 @@ export const getDanceCheckinByDate = (classDate) => {
   return fireDB.database().ref("dance-checkins").orderByChild("date").equalTo(classDate)
 };
 
-export const addNewClassCheckin = (options: DanceCheckin) => {
+export const addNewClassCheckin = (options: ClassCheckin) => {
+  // set author
   var currentUser = getCurrentUser();
+  if (currentUser.uuid == null) {
+    throw MiscException("Admin must log in", "AuthException")
+  }
   options.author = currentUser.uuid;
-
-  if (options.date && options.email) {
-    // we just care about the day
-    options.date = options.date.toDateString();
-    const checkin = uuidv3(options.date + options.email, MCS_APP);
-    fireDB.database().ref("class-checkins/" + checkin).set(options);
+  // check for date and email
+  if (!(options.date && options.email)) {
+    throw MiscException("Email and date required", "FormException")
+  }
+  if (options.classes.length < 1) {
+    throw MiscException("Must check in for at least one class", "FormException")
+  }
+  // we just care about the day
+  options.date = options.date.toDateString();
+  const checkin = uuidv3(options.date + options.email, MCS_APP);
+  return fireDB.database().ref("class-checkins/" + checkin).set(options).then(function() {
     const profileId = uuidv3(options.email, MCS_APP);
-    fireDB.database().ref("profiles/" + profileId).once('value').then(function(snapshot){
+    fireDB.database().ref("profiles/" + profileId).once("value").then(function(snapshot){
       if (snapshot.val() == null) {
-        fireDB.database().ref("profiles/" + profileId).set(options);
+        return fireDB.database().ref("profiles/" + profileId).set(options);
+      } else {
+        return fireDB.database().ref("profiles/" + profileId).once("value")
       }
     });
-  }
+  });
 };
 
 export const getClassCheckinByEmail = (studentEmail) => {

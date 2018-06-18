@@ -117,7 +117,7 @@ class StudentInfoForm extends PureComponent<Props, State> {
       var successText = "Added profile for " + this.state.email
       console.log("Success! " + successText);
       this.setState({success: successText});
-      this.addActionsOnSubmit();
+      this.addActionsOnSubmit({email: this.state.email});
     }
     var onError = (errorText) => {
       console.log("Error! " + errorText);

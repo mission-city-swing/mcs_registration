@@ -17,7 +17,7 @@ const Routes = (props) => (
     <Route path="/signin" component={SignInUserForm} />
     <Route path="/reset-password" component={ResetPasswordForm} />
     <Route path="/new-student" component={NewStudentPage} />
-    <Route path="/returning" component={ReturningStudentPage} />
+    <Route path="/class-checkin" component={ReturningStudentPage} />
     <Route path="/dance" component={Dance} />
     <Route path="/dance-checkin" component={DanceCheckinPage} />
     <Route path="/student" component={StudentPage} />

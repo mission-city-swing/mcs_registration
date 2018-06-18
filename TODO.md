@@ -2,41 +2,38 @@
 
 ### Finishing the necessary features
 
-[~] Way to show that a student has passed out of fundamentals - user can make a note that they've passed out of fundamentals
-
-** No, this isn't good enough, need to have a check box or something
+[ ] Way to show that a student has passed out of fundamentals - need to have a clear check box
 
 [ ] History of classes that the student has attended
-
-[x] Profile editing page-- need to be able to add info about the dancer
-
-[x] Search for a dancer page-- need to be able to validate that a person has created a profile
-
-[x] Can view class checkins per student
-
-[x] New student form also checks the student into the class for the day- or maybe add that as an option?-- this is actually what the class selector is for, should just add payment type info ot that
-
-[x] Clean up nav bar - I've made some adjustments in the last few updates, and I'm satisfied with the nav bar for now
-
-### Auth
-
-[x] Current user signs actions with uuid
-
-[x] Current user better displayed-- like in the nav bar
-I mean, it's displayed on the home page...
-
-[x] Sign out button-- be careful because unless you auth, you can't write to the test DB -- see nav dropdown
 
 
 ### UI flow
 
-[ ] Flow oriented towards the student signing themselves in, with the admin checking and receiving payment
+#### Flow oriented towards the student signing themselves in, with the admin checking and receiving payment
 
-[ ] A "Thanks, you've filled out the form!" page
+[x] New student form redirects to dance checkin (returning student form)
 
-[ ] Form validation
+[x] Dance checkin, when redirected by new student form, should show student data
 
-[x] Error handling
+[ ] Dance checkin redirects to a page saying how much the student should pay and asking for confirmation from admin
+
+[ ] Admin confirms, hits submit, and then the dance checkin is submitted— this should probably be one big full-screen modal
+
+[ ] Home page should be directions for students and dancers-- new student, class checkin, dance checkin, all flows confirmed by admin at end
+
+
+#### Other
+
+[ ] Form validation, especially for new student form— everything should check for name and email, new student form should check for waiver
+
+[ ] Code of conduct and waiver should be in app and need to be signed— need to be included in the app
+
+[ ] Remove "additional info" where possible, or maybe move it to the admin confirm page
+
+
+### Style
+
+[ ] Logo for nav
 
 
 ### Data organization
