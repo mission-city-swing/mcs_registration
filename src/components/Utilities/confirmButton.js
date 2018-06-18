@@ -1,13 +1,11 @@
 // @flow
 // src/components/Utilities/confirmButton.js
 import React from 'react';
-import { Button, ButtonGroup, Popover, PopoverHeader, PopoverBody } from 'reactstrap';
+import { Button, ButtonGroup, Popover, PopoverHeader, PopoverBody, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, Input } from 'reactstrap';
 
-class ConfirmButton extends React.Component {
+class ConfirmButtonPopover extends React.Component {
   constructor(props) {
     super(props);
-
-    console.log(props)
     this.toggle = this.toggle.bind(this);
     this.yes = this.yes.bind(this);
     this.no = this.no.bind(this);
@@ -17,15 +15,12 @@ class ConfirmButton extends React.Component {
   }
 
   toggle() {
-    console.log(this.state)
     this.setState({
       popoverOpen: !this.state.popoverOpen
     });
   }
 
   yes() {
-    console.log('yes');
-    console.log(this.props);
     this.props.afterConfirm();
     this.setState({
       popoverOpen: !this.state.popoverOpen
@@ -33,7 +28,6 @@ class ConfirmButton extends React.Component {
   }
 
   no() {
-    console.log('no');
     this.setState({
       popoverOpen: !this.state.popoverOpen
     });
@@ -62,4 +56,66 @@ class ConfirmButton extends React.Component {
   }
 }
 
-export default ConfirmButton;
+class AdminConfirmButtonModal extends React.Component {
+  constructor(props) {
+    super(props);
+    this.toggle = this.toggle.bind(this);
+    this.confirm = this.confirm.bind(this);
+    this.onInfoChange = this.onInfoChange.bind(this);
+    this.state = {
+      modalOpen: false,
+      modalData: this.props.modalData
+    };
+  }
+
+  toggle() {
+    this.setState({
+      modalOpen: !this.state.modalOpen
+    });
+  }
+
+  confirm() {
+    this.props.afterConfirm({info: this.state.modalData.info});
+    this.setState({
+      modalOpen: !this.state.modalOpen
+    });
+  }
+
+  onInfoChange(event: any) {
+    const { target: { name, value } } = event;
+    var newData = {...this.state.modalData}
+    newData.info = value;
+    this.setState({modalData: newData})
+  }
+
+  render() {
+    return (
+      <span>
+        <Button {...this.props.buttonOptions} onClick={this.toggle}>
+          {this.props.children}
+        </Button>
+        <Modal {...this.props.modalOptions} isOpen={this.state.modalOpen} toggle={this.toggle}>
+          <ModalHeader toggle={this.toggle}>{this.props.modalHeader}</ModalHeader>
+          <ModalBody>
+            <div>{this.props.modalBody}</div>
+            <br></br>
+            <div>
+              <pre>{JSON.stringify(this.props.modalData, null, '\t')}</pre>
+            </div>
+            <div>
+              <FormGroup>
+                <Label for="info">Additional Info</Label><Input type="textarea" placeholder="New dancer? Guest?" onChange={this.onInfoChange} value={this.state.modalData.info} name="info" />
+              </FormGroup>
+            </div>
+          </ModalBody>
+          <ModalFooter>
+            <span>Admin Only</span>
+            <Button color="danger" outline onClick={this.confirm}>Confirm?</Button>
+          </ModalFooter>
+        </Modal>
+      </span>
+    );
+  }
+}
+
+export { ConfirmButtonPopover, AdminConfirmButtonModal };

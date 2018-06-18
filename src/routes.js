@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Route } from 'react-router-dom'
+import { Switch, Route, Redirect } from 'react-router-dom'
 import Home from './components/Home';
 import SignInUserForm from './components/Users';
 import NewUserForm from './components/Users/new.js';
@@ -21,6 +21,7 @@ const Routes = (props) => (
     <Route path="/dance" component={Dance} />
     <Route path="/dance-checkin" component={DanceCheckinPage} />
     <Route path="/student" component={StudentPage} />
+    <Redirect to="/" />
   </Switch>
 );
 

@@ -30,6 +30,7 @@ export type DanceCheckin = {
   firstName: string,
   lastName: string,
   email: string,
+  student: boolean,
   info: string,
   author: string
 };
@@ -39,6 +40,7 @@ export type ClassCheckin = {
   firstName: string,
   lastName: string,
   email: string,
+  student: boolean,
   info: string,
   author: string
 };

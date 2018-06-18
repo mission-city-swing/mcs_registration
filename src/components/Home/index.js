@@ -35,7 +35,7 @@ class Home extends Component {
                 <Card className="card-body text-center">
                   <CardTitle>Returning Student Checkin</CardTitle>
                   <CardText>Check in  a returing student.</CardText>
-                  <Link to="/returning"><Button size="lg">Returning Student</Button></Link>
+                  <Link to="/class-checkin"><Button size="lg">Returning Student</Button></Link>
                 </Card>
               </Col>
               <Col>
