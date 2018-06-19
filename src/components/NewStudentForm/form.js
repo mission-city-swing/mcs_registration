@@ -174,7 +174,7 @@ class StudentInfoForm extends PureComponent<Props, State> {
           <FormGroup check>
             <Label check>
               <Input onChange={this.onChange} name="student" type="checkbox" checked={this.state.student} />
-              Full time student, must show valid student ID
+              <strong>Full time student, must show valid student ID</strong>
             </Label>
           </FormGroup>
           <br></br>
@@ -277,7 +277,7 @@ class StudentInfoForm extends PureComponent<Props, State> {
           <FormGroup check>
             <Label check>
               <Input onChange={this.onChange} name="emailOptIn" type="checkbox" checked={this.state.emailOptIn} />
-              I would like to receive email from Mission City Swing
+              <strong>I would like to receive email from Mission City Swing</strong>
             </Label>
           </FormGroup>
           <br></br>
@@ -288,7 +288,7 @@ class StudentInfoForm extends PureComponent<Props, State> {
           <FormGroup check>
             <Label check>
               <Input onChange={this.onChange} name="waiverAgree" type="checkbox" checked={this.state.waiverAgree} />
-              Waiver: I realize that partner dancing is a full-contact sport, and I promise not to sue Mission City Swing if I happen to get hurt. <a href="#">Read full text here (but not yet)</a>
+              <strong>Waiver: I realize that partner dancing is a full-contact sport, and I promise not to sue Mission City Swing if I happen to get hurt. <a href="#">Read full text here (but not yet)</a></strong>
             </Label>
           </FormGroup>
           <br></br>

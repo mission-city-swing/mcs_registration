@@ -14,7 +14,6 @@ type Props = {};
 
 class DanceCheckinForm extends PureComponent<Props, State> {
   defaultCheckin = {
-    date: new Date(),
     firstName: "",
     lastName: "",
     email: "",
@@ -24,6 +23,7 @@ class DanceCheckinForm extends PureComponent<Props, State> {
   }
 
   state: State = {
+    date: new Date(),
     checkin: {...this.defaultCheckin},
     profileList: {},
     success: "",
@@ -63,7 +63,11 @@ class DanceCheckinForm extends PureComponent<Props, State> {
       if (this.state.profileList[value]) {
         newStateCheckin = Object.assign(newStateCheckin, this.state.profileList[value]);
       } else {
-        newStateCheckin = Object.assign({...this.defaultCheckin}, {email: value});
+        // if the email isn't recognized, update the hidden "info" field to be the default
+        newStateCheckin = Object.assign(newStateCheckin, {
+          email: value,
+          info: this.defaultCheckin.info
+        });
       }
     } else {
       newStateCheckin[name] = value;
@@ -83,9 +87,7 @@ class DanceCheckinForm extends PureComponent<Props, State> {
   };
 
   onCheckinDateChange = (value) => {
-    var newStateCheckin = {...this.state.checkin};
-    newStateCheckin.date = value;
-    this.setState({checkin: newStateCheckin});
+    this.setState({date: value});
   };
 
   clearForm() {
@@ -112,7 +114,7 @@ class DanceCheckinForm extends PureComponent<Props, State> {
     }
 
     try {
-      addNewDanceCheckin({...this.state.checkin}).then(function(){
+      addNewDanceCheckin(Object.assign({...this.state.checkin}, options)).then(function(){
         onSuccess();
       }).catch(function(error){
         onError(error.toString());
@@ -133,7 +135,7 @@ class DanceCheckinForm extends PureComponent<Props, State> {
             <DateTimePicker 
               time={false}
               format={'dddd, MMMM Do YYYY'}
-              value={this.state.checkin.date}
+              value={this.state.date}
               name="date"
               onChange={this.onCheckinDateChange}
             />
@@ -161,7 +163,7 @@ class DanceCheckinForm extends PureComponent<Props, State> {
           <FormGroup check>
             <Label check>
               <Input onChange={this.onCheckinChange} name="student" type="checkbox" checked={this.state.checkin.student} />
-              Full time student, must show valid student ID
+              <strong>Full time student, must show valid student ID</strong>
             </Label>
           </FormGroup>
           <br></br>
@@ -174,7 +176,7 @@ class DanceCheckinForm extends PureComponent<Props, State> {
           <br></br>
           {this.state.checkin.email.length > 0 &&
             <div>
-              <AdminConfirmButtonModal buttonOptions={{color: "primary"}} afterConfirm={this.onSubmit} modalHeader="Confirm" modalBody="Please hand the tablet to the desk attendant for confirmation and payment. Thank you!" modalData={this.state.checkin}>Submit</AdminConfirmButtonModal>
+              <AdminConfirmButtonModal buttonOptions={{color: "primary"}} afterConfirm={this.onSubmit} modalHeader="Confirm" modalBody="Please hand the tablet to the desk attendant for confirmation and payment. Thank you!" modalData={Object.assign({date: this.state.date}, this.state.checkin)}>Submit</AdminConfirmButtonModal>
               <span className="mr-1"></span>
               <Button outline value="clear" onClick={this.clearFormEvent}>Clear Form</Button>
             </div>

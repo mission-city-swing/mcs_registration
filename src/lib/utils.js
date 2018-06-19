@@ -10,13 +10,24 @@ function getSubstringIndex(list, subStr) {
   return(-1);
 };
 
-
 function MiscException(message, name = "MiscException") {
 	return {
     message: message,
     toString: function() { return name + ": " + message },
     name: name
 	}
-}
+};
 
-export { getSubstringIndex, MiscException }
+function sortByDate(a, b) {
+  // most recent checkins first
+  var [dateA, dateB] = [Date.parse(a.date), Date.parse(b.date)]
+  if (dateA > dateB) {
+    return -1
+  } else if (dateA < dateB) {
+    return 1
+  } else if (dateA === dateB) {
+    return 0
+  }
+};
+
+export { getSubstringIndex, MiscException, sortByDate }
