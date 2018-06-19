@@ -21,14 +21,11 @@ class StudentPage extends PureComponent<Props, State> {
   };
 
   componentDidMount() {
-    console.log(this.props);
     if (this.props.location) {
-      var parsedSearch = queryString.parse(this.props.location.search);
       if (this.props.location.search) {
-        var studentEmail = parsedSearch["email"];
-        console.log(studentEmail);
+        var parsedSearch = queryString.parse(this.props.location.search);
         this.setState({
-          selected: studentEmail
+          selected: parsedSearch["email"]
         });
       }
     }

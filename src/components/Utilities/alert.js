@@ -16,9 +16,10 @@ class McsAlert extends React.Component {
 
   componentDidUpdate() {
     if (this.state.visible && this.props.text.length > 0) {
+      // Scroll up to the alert
       var alertRect = document.getElementById(this.state.elementId).getBoundingClientRect()
       window.scrollTo({
-        top: Math.abs(alertRect.top),
+        top: window.scrollY + alertRect.top - 50,
         behavior: "smooth"
       });
     }

@@ -6,8 +6,10 @@ import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import queryString from 'query-string';
 import type { Profile } from "../../types.js";
 import { createOrUpdateProfile, getProfileByEmail } from "../../lib/api.js";
-import McsAlert from "../Utilities/alert.js"
-import { ConfirmButtonPopover } from "../Utilities/confirmButton.js"
+import McsAlert from "../Utilities/alert.js";
+import { ConfirmButtonPopover } from "../Utilities/confirmButton.js";
+import { CodeOfConductModalLink } from "../Utilities/conductModal.js";
+import { LiabilityWaiverModalLink } from "../Utilities/waiverModal.js";
 
 
 type State = Profile;
@@ -29,6 +31,7 @@ class StudentInfoForm extends PureComponent<Props, State> {
     student: false,
     emailOptIn: true,
     waiverAgree: false,
+    conductAgree: false
   };
 
   state: State = Object.assign({...this.defaultFields}, {
@@ -105,19 +108,23 @@ class StudentInfoForm extends PureComponent<Props, State> {
     });
   };
 
+  confirmCoc(options) {
+    this.setState({
+      conductAgree: options.agree
+    })
+  }
+
   onSubmit = (event: any) => {
     if (event) {
       event.preventDefault();
     }
     // Validate form
     var onSuccess = () => {
-      var successText = "Added profile for " + this.state.email
-      console.log("Success! " + successText);
+      var successText = "Updated profile for " + this.state.email
       this.setState({success: successText});
       this.addActionsOnSubmit({email: this.state.email});
     }
     var onError = (errorText) => {
-      console.log("Error! " + errorText);
       this.setState({error: errorText});
     }
 
@@ -130,11 +137,9 @@ class StudentInfoForm extends PureComponent<Props, State> {
       createOrUpdateProfile(toSubmit).then(function(success) {
         onSuccess();
       }).catch(function(error) {
-        console.log(error)
         onError(error.toString());
       })
     } catch(error) {
-      console.log(error)
       onError(error.toString());
     }
   };
@@ -146,6 +151,7 @@ class StudentInfoForm extends PureComponent<Props, State> {
         <McsAlert color="success" text={this.state.success} visible={this.state.success.length > 0} onToggle={this.toggleAlerts.bind(this)}></McsAlert>
         <McsAlert color="danger" text={this.state.error} visible={this.state.error.length > 0} onToggle={this.toggleAlerts.bind(this)}></McsAlert>
         <Form onSubmit={this.onSubmit}>
+          <h5>Basic Info</h5>
           <FormGroup>
             <Label for="firstName">First Name</Label><Input placeholder="First Name" value={this.state.firstName} onChange={this.onChange} name="firstName" />
           </FormGroup>
@@ -262,6 +268,7 @@ class StudentInfoForm extends PureComponent<Props, State> {
             </FormGroup>
           </FormGroup>
           <br></br>
+          <h5>Email Preferences</h5>
           <FormGroup check>
             <Label check>
               <Input onChange={this.onChange} name="emailOptIn" type="checkbox" checked={this.state.emailOptIn} />
@@ -269,14 +276,24 @@ class StudentInfoForm extends PureComponent<Props, State> {
             </Label>
           </FormGroup>
           <br></br>
+          <h5>Legal Stuff</h5>
           <FormGroup check>
             <Label check>
-              <Input onChange={this.onChange} name="waiverAgree" type="checkbox" checked={this.state.waiverAgree} />
-              <strong>Waiver: I realize that partner dancing is a full-contact sport, and I promise not to sue Mission City Swing if I happen to get hurt. <a href="#">Read full text here (but not yet)</a></strong>
+              <Input name="waiverAgree" type="checkbox" checked={this.state.waiverAgree} />
+              <LiabilityWaiverModalLink afterConfirm={(args) => {this.setState({waiverAgree: args.agree})}}>
+                <strong>I agree to the Mission City Swing Liability Waiver</strong>
+              </LiabilityWaiverModalLink>
             </Label>
           </FormGroup>
           <br></br>
-          <ConfirmButtonPopover buttonOptions={{color: "primary"}} popoverOptions={{placement: "top"}} afterConfirm={this.onSubmit} popoverHeader="Confirm" popoverBody="Did you agree to the waiver?">Submit</ConfirmButtonPopover>
+          <FormGroup check>
+            <Label check>
+              <Input name="conductAgree" type="checkbox" checked={this.state.conductAgree} />
+              <strong><CodeOfConductModalLink afterConfirm={(args) => {this.setState({conductAgree: args.agree})}}>I agree to the Mission City Swing Code of Conduct</CodeOfConductModalLink></strong>
+            </Label>
+          </FormGroup>
+          <br></br>
+          <ConfirmButtonPopover buttonOptions={{color: "primary"}} popoverOptions={{placement: "top"}} afterConfirm={this.onSubmit} popoverHeader="Confirm Your Information" popoverBody="Please confirm that your name and email are correct and that you have signed our liability waiver and code of conduct.">Submit</ConfirmButtonPopover>
           <span className="mr-1"></span>
           <Button value="clear" onClick={this.clearFormEvent}>Clear Form</Button>
         </Form>

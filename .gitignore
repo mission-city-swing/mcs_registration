@@ -6,3 +6,7 @@ build/*
 # external packages
 node_modules/
 node_modules/*
+# non-project files
+*.DS_Store
+*.sublime-project
+*.sublime-workspace

@@ -1,14 +1,13 @@
 // @flow
 // src/components/Utilities/confirmButton.js
 import React from 'react';
-import { Button, ButtonGroup, Popover, PopoverHeader, PopoverBody } from 'reactstrap';
+import { Button, Popover, PopoverHeader, PopoverBody } from 'reactstrap';
 
 class ConfirmButtonPopover extends React.Component {
   constructor(props) {
     super(props);
     this.toggle = this.toggle.bind(this);
     this.yes = this.yes.bind(this);
-    this.no = this.no.bind(this);
     this.state = {
       popoverOpen: false
     };
@@ -27,12 +26,6 @@ class ConfirmButtonPopover extends React.Component {
     });
   }
 
-  no() {
-    this.setState({
-      popoverOpen: !this.state.popoverOpen
-    });
-  }
-
   render() {
     return (
       <span>
@@ -44,10 +37,7 @@ class ConfirmButtonPopover extends React.Component {
           <PopoverBody>
             <p>{this.props.popoverBody}</p>
             <div>
-              <ButtonGroup>
-                <Button color="success" onClick={this.yes}>Yes</Button>
-                <Button color="danger" onClick={this.no}>No</Button>
-              </ButtonGroup>
+              <Button color="success" onClick={this.yes}>Confirm</Button>
             </div>
           </PopoverBody>
         </Popover>

@@ -9,6 +9,9 @@ import { addNewClassCheckin, getProfiles, getProfileByEmail } from "../../lib/ap
 import { getSubstringIndex } from "../../lib/utils.js";
 import McsAlert from "../Utilities/alert.js";
 import { AdminConfirmButtonModal } from "../Utilities/confirmCheckinModal.js";
+import { CodeOfConductModalLink } from "../Utilities/conductModal.js";
+import { LiabilityWaiverModalLink } from "../Utilities/waiverModal.js";
+
 
 type State = ClassCheckin;
 
@@ -23,6 +26,7 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     info: "New Dancer",
     student: false,
     waiverAgree: false,
+    conductAgree: false,
     completedFundamentals: false,
     classes: []
   }
@@ -169,11 +173,22 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     });
   };
 
+  afterWaiverConfirm(args) {
+    var newStateCheckin = {...this.state.checkin};
+    newStateCheckin.waiverAgree = args.agree;
+    this.setState({checkin: newStateCheckin});
+  }
+
+  afterConductConfirm(args) {
+    var newStateCheckin = {...this.state.checkin};
+    newStateCheckin.conductAgree = args.agree;
+    this.setState({checkin: newStateCheckin});
+  }
+
   onSubmit = (options) => {
     // Error handling
     var onSuccess = () => {
       var successText = "Added class checkin for " + this.state.checkin.email
-      console.log("Success! " + successText);
       this.setState({
         success: successText,
         error: ""
@@ -181,7 +196,6 @@ class ReturningStudentForm extends PureComponent<Props, State> {
       this.addActionsOnSubmit({success: successText});
     }
     var onError = (errorText) => {
-      console.log("Error! " + errorText);
       this.setState({error: errorText});
       window.scrollTo(0, 0);
     }
@@ -190,11 +204,9 @@ class ReturningStudentForm extends PureComponent<Props, State> {
       addNewClassCheckin(Object.assign({...this.state.checkin}, options)).then(function(success) {
         onSuccess();
       }).catch(function(error) {
-        console.log(error);
         onError(error.toString());
       });
     } catch(error) {
-      console.log(error);
       onError(error.toString());
     }
   };
@@ -247,8 +259,17 @@ class ReturningStudentForm extends PureComponent<Props, State> {
           <br></br>
           <FormGroup check>
             <Label check>
-              <Input onChange={this.onCheckinChange} name="waiverAgree" type="checkbox" checked={this.state.checkin.waiverAgree} />
-              Waiver: I realize that partner dancing is a full-contact sport, and I promise not to sue Mission City Swing if I happen to get hurt. <a href="#">Read full text here (but not yet)</a>
+              <Input name="waiverAgree" type="checkbox" checked={this.state.checkin.waiverAgree} />
+              <LiabilityWaiverModalLink afterConfirm={this.afterWaiverConfirm.bind(this)}>
+                <strong>I agree to the Mission City Swing Liability Waiver</strong>
+              </LiabilityWaiverModalLink>
+            </Label>
+          </FormGroup>
+          <br></br>
+          <FormGroup check>
+            <Label check>
+              <Input name="conductAgree" type="checkbox" checked={this.state.checkin.conductAgree} />
+              <strong><CodeOfConductModalLink afterConfirm={this.afterConductConfirm.bind(this)}>I agree to the Mission City Swing Code of Conduct</CodeOfConductModalLink></strong>
             </Label>
           </FormGroup>
           <br></br>

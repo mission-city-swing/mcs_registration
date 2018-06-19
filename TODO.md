@@ -2,7 +2,7 @@
 
 ### Known bugs
 
-[ ] Clear warning "Links must not point to '#'. Use a more descriptive href or use a button instead"
+[x] Clear warning "Links must not point to '#'. Use a more descriptive href or use a button instead"
 
 [x] After alert widget is closed, it doesn't reopen until the page is refreshed
 
@@ -21,7 +21,9 @@
 
 [x] Form validation, especially for new student form— everything should check for name and email, new student form should check for waiver
 
-[ ] Code of conduct and waiver should be in app and need to be signed — need to be included in the app - blocked waiting for wavier and Code of Conduct text
+[ ] Code of conduct and waiver should be in app and need to be signed — need to be included in the app
+	* [x] Code of conduct
+	* [ ] Waiver - the modal is up, but we're blocked waiting for waiver text
 
 [x] Remove "additional info" where possible, or maybe move it to the admin confirm page
 

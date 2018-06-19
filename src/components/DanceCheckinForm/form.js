@@ -6,6 +6,9 @@ import { DateTimePicker } from 'react-widgets';
 import { addNewDanceCheckin, getProfiles } from "../../lib/api.js";
 import McsAlert from "../Utilities/alert.js";
 import { AdminConfirmButtonModal } from "../Utilities/confirmCheckinModal.js";
+import { CodeOfConductModalLink } from "../Utilities/conductModal.js";
+import { LiabilityWaiverModalLink } from "../Utilities/waiverModal.js";
+
 
 
 type State = {};
@@ -19,7 +22,8 @@ class DanceCheckinForm extends PureComponent<Props, State> {
     email: "",
     info: "New Dancer",
     student: false,
-    waiverAgree: false
+    waiverAgree: false,
+    conductAgree: false
   }
 
   state: State = {
@@ -101,22 +105,31 @@ class DanceCheckinForm extends PureComponent<Props, State> {
   };
 
   toggleAlerts(event: any) {
-    console.log(event)
     this.setState({
       success: "",
       error: ""
     });
   };
 
+  afterWaiverConfirm(args) {
+    var newStateCheckin = {...this.state.checkin};
+    newStateCheckin.waiverAgree = args.agree;
+    this.setState({checkin: newStateCheckin});
+  }
+
+  afterConductConfirm(args) {
+    var newStateCheckin = {...this.state.checkin};
+    newStateCheckin.conductAgree = args.agree;
+    this.setState({checkin: newStateCheckin});
+  }
+
   onSubmit = (options) => {
     var onSuccess = () => {
       var successText = "Added dance checkin for " + this.state.checkin.email
-      console.log("Success! " + successText);
       this.setState({success: successText});
       this.addActionsOnSubmit({success: successText});
     }
     var onError = (errorText) => {
-      console.log("Error! " + errorText);
       this.setState({error: errorText});
       window.scrollTo(0, 0);
     }
@@ -177,8 +190,17 @@ class DanceCheckinForm extends PureComponent<Props, State> {
           <br></br>
           <FormGroup check>
             <Label check>
-              <Input onChange={this.onCheckinChange} name="waiverAgree" type="checkbox" checked={this.state.checkin.waiverAgree} />
-              Waiver: I realize that partner dancing is a full-contact sport, and I promise not to sue Mission City Swing if I happen to get hurt. <a href="#">Read full text here (but not yet)</a>
+              <Input name="waiverAgree" type="checkbox" checked={this.state.checkin.waiverAgree} />
+              <LiabilityWaiverModalLink afterConfirm={this.afterWaiverConfirm.bind(this)}>
+                <strong>I agree to the Mission City Swing Liability Waiver</strong>
+              </LiabilityWaiverModalLink>
+            </Label>
+          </FormGroup>
+          <br></br>
+          <FormGroup check>
+            <Label check>
+              <Input name="conductAgree" type="checkbox" checked={this.state.checkin.conductAgree} />
+              <strong><CodeOfConductModalLink afterConfirm={this.afterConductConfirm.bind(this)}>I agree to the Mission City Swing Code of Conduct</CodeOfConductModalLink></strong>
             </Label>
           </FormGroup>
           <br></br>
