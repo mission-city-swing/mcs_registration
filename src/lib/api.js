@@ -1,5 +1,5 @@
 // @flow
-import type { Profile, Dance, User } from "../types.js";
+import type { Profile, Dance, User, ClassCheckin, DanceCheckin, ProfileAdminInfo } from "../types.js";
 import uuidv3 from "uuid/v3";
 import Cookies from 'universal-cookie';
 // I don't know if I need this
@@ -46,6 +46,22 @@ export const createOrUpdateProfile = (options: Profile) => {
 };
 
 export const getProfiles = fireDB.database().ref("profiles/").orderByChild('lastName');
+
+// Admin Info API
+export const createOrUpdateProfileAdminInfo = (options: ProfileAdminInfo) => {
+  var currentUser = getCurrentUser();
+  if (currentUser.uuid == null) {
+    throw MiscException("Admin must log in to authorize this event", "AuthException")
+  }
+  options.author = currentUser.uuid;
+  if (!options.email) {
+    throw MiscException("Must include profile email", "FormException")
+  }
+  const profileId = uuidv3(options.email, MCS_APP);
+  // Don't want to add email to profile twice
+  delete options.email;
+  return fireDB.database().ref("profiles/" + profileId + "/adminInfo").set(options);
+};
 
 // Dance API
 export const getDances = fireDB.database().ref("dances/").orderByChild('date');

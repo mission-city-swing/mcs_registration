@@ -23,6 +23,7 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     info: "New Dancer",
     student: false,
     waiverAgree: false,
+    completedFundamentals: false,
     classes: []
   }
 
@@ -47,6 +48,7 @@ class ReturningStudentForm extends PureComponent<Props, State> {
         Object.keys(defaultCheckin).forEach(function(key2){
           profiles[thisProfile.email][key2] = thisProfile[key2] ? thisProfile[key2] : profiles[thisProfile.email][key2]
         });
+        profiles[thisProfile.email].completedFundamentals = (thisProfile.adminInfo ? thisProfile.adminInfo : {}).completedFundamentals ? true : false
         profiles[thisProfile.email].info = "";
       });
       this.setState({profileList: profiles});
@@ -74,6 +76,7 @@ class ReturningStudentForm extends PureComponent<Props, State> {
               Object.keys(newStateCheckin).forEach(function(key){
                 newStateCheckin[key] = student[key] ? student[key] : newStateCheckin[key]
               });
+              newStateCheckin.completedFundamentals = (student.adminInfo ? student.adminInfo : {}).completedFundamentals ? true : false
               // Make sure to note if they're a new dancer
               newStateCheckin.info = parsedSearch["new-dancer"] ? "New Dancer" : "";
               this.setState({checkin: newStateCheckin});
@@ -93,9 +96,10 @@ class ReturningStudentForm extends PureComponent<Props, State> {
       if (this.state.profileList[value]) {
         newStateCheckin = Object.assign(newStateCheckin, this.state.profileList[value]);
       } else {
-        // if the email isn't recognized, update the hidden "info" field to be the default
+        // if the email isn't recognized, update the hidden fields to be the default
         newStateCheckin = Object.assign(newStateCheckin, {
           email: value,
+          completedFundamentals: this.defaultCheckin.completedFundamentals,
           info: this.defaultCheckin.info
         });
       }
@@ -157,6 +161,14 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     this.clearForm();
   };
 
+  toggleAlerts(event: any) {
+    console.log(event)
+    this.setState({
+      success: "",
+      error: ""
+    });
+  };
+
   onSubmit = (options) => {
     // Error handling
     var onSuccess = () => {
@@ -191,8 +203,8 @@ class ReturningStudentForm extends PureComponent<Props, State> {
 
     return (
       <div>
-        <McsAlert color="success" text={this.state.success} visible={this.state.success.length > 0}></McsAlert>
-        <McsAlert color="danger" text={this.state.error} visible={this.state.error.length > 0}></McsAlert>
+        <McsAlert color="success" text={this.state.success} visible={this.state.success.length > 0} onToggle={this.toggleAlerts.bind(this)}></McsAlert>
+        <McsAlert color="danger" text={this.state.error} visible={this.state.error.length > 0} onToggle={this.toggleAlerts.bind(this)}></McsAlert>
         <Form onSubmit={this.onSubmit}>
           <FormGroup>
             <Label for="date">Dance Date</Label>
@@ -214,6 +226,9 @@ class ReturningStudentForm extends PureComponent<Props, State> {
               })}
             </select>
           </FormGroup>
+          {this.state.checkin.completedFundamentals && 
+            <p><strong>{this.state.checkin.firstName} {this.state.checkin.lastName} has completed the MCS fundamentals course.</strong></p>
+          }
           <FormGroup>
             <Label for="firstName">First Name</Label><Input placeholder="First Name" value={this.state.checkin.firstName} onChange={this.onCheckinChange} name="firstName" />
           </FormGroup>

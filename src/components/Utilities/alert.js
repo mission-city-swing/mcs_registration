@@ -8,20 +8,25 @@ class McsAlert extends React.Component {
     super(props);
 
     this.state = {
-      text: "",
-      visible: true
+      visible: true, 
+      elementId: "alert-" + this.props.color + "-" + this.props.text.length,
+      onToggle: this.props.onToggle ? this.props.onToggle : () => { this.setState({visible: !this.state.visible}) }
     };
-
-    this.onDismiss = this.onDismiss.bind(this);
   }
 
-  onDismiss() {
-    this.setState({ visible: false });
+  componentDidUpdate() {
+    if (this.state.visible && this.props.text.length > 0) {
+      var alertRect = document.getElementById(this.state.elementId).getBoundingClientRect()
+      window.scrollTo({
+        top: Math.abs(alertRect.top),
+        behavior: "smooth"
+      });
+    }
   }
 
   render() {
     return (
-      <Alert color={this.props.color} isOpen={this.state.visible && this.props.text.length > 0} toggle={this.onDismiss}>
+      <Alert id={this.state.elementId} color={this.props.color} isOpen={this.state.visible && this.props.text.length > 0} toggle={this.state.onToggle}>
         {this.props.text}
       </Alert>
     );
