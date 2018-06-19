@@ -15,7 +15,8 @@ type State = Profile;
 type Props = {};
 
 class StudentInfoForm extends PureComponent<Props, State> {
-  state: State = {
+
+  defaultFields = {
     firstName: "",
     lastName: "",
     email: "",
@@ -28,20 +29,22 @@ class StudentInfoForm extends PureComponent<Props, State> {
     student: false,
     emailOptIn: true,
     waiverAgree: false,
-    info: "",
-    success: "",
-    error: ""
   };
 
-  componentDidMount() {
-    this.getStudentFromQuery();
+  state: State = Object.assign({...this.defaultFields}, {
+    success: "",
+    error: ""
+  });
 
+  componentDidMount() {
+    // When updating student info, we use the same form
+    this.getStudentFromQuery();
+    // Set function for additional actions on submit, like a redirect
     if (this.props.addActionsOnSubmit) {
       this.addActionsOnSubmit = this.props.addActionsOnSubmit
     } else {
       this.addActionsOnSubmit = () => {}
     }
-
   };
 
 
@@ -91,20 +94,14 @@ class StudentInfoForm extends PureComponent<Props, State> {
   };
 
   clearForm() {
+    this.setState({...this.defaultFields});
+  };
+
+  toggleAlerts(event: any) {
+    console.log(event)
     this.setState({
-      firstName: "",
-      lastName: "",
-      email: "",
-      phoneNumber: "",
-      discoveryMethod: "",
-      discoveryMethodFriend: "",
-      discoveryMethodOther: "",
-      otherDances: [],
-      otherDancesOther: "",
-      student: false,
-      emailOptIn: true,
-      waiverAgree: false,
-      info: ""
+      success: "",
+      error: ""
     });
   };
 
@@ -122,24 +119,15 @@ class StudentInfoForm extends PureComponent<Props, State> {
     var onError = (errorText) => {
       console.log("Error! " + errorText);
       this.setState({error: errorText});
-      window.scrollTo(0, 0);
     }
+
     try {
-      createOrUpdateProfile({
-        firstName: this.state.firstName,
-        lastName: this.state.lastName,
-        email: this.state.email,
-        phoneNumber: this.state.phoneNumber,
-        discoveryMethod: this.state.discoveryMethod,
-        discoveryMethodFriend: this.state.discoveryMethodFriend,
-        discoveryMethodOther: this.state.discoveryMethodOther,
-        otherDances: this.state.otherDances,
-        otherDancesOther: this.state.otherDancesOther,
-        student: this.state.student,
-        info: this.state.info,
-        emailOptIn: this.state.emailOptIn,
-        waiverAgree: this.state.waiverAgree
-      }).then(function(success) {
+      var toSubmit = {};
+      var newState = {...this.state};
+      Object.keys(this.defaultFields).map(function(key) {
+        return toSubmit[key] = newState[key];
+      })
+      createOrUpdateProfile(toSubmit).then(function(success) {
         onSuccess();
       }).catch(function(error) {
         console.log(error)
@@ -155,8 +143,8 @@ class StudentInfoForm extends PureComponent<Props, State> {
 
     return (
       <div>
-        <McsAlert color="success" text={this.state.success} visible={this.state.success.length > 0}></McsAlert>
-        <McsAlert color="danger" text={this.state.error} visible={this.state.error.length > 0}></McsAlert>
+        <McsAlert color="success" text={this.state.success} visible={this.state.success.length > 0} onToggle={this.toggleAlerts.bind(this)}></McsAlert>
+        <McsAlert color="danger" text={this.state.error} visible={this.state.error.length > 0} onToggle={this.toggleAlerts.bind(this)}></McsAlert>
         <Form onSubmit={this.onSubmit}>
           <FormGroup>
             <Label for="firstName">First Name</Label><Input placeholder="First Name" value={this.state.firstName} onChange={this.onChange} name="firstName" />
@@ -179,7 +167,7 @@ class StudentInfoForm extends PureComponent<Props, State> {
           </FormGroup>
           <br></br>
           <FormGroup tag="fieldset">
-            <legend>How did you hear about us?</legend>
+            <legend className="h5">How did you hear about us?</legend>
             <FormGroup check>
               <Label check>
                 <Input onChange={this.onChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'friend'} value="friend" /> Friend
@@ -230,7 +218,7 @@ class StudentInfoForm extends PureComponent<Props, State> {
           </FormGroup>
           <br></br>
           <FormGroup tag="fieldset">
-            <legend>Do you already know any of these partner dances? (Select all that apply.)</legend>
+            <legend className="h5">Do you already know any of these partner dances? (Select all that apply.)</legend>
             <FormGroup check>
               <Label check>
                 <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('Lindy hop') !== -1} value="Lindy hop" /> {' '} Lindy hop
@@ -279,10 +267,6 @@ class StudentInfoForm extends PureComponent<Props, State> {
               <Input onChange={this.onChange} name="emailOptIn" type="checkbox" checked={this.state.emailOptIn} />
               <strong>I would like to receive email from Mission City Swing</strong>
             </Label>
-          </FormGroup>
-          <br></br>
-          <FormGroup>
-            <Label for="info">Other Info</Label><Input type="textarea" placeholder="Misc info" onChange={this.onChange} value={this.state.info} name="info" />
           </FormGroup>
           <br></br>
           <FormGroup check>

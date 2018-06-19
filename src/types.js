@@ -17,6 +17,13 @@ export type Profile = {
   author: string
 };
 
+export type ProfileAdminInfo = {
+  email: string,
+  info: string,
+  completedFundamentals: boolean,
+  author: string
+};
+
 export type Dance = {
   date: string,
   title: string,

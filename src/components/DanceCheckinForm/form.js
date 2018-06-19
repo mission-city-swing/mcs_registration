@@ -100,6 +100,14 @@ class DanceCheckinForm extends PureComponent<Props, State> {
     this.clearForm();
   };
 
+  toggleAlerts(event: any) {
+    console.log(event)
+    this.setState({
+      success: "",
+      error: ""
+    });
+  };
+
   onSubmit = (options) => {
     var onSuccess = () => {
       var successText = "Added dance checkin for " + this.state.checkin.email
@@ -127,8 +135,8 @@ class DanceCheckinForm extends PureComponent<Props, State> {
   render() {
     return (
       <div>
-        <McsAlert color="success" text={this.state.success} visible={this.state.success.length > 0}></McsAlert>
-        <McsAlert color="danger" text={this.state.error} visible={this.state.error.length > 0}></McsAlert>
+        <McsAlert color="success" text={this.state.success} visible={this.state.success.length > 0} onToggle={this.toggleAlerts.bind(this)}></McsAlert>
+        <McsAlert color="danger" text={this.state.error} visible={this.state.error.length > 0} onToggle={this.toggleAlerts.bind(this)}></McsAlert>
         <Form onSubmit={this.onSubmit}>
           <FormGroup>
             <Label for="date">Dance Date</Label>

@@ -4,8 +4,9 @@
 import React, { PureComponent } from "react";
 import { Form, FormGroup, } from 'reactstrap';
 import queryString from 'query-string';
-import StudentInfoForm from "../NewStudentForm/form.js"
-import StudentCheckinList from "./checkins.js"
+import StudentInfoForm from "../NewStudentForm/form.js";
+import StudentCheckinList from "./checkins.js";
+import ProfileAdminInfoForm from "./infoForm.js";
 import { getProfiles } from "../../lib/api.js";
 
 type State = {};
@@ -73,6 +74,10 @@ class StudentPage extends PureComponent<Props, State> {
               </select>
             </FormGroup>
           </Form>
+        </div>
+        <br></br>
+        <div>
+          <ProfileAdminInfoForm {...this.props} ></ProfileAdminInfoForm>
         </div>
         <br></br>
         <hr/>
