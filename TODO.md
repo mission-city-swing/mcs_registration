@@ -7,14 +7,13 @@
 [x] After alert widget is closed, it doesn't reopen until the page is refreshed
 
 
+### UI flow
+
 ### Finishing the necessary features
 
-[x] Way to show that a student has passed out of fundamentals - need to have a clear check box - TBH the way I did this isn't great, and I need to think more about how we will use this feature
+[ ] Need to be able to see if a student has paid for a monthly pass for that month, and have they paid for one class or two?
 
-[x] History of classes that the student has attended -- class checkins list on student info
-
-
-### UI flow
+[ ] If the student wants to get a monthly pass, need to distinguish between the beginning of the month when they need to pay and the rest of the month when they've already paid
 
 #### Other
 
