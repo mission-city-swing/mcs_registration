@@ -3,6 +3,7 @@
 import React, { PureComponent } from "react";
 import queryString from 'query-string';
 import { getClassCheckinByEmail, getDanceCheckinByEmail } from "../../lib/api.js";
+import { sortByDate } from '../../lib/utils.js'
 
 type State = {};
 
@@ -10,8 +11,8 @@ type Props = {};
 
 class StudentCheckinList extends PureComponent<Props, State> {
   state: State = {
-    danceCheckinList: {},
-    classCheckinList: {}
+    danceCheckinList: [],
+    classCheckinList: []
   };
 
   getStudentFromQuery = () => {
@@ -27,16 +28,26 @@ class StudentCheckinList extends PureComponent<Props, State> {
 
   getCheckinsFromStudentEmail = (studentEmail) => {
     getClassCheckinByEmail(studentEmail).on("value", (snapshot) => {
-      console.log(snapshot.val())
-      this.setState({
-        classCheckinList: snapshot.val() || {}
-      });
+      var classCheckinList = [];
+      if (snapshot.val()) {
+        var checkinListObj = snapshot.val();
+        Object.keys(checkinListObj).map(function(uid) {
+          return classCheckinList.push(Object.assign({uid: uid}, checkinListObj[uid]))
+        })
+      }
+      classCheckinList.sort(sortByDate)
+      this.setState({classCheckinList: classCheckinList});
     });
     getDanceCheckinByEmail(studentEmail).on("value", (snapshot) => {
-      console.log(snapshot.val())
-      this.setState({
-        danceCheckinList: snapshot.val() || {}
-      });
+      var danceCheckinList = [];
+      if (snapshot.val()) {
+        var checkinListObj = snapshot.val();
+        Object.keys(checkinListObj).map(function(uid) {
+          return danceCheckinList.push(Object.assign({uid: uid}, checkinListObj[uid]))
+        })
+      }
+      danceCheckinList.sort(sortByDate)
+      this.setState({danceCheckinList: danceCheckinList});
     });
   };
 
@@ -49,16 +60,16 @@ class StudentCheckinList extends PureComponent<Props, State> {
     return (
       <div>
         <h5>Class Checkins</h5>
-        {Object.keys(this.state.classCheckinList).map((uid) => {
+        {this.state.classCheckinList.map(function(checkin) {
           return(
-            <div key={uid} value={uid}>Date: {this.state.classCheckinList[uid].date} | Classes: {this.state.classCheckinList[uid].classes.join(', ')}</div>
-          )
+            <div key={checkin.uid} value={checkin.uid}>Date: {checkin.date} | Classes: {checkin.classes.join(', ')} | Info: {checkin.info}</div>
+            )
         })}
         <br></br>
         <h5>Dance Checkins</h5>
         {Object.keys(this.state.danceCheckinList).map((uid) => {
           return(
-            <div key={uid} value={uid}>{this.state.danceCheckinList[uid].date}</div>
+            <div key={uid} value={uid}>Date: {this.state.danceCheckinList[uid].date} | Info: {this.state.danceCheckinList[uid].info}</div>
           )
         })}
       </div>

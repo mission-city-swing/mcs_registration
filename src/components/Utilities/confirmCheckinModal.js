@@ -14,36 +14,29 @@ class AdminConfirmButtonModal extends React.Component {
       modalOpen: false,
       modalData: this.props.modalData
     };
-    console.log('constructor', this.state);
   }
 
   toggle() {
+    if (this.state.modalOpen === false) {
+      this.setState({modalData: this.props.modalData})
+    }
     this.setState({
       modalOpen: !this.state.modalOpen
     });
   }
 
   confirm() {
-    this.props.afterConfirm({info: this.state.modalData.info});
+    this.props.afterConfirm(this.state.modalData);
     this.setState({
       modalOpen: !this.state.modalOpen
     });
   }
 
   onInfoChange(event: any) {
-    const { target: { name, value } } = event;
     var newData = {...this.state.modalData}
-    newData.info = value;
+    newData.info = event.target.value;
     this.setState({modalData: newData})
   }
-
-  componentDidUpdate() {
-    // fixes an issue where the modal info text box wouldn't properly update
-    if (this.state.modalData.info !== this.props.modalData.info) {
-      this.setState({modalData: this.props.modalData});
-    }
-  }
-
 
   render() {
     return (

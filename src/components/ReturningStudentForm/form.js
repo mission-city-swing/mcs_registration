@@ -17,7 +17,6 @@ type Props = {};
 class ReturningStudentForm extends PureComponent<Props, State> {
 
   defaultCheckin = {
-    date: new Date(),
     firstName: "",
     lastName: "",
     email: "",
@@ -28,6 +27,7 @@ class ReturningStudentForm extends PureComponent<Props, State> {
   }
 
   state: State = {
+    date: new Date(),
     checkin: {...this.defaultCheckin},
     profileList: {},
     success: "",
@@ -93,7 +93,11 @@ class ReturningStudentForm extends PureComponent<Props, State> {
       if (this.state.profileList[value]) {
         newStateCheckin = Object.assign(newStateCheckin, this.state.profileList[value]);
       } else {
-        newStateCheckin = Object.assign({...this.defaultCheckin}, {email: value});
+        // if the email isn't recognized, update the hidden "info" field to be the default
+        newStateCheckin = Object.assign(newStateCheckin, {
+          email: value,
+          info: this.defaultCheckin.info
+        });
       }
     } else {
       newStateCheckin[name] = value;
@@ -113,9 +117,7 @@ class ReturningStudentForm extends PureComponent<Props, State> {
   };
 
   onCheckinDateChange = (value) => {
-    var newStateCheckin = {...this.state.checkin};
-    newStateCheckin.date = value;
-    this.setState({checkin: newStateCheckin});
+    this.setState({date: value});
   };
 
   onMultiTypeCheckinChange = (event: any) => {
@@ -156,14 +158,6 @@ class ReturningStudentForm extends PureComponent<Props, State> {
   };
 
   onSubmit = (options) => {
-    // If additional info added by admin
-    if (options.info) {
-      var newCheckin = {...this.state.checkin}
-      newCheckin.info = options.info
-      this.setState({
-        checkin: newCheckin
-      })
-    }
     // Error handling
     var onSuccess = () => {
       var successText = "Added class checkin for " + this.state.checkin.email
@@ -181,7 +175,7 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     }
     // DB request
     try {
-      addNewClassCheckin({...this.state.checkin}).then(function(success) {
+      addNewClassCheckin(Object.assign({...this.state.checkin}, options)).then(function(success) {
         onSuccess();
       }).catch(function(error) {
         console.log(error);
@@ -205,7 +199,7 @@ class ReturningStudentForm extends PureComponent<Props, State> {
             <DateTimePicker 
               time={false}
               format={'dddd, MMMM Do YYYY'}
-              value={this.state.checkin.date}
+              value={this.state.date}
               name="date"
               onChange={this.onCheckinDateChange}
             />
@@ -269,9 +263,9 @@ class ReturningStudentForm extends PureComponent<Props, State> {
           <br></br>
           {this.state.checkin.email.length > 0 &&
             <div>
-            <AdminConfirmButtonModal buttonOptions={{color: "primary"}} afterConfirm={this.onSubmit} modalHeader="Confirm" modalBody="Please hand the tablet to the desk attendant for confirmation and payment. Thank you!" modalData={this.state.checkin}>Submit</AdminConfirmButtonModal>
-            <span className="mr-1"></span>
-            <Button outline value="clear" onClick={this.clearFormEvent}>Clear Form</Button>
+              <AdminConfirmButtonModal buttonOptions={{color: "primary"}} afterConfirm={this.onSubmit} modalHeader="Confirm" modalBody="Please hand the tablet to the desk attendant for confirmation and payment. Thank you!" modalData={Object.assign({date: this.state.date}, this.state.checkin)}>Submit</AdminConfirmButtonModal>
+              <span className="mr-1"></span>
+              <Button outline value="clear" onClick={this.clearFormEvent}>Clear Form</Button>
             </div>
           }
         </Form>

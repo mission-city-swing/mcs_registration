@@ -2,7 +2,15 @@
 
 ### Known bugs
 
-[ ] On dance checkin, at least one user seems to have a date field, which breaks the datepicker because it's stored as a string-- need to pull date info out of checkin state object so that it's not altered accidentally, and then add it when I send the checkin object to the API call
+[x] On dance checkin, at least one user seems to have a date field, which breaks the datepicker because it's stored as a string-- need to pull date info out of checkin state object so that it's not altered accidentally, and then add it when I send the checkin object to the API call
+
+[x] When entering new data for new dancer, bug introduced when updating the email-- clears other fields
+
+[x] Editing additonal info on class and dance checkin is broken
+
+[ ] Clear warning "Links must not point to '#'. Use a more descriptive href or use a button instead"
+
+[x] Dance and class checkins not saving additional info
 
 ### Finishing the necessary features
 
