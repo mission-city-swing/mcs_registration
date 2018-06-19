@@ -16,7 +16,6 @@ class StudentCheckinList extends PureComponent<Props, State> {
   };
 
   getStudentFromQuery = () => {
-    console.log(this.props);
     if (this.props.location) {
       var parsedSearch = queryString.parse(this.props.location.search);
       if (this.props.location.search) {

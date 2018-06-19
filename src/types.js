@@ -14,6 +14,7 @@ export type Profile = {
   student: boolean,
   emailOptIn: boolean,
   waiverAgree: boolean,
+  conductAgree: boolean,
   author: string
 };
 
@@ -40,6 +41,7 @@ export type DanceCheckin = {
   student: boolean,
   info: string,
   waiverAgree: boolean,
+  conductAgree: boolean,
   author: string
 };
 
@@ -51,6 +53,7 @@ export type ClassCheckin = {
   student: boolean,
   info: string,
   waiverAgree: boolean,
+  conductAgree: boolean,
   author: string
 };
 

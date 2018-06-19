@@ -67,7 +67,6 @@ class ProfileAdminInfoForm extends PureComponent<Props, State> {
   };
 
   toggleAlerts(event: any) {
-    console.log(event)
     this.setState({
       success: "",
       error: ""
@@ -81,12 +80,10 @@ class ProfileAdminInfoForm extends PureComponent<Props, State> {
     // Validate form
     var onSuccess = () => {
       var successText = "Updated admin info for " + this.state.email
-      console.log("Success! " + successText);
       this.setState({success: successText});
       // this.addActionsOnSubmit({email: this.state.email});
     }
     var onError = (errorText) => {
-      console.log("Error! " + errorText);
       this.setState({error: errorText});
       window.scrollTo(0, 0);
     }
@@ -95,11 +92,9 @@ class ProfileAdminInfoForm extends PureComponent<Props, State> {
       createOrUpdateProfileAdminInfo(fullInfo).then(function(success) {
         onSuccess();
       }).catch(function(error) {
-        console.log(error)
         onError(error.toString());
       })
     } catch(error) {
-      console.log(error)
       onError(error.toString());
     }
   };

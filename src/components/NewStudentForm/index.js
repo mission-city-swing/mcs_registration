@@ -21,7 +21,7 @@ class NewStudentPage extends PureComponent<Props, State> {
     return (
       <div className="App">
         <h1>New Student</h1>
-        <p>Add a new student!</p>
+        <p>Welcome to Mission City Swing! Please fill out this form before you check in for class.</p>
         <ErrorBoundary>
           <StudentInfoForm addActionsOnSubmit={this.addActionsOnSubmit}></StudentInfoForm>
         </ErrorBoundary>
