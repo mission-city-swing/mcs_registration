@@ -30,4 +30,14 @@ function sortByDate(a, b) {
   }
 };
 
-export { getSubstringIndex, MiscException, sortByDate }
+function currentMonthIndex() {
+  var today = new Date();
+  return today.getMonth()
+}
+
+function currentMonthString() {
+  var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  return months[currentMonthIndex()]
+}
+
+export { getSubstringIndex, MiscException, sortByDate, currentMonthIndex, currentMonthString }

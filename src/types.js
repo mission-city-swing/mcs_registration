@@ -25,6 +25,13 @@ export type ProfileAdminInfo = {
   author: string
 };
 
+export type LatestMonthlyPass = {
+  email: string,
+  numClasses: int,
+  monthName: string,
+  author: string
+};
+
 export type Dance = {
   date: string,
   title: string,

@@ -2,8 +2,8 @@
 // src/components/NewStudentForm/form.js
 import React, { PureComponent } from "react";
 import queryString from 'query-string';
-import { getClassCheckinByEmail, getDanceCheckinByEmail } from "../../lib/api.js";
-import { sortByDate } from '../../lib/utils.js'
+import { getClassCheckinByEmail, getDanceCheckinByEmail, getProfileByEmail } from "../../lib/api.js";
+import { sortByDate, currentMonthString } from '../../lib/utils.js'
 
 type State = {};
 
@@ -12,7 +12,8 @@ type Props = {};
 class StudentCheckinList extends PureComponent<Props, State> {
   state: State = {
     danceCheckinList: [],
-    classCheckinList: []
+    classCheckinList: [],
+    latestMonthlyPass: {}
   };
 
   getStudentFromQuery = () => {
@@ -21,6 +22,7 @@ class StudentCheckinList extends PureComponent<Props, State> {
       if (this.props.location.search) {
         var studentEmail = parsedSearch["email"];
         this.getCheckinsFromStudentEmail(studentEmail);
+        this.getLatestMonthlyPassFromEmail(studentEmail);
       }
     }
   };
@@ -50,6 +52,15 @@ class StudentCheckinList extends PureComponent<Props, State> {
     });
   };
 
+  getLatestMonthlyPassFromEmail = (studentEmail) => {
+    getProfileByEmail(studentEmail).on("value", (snapshot) => {
+      var profile = snapshot.val();
+      if (profile.latestMonthlyPass) {
+        this.setState({latestMonthlyPass: profile.latestMonthlyPass})
+      }
+    })
+  }
+
   componentDidMount() {
     this.getStudentFromQuery();
   };
@@ -59,6 +70,9 @@ class StudentCheckinList extends PureComponent<Props, State> {
     return (
       <div>
         <h5>Class Checkins</h5>
+        {this.state.latestMonthlyPass.monthName === currentMonthString() &&
+          <p><strong>Student has monthly pass for {this.state.latestMonthlyPass.numClasses} classes for {this.state.latestMonthlyPass.monthName}</strong></p>
+        }
         {this.state.classCheckinList.map(function(checkin) {
           return(
             <div key={checkin.uid} value={checkin.uid}>Date: {checkin.date} | Classes: {checkin.classes.join(', ')} | Info: {checkin.info}</div>
