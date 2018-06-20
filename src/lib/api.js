@@ -1,5 +1,5 @@
 // @flow
-import type { Profile, Dance, User, ClassCheckin, DanceCheckin, ProfileAdminInfo } from "../types.js";
+import type { Profile, Dance, User, ClassCheckin, DanceCheckin, ProfileAdminInfo, LatestMonthlyPass } from "../types.js";
 import uuidv3 from "uuid/v3";
 import Cookies from 'universal-cookie';
 // I don't know if I need this
@@ -35,8 +35,8 @@ export const createOrUpdateProfile = (options: Profile) => {
     throw MiscException("Admin must log in to authorize this event", "AuthException")
   }
   options.author = currentUser.uuid;
-  if (!options.waiverAgree) {
-    throw MiscException("Must agree to liability waiver", "FormException")
+  if (!(options.waiverAgree && options.conductAgree)) {
+    throw MiscException("Must agree to liability waiver and code of conduct", "FormException")
   }
   if (!(options.email && options.firstName && options.lastName)) {
     throw MiscException("First name, last name, and email required", "FormException")
@@ -61,6 +61,21 @@ export const createOrUpdateProfileAdminInfo = (options: ProfileAdminInfo) => {
   // Don't want to add email to profile twice
   delete options.email;
   return fireDB.database().ref("profiles/" + profileId + "/adminInfo").set(options);
+};
+
+// Set latest monthly pass
+export const setLatestMonthlyPass = (options: LatestMonthlyPass) => {
+  var currentUser = getCurrentUser();
+  if (currentUser.uuid == null) {
+    throw MiscException("Admin must log in to authorize this event", "AuthException")
+  }
+  if (!options.email) {
+    throw MiscException("Must include profile email", "FormException")
+  }
+  const profileId = uuidv3(options.email, MCS_APP);
+  // Don't want to add email to profile twice
+  delete options.email;
+  return fireDB.database().ref("profiles/" + profileId + "/latestMonthlyPass").set(options);
 };
 
 // Dance API
@@ -98,8 +113,8 @@ export const addNewDanceCheckin = (options: DanceCheckin) => {
   if (!(options.date && options.email && options.firstName && options.lastName)) {
     throw MiscException("First name, last name, email, and date required", "FormException")
   }
-  if (!options.waiverAgree) {
-    throw MiscException("Must agree to liability waiver", "FormException")
+  if (!(options.waiverAgree && options.conductAgree)) {
+    throw MiscException("Must agree to liability waiver and code of conduct", "FormException")
   }
   // we just care about the day
   options.date = options.date.toDateString();
@@ -139,8 +154,8 @@ export const addNewClassCheckin = (options: ClassCheckin) => {
   if (options.classes.length < 1) {
     throw MiscException("Must check in for at least one class", "FormException")
   }
-  if (!options.waiverAgree) {
-    throw MiscException("Must agree to liability waiver", "FormException")
+  if (!(options.waiverAgree && options.conductAgree)) {
+    throw MiscException("Must agree to liability waiver and code of conduct", "FormException")
   }
   // we just care about the day
   options.date = options.date.toDateString();

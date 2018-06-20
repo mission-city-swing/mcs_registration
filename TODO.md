@@ -11,11 +11,13 @@
 
 ### Finishing the necessary features
 
-[ ] Need to be able to see if a student has paid for a monthly pass for that month, and have they paid for one class or two?
+[x] Need to be able to see if a student has paid for a monthly pass for that month, and have they paid for one class or two?
 
-[ ] If the student wants to get a monthly pass, need to distinguish between the beginning of the month when they need to pay and the rest of the month when they've already paid
+[x] If the student wants to get a monthly pass, need to distinguish between the beginning of the month when they need to pay and the rest of the month when they've already paid -- kind of done but maybe not clear enough for the admin
 
 #### Other
+
+[ ] Clean up tables for class and dance checkin history-- look into https://www.npmjs.com/package/react-table ?
 
 [ ] Add success/failure to admin sign in
 

@@ -5,8 +5,8 @@ import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { DateTimePicker } from 'react-widgets';
 import queryString from 'query-string';
 import type { ClassCheckin } from "../../types.js";
-import { addNewClassCheckin, getProfiles, getProfileByEmail } from "../../lib/api.js";
-import { getSubstringIndex } from "../../lib/utils.js";
+import { addNewClassCheckin, getProfiles, getProfileByEmail, setLatestMonthlyPass } from "../../lib/api.js";
+import { getSubstringIndex, currentMonthIndex, currentMonthString } from "../../lib/utils.js";
 import McsAlert from "../Utilities/alert.js";
 import { AdminConfirmButtonModal } from "../Utilities/confirmCheckinModal.js";
 import { CodeOfConductModalLink } from "../Utilities/conductModal.js";
@@ -28,6 +28,7 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     waiverAgree: false,
     conductAgree: false,
     completedFundamentals: false,
+    latestMonthlyPass: {},
     classes: []
   }
 
@@ -185,6 +186,32 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     this.setState({checkin: newStateCheckin});
   }
 
+  updateMonthlyPass() {
+    if (this.state.checkin.latestMonthlyPass.monthName === currentMonthString()) {
+      return new Promise(function(resolve, reject) {
+        resolve("Already have a monthly pass for this month");
+      })
+    } else {
+      var monthClasses = [];
+      if (this.state.date.getMonth() === currentMonthIndex()) {
+        monthClasses = this.state.checkin.classes.filter((className) => {
+          return className.toLowerCase().includes("month")
+        })
+      }
+      if (monthClasses.length > 0) {
+        return setLatestMonthlyPass({
+          email: this.state.checkin.email,
+          numClasses: monthClasses.length,
+          monthName: currentMonthString(),
+        })
+      } else {
+        return new Promise(function(resolve, reject) {
+          resolve("No new monthly pass for this month");
+        })
+      }
+    }
+  }
+
   onSubmit = (options) => {
     // Error handling
     var onSuccess = () => {
@@ -199,10 +226,16 @@ class ReturningStudentForm extends PureComponent<Props, State> {
       this.setState({error: errorText});
       window.scrollTo(0, 0);
     }
+    // Additionally update the monthly pass status
+    var updateMonthlyPass = this.updateMonthlyPass.bind(this)
     // DB request
     try {
       addNewClassCheckin(Object.assign({...this.state.checkin}, options)).then(function(success) {
-        onSuccess();
+        updateMonthlyPass().then(function(success) {
+          onSuccess();
+        }).catch(function(error) {
+          onError(error.toString());
+        })
       }).catch(function(error) {
         onError(error.toString());
       });
@@ -240,6 +273,9 @@ class ReturningStudentForm extends PureComponent<Props, State> {
           </FormGroup>
           {this.state.checkin.completedFundamentals && 
             <p><strong>{this.state.checkin.firstName} {this.state.checkin.lastName} has completed the MCS fundamentals course.</strong></p>
+          }
+          {this.state.checkin.latestMonthlyPass.monthName === currentMonthString() &&
+            <p><strong>Student has a monthly pass for {this.state.checkin.latestMonthlyPass.numClasses} classes for {this.state.checkin.latestMonthlyPass.monthName}</strong></p>
           }
           <FormGroup>
             <Label for="firstName">First Name</Label><Input placeholder="First Name" value={this.state.checkin.firstName} onChange={this.onCheckinChange} name="firstName" />
