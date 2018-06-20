@@ -41,7 +41,7 @@ class CodeOfConductModalLink extends React.Component {
         <a {...this.props.linkOptions} onClick={this.toggle}>
           {this.props.children}
         </a>
-        <Modal {...this.props.modalOptions} isOpen={this.state.modalOpen} toggle={this.toggle}>
+        <Modal {...this.props.modalOptions} size="lg" isOpen={this.state.modalOpen} toggle={this.toggle}>
           <ModalHeader toggle={this.toggle}>Mission City Swing Code of Conduct</ModalHeader>
           <ModalBody>
             <div>

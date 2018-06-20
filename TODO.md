@@ -23,11 +23,11 @@
 
 [x] Form validation, especially for new student form— everything should check for name and email, new student form should check for waiver
 
-[ ] Code of conduct and waiver should be in app and need to be signed — need to be included in the app
+[x] Code of conduct and waiver should be in app and need to be signed — need to be included in the app
 
 * [x] Code of conduct
 
-* [ ] Waiver - the modal is up, but we're blocked waiting for waiver text
+* [x] Waiver - the modal is up, but we're blocked waiting for waiver text
 
 [x] Remove "additional info" where possible, or maybe move it to the admin confirm page
 
