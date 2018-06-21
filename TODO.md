@@ -29,7 +29,9 @@
 
 ### Style
 
-[ ] Logo for nav
+[x] Logo for nav
+
+[x] Nice FB link (because I wanted to)
 
 
 ### JS tools
