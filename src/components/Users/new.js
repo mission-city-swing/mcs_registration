@@ -4,6 +4,7 @@ import React, { PureComponent } from "react";
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import type { User } from "../../types.js";
 import { addNewUser } from "../../lib/api.js";
+import McsAlert from "../Utilities/alert.js";
 
 type State = User;
 
@@ -14,7 +15,9 @@ class NewUserForm extends PureComponent<Props, State> {
     firstName: "",
     lastName: "",
     email: "",
-    password: ""
+    password: "",
+    success: "",
+    error: ""
   };
 
   onChange = (event: any) => {
@@ -33,14 +36,42 @@ class NewUserForm extends PureComponent<Props, State> {
     });
   };
 
+  clearFormEvent = (event: any) => {
+    event.preventDefault();
+    this.clearForm();
+  };
+
+  toggleAlerts(event: any) {
+    this.setState({
+      success: "",
+      error: ""
+    });
+  };
+
   onSubmit = (event: any) => {
     event.preventDefault();
-    // Validate form
-    addNewUser(this.state).then(function() {
-      window.location.href = "/";
-    });
-    // Clear the form
-    this.clearForm();
+    var onSuccess = () => {
+      var successText = "Created new admin user for " + this.state.email;
+      this.setState({success: successText});
+      window.location.href = "/?success=" + encodeURIComponent(successText);
+    }
+    var onError = (errorText) => {
+      this.setState({error: errorText});
+    }
+    try {
+      addNewUser({
+        firstName: this.state.firstName,
+        lastName: this.state.lastName,
+        email: this.state.email,
+        password: this.state.password
+      }).then(function() {
+        onSuccess()
+      }).catch((error) => {
+        onError(error.toString())
+      })
+    } catch(error) {
+      onError(error.toString())
+    }
   };
 
   render() {
@@ -49,6 +80,8 @@ class NewUserForm extends PureComponent<Props, State> {
       <div className="App">
         <h1>New User</h1>
         <p>Just admin stuff</p>
+        <McsAlert color="success" text={this.state.success} visible={this.state.success.length > 0} onToggle={this.toggleAlerts.bind(this)}></McsAlert>
+        <McsAlert color="danger" text={this.state.error} visible={this.state.error.length > 0} onToggle={this.toggleAlerts.bind(this)}></McsAlert>
         <Form onSubmit={this.onSubmit}>
           <FormGroup>
             <Label for="firstName">First Name</Label><Input placeholder="First Name" value={this.state.firstName} onChange={this.onChange} name="firstName" />
@@ -63,7 +96,9 @@ class NewUserForm extends PureComponent<Props, State> {
             <Label form="password" type="password">Password</Label><Input onChange={this.onChange} value={this.state.password} type="password" id="password" name="password" />
           </FormGroup>
           <br></br>
-          <Button type="submit" value="Submit">Submit</Button>
+          <Button color="primary" type="submit" value="Submit">Submit</Button>
+          <span className="mr-1"></span>
+          <Button outline value="clear" onClick={this.clearFormEvent}>Clear Form</Button>
         </Form>
       </div>
     );

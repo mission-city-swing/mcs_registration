@@ -56,7 +56,7 @@ class DancePage extends PureComponent<Props, State> {
       <div className="App">
         <h1>Dance</h1>
         <div>
-          <p>Select a dance to view or create a new dance </p>
+          <p>Select a dance to view or update, or create a new dance.</p>
           <Form>
             <FormGroup>
               <select onChange={this.onDanceSelectChange} value={this.state.selected}>

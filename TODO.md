@@ -2,7 +2,10 @@
 
 ### Known bugs
 
+[x] Confirmation for dance object creation/update
+
 [ ] Dance events are not connected to dance checkin events-- right now they just have the day (date), but maybe we should do foreign keys?
+
 
 
 ### UI flow
@@ -17,7 +20,7 @@
 
 [x] Clean up tables for class and dance checkin history-- look into https://www.npmjs.com/package/react-table ?
 
-[ ] Add success/failure to admin sign in
+[x] Add success/failure to admin sign in
 
 [x] Form validation, especially for new student form— everything should check for name and email, new student form should check for waiver
 
