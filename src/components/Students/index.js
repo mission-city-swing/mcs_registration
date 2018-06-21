@@ -58,7 +58,7 @@ class StudentPage extends PureComponent<Props, State> {
       <div className="App">
         <h1>Students</h1>
         <div>
-          <p>Select a student to update... </p>
+          <p>Select a student to view or update.</p>
           <Form>
             <FormGroup>
               <select onChange={this.onCheckinSelectChange} value={this.state.selected}>

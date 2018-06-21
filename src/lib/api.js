@@ -95,15 +95,16 @@ export const deleteDance = (danceId) => {
 
 export const addNewDance = (options: Dance) => {
   var currentUser = getCurrentUser();
-  options.author = currentUser.uuid;
-
-  if (options.date) {
-    // we just care about the day
-    options.date = options.date.toDateString();
-    // can't add 2 dances to the same day
-    const danceId = uuidv3(options.date, MCS_APP);
-    fireDB.database().ref("dances/" + danceId).set(options);
+  if (currentUser.uuid == null) {
+    throw MiscException("Admin must log in to authorize this checkin event", "AuthException")
   }
+  options.author = currentUser.uuid;
+  if (!options.date) {
+    throw MiscException("Date required", "FormException")
+  }
+  options.date = options.date.toDateString();
+  const danceId = uuidv3(options.date, MCS_APP);
+  return fireDB.database().ref("dances/" + danceId).set(options);
 };
 
 // Checkins

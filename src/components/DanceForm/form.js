@@ -6,6 +6,7 @@ import { DateTimePicker } from 'react-widgets';
 import queryString from 'query-string';
 import type { Dance } from "../../types.js";
 import { addNewDance, getDance, deleteDance } from "../../lib/api.js";
+import McsAlert from "../Utilities/alert.js";
 
 type State = Dance;
 
@@ -16,12 +17,14 @@ class DanceForm extends PureComponent<Props, State> {
     date: new Date(),
     title: "",
     fbLink: "",
-    info: ""
+    info: "",
+    success: "",
+    error: ""
   };
 
   getDanceFromQuery = () => {
-    var parsedSearch = queryString.parse(this.props.location.search);
     if (this.props.location.search) {
+      var parsedSearch = queryString.parse(this.props.location.search);
       var danceId = parsedSearch["uid"];
       if (danceId) {
         this.getDanceFromUid(danceId);
@@ -68,6 +71,13 @@ class DanceForm extends PureComponent<Props, State> {
     });
   };
 
+  toggleAlerts(event: any) {
+    this.setState({
+      success: "",
+      error: ""
+    });
+  };
+
   clearForm() {
     this.setState({
       date: new Date(),
@@ -84,22 +94,36 @@ class DanceForm extends PureComponent<Props, State> {
 
   onSubmit = (event: any) => {
     event.preventDefault();
-    // Validate form
-    console.log(this.state);
-    addNewDance({
-      date: this.state.date,
-      title: this.state.title,
-      fbLink: this.state.fbLink,
-      info: this.state.info
-    });
-    // Clear the form
-    this.clearForm();
+    var onSuccess = () => {
+      var successText = "Updated dance for " + this.state.date.toDateString()
+      this.setState({success: successText});
+      this.clearForm();
+    }
+    var onError = (errorText) => {
+      this.setState({error: errorText});
+    }
+    try {
+      addNewDance({
+        date: this.state.date,
+        title: this.state.title,
+        fbLink: this.state.fbLink,
+        info: this.state.info
+      }).then((success) => {
+        onSuccess()
+      }).catch((error) => {
+        onError()
+      })
+    } catch(error) {
+      onError()
+    }
   };
 
   render() {
 
     return (
       <div>
+        <McsAlert color="success" text={this.state.success} visible={this.state.success.length > 0} onToggle={this.toggleAlerts.bind(this)}></McsAlert>
+        <McsAlert color="danger" text={this.state.error} visible={this.state.error.length > 0} onToggle={this.toggleAlerts.bind(this)}></McsAlert>
         <Form onSubmit={this.onSubmit}>
           <FormGroup>
             <Label for="date">Dance Date</Label>
@@ -120,7 +144,8 @@ class DanceForm extends PureComponent<Props, State> {
           <FormGroup>
             <Label for="info">Dance Info</Label><Input type="textarea" placeholder="Whatever dance info you want, maybe a FB link" onChange={this.onChange} value={this.state.info} name="info" />
           </FormGroup>
-          <Button outline color="success" type="submit" value="Submit">Submit</Button>
+          <Button color="primary" type="submit" value="Submit">Submit</Button>
+          <span className="mr-1"></span>
           <Button outline value="clear" onClick={this.clearFormEvent}>Clear Form</Button>
         </Form>
       </div>
