@@ -1,36 +1,30 @@
 # TODO
 
-### Known bugs
+### From 2018-06-20 Sync
 
-[x] Confirmation for dance object creation/update
+[ ] "Returning students" need to say "Class checkin"
+
+[ ] Do the waiver and CoC need to show up again if the student has already agreed to them?-- would be better if there were fewer items on the page
+
+[ ] West coast swing needs to be on the dances list
+
+[ ] Only people new to WCS get the discount-- need to update "New Dancer" note logic
+
+[ ] Want to be able to pre-load guests— maybe have "guest" as a field in the student profile
+
+[ ] Put the year with the month for the last monthly pass
+
+[ ] Pre fill out classes if the student has a monthly pass for N classes for M months-- look up the class that they got the pass with
+
+[ ] For a dance event, show the total number of people checked into the class and/or dance
+
+
+### Known issues
+
+[ ] If you click on the waiver and CoC checkmark, the modals don't open
 
 [ ] Dance events are not connected to dance checkin events-- right now they just have the day (date), but maybe we should do foreign keys?
 
-
-
-### UI flow
-
-### Finishing the necessary features
-
-[x] Need to be able to see if a student has paid for a monthly pass for that month, and have they paid for one class or two?
-
-[x] If the student wants to get a monthly pass, need to distinguish between the beginning of the month when they need to pay and the rest of the month when they've already paid -- kind of done but maybe not clear enough for the admin
-
-#### Other
-
-[x] Clean up tables for class and dance checkin history-- look into https://www.npmjs.com/package/react-table ?
-
-[x] Add success/failure to admin sign in
-
-[x] Form validation, especially for new student form— everything should check for name and email, new student form should check for waiver
-
-[x] Code of conduct and waiver should be in app and need to be signed — need to be included in the app
-
-* [x] Code of conduct
-
-* [x] Waiver - the modal is up, but we're blocked waiting for waiver text
-
-[x] Remove "additional info" where possible, or maybe move it to the admin confirm page
 
 
 ### Style
