@@ -85,6 +85,10 @@ export const getDance = (danceId) => {
   return fireDB.database().ref("dances/" + danceId);
 };
 
+export const getDanceByDate = (dateString) => {
+  return fireDB.database().ref("dances/").orderByChild('date').equalTo(dateString);
+};
+
 export const deleteDance = (danceId) => {
   return fireDB.database().ref("dances/" + danceId).remove();
 };

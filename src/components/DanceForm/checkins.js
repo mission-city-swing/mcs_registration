@@ -1,8 +1,10 @@
 // @flow
 // src/components/NewStudentForm/form.js
 import React, { PureComponent } from "react";
+import ReactTable from 'react-table';
 import queryString from 'query-string';
 import { getDance, getDanceCheckinByDate, getClassCheckinByDate } from "../../lib/api.js";
+import { reactTableFuzzyMatchFilter } from '../../lib/utils.js'
 
 type State = {};
 
@@ -10,8 +12,8 @@ type Props = {};
 
 class DanceCheckinList extends PureComponent<Props, State> {
   state: State = {
-    danceCheckinList: {},
-    classCheckinList: {}
+    danceCheckinList: [],
+    classCheckinList: []
   };
 
   getDanceCheckinsFromQuery = () => {
@@ -28,16 +30,25 @@ class DanceCheckinList extends PureComponent<Props, State> {
 
   getCheckinsFromDate = (danceDate) => {
     getClassCheckinByDate(danceDate).on("value", (snapshot) => {
-      console.log(snapshot.val())
-      this.setState({
-        classCheckinList: snapshot.val() || {}
-      });
+      var classCheckinList = [];
+      if (snapshot.val()) {
+        var checkinListObj = snapshot.val();
+        Object.keys(checkinListObj).map(function(uid) {
+          return classCheckinList.push(Object.assign({uid: uid}, checkinListObj[uid]))
+        })
+      }
+      this.setState({classCheckinList: classCheckinList});
     });
+
     getDanceCheckinByDate(danceDate).on("value", (snapshot) => {
-      console.log(snapshot.val())
-      this.setState({
-        danceCheckinList: snapshot.val() || {}
-      });
+      var danceCheckinList = [];
+      if (snapshot.val()) {
+        var checkinListObj = snapshot.val();
+        Object.keys(checkinListObj).map(function(uid) {
+          return danceCheckinList.push(Object.assign({uid: uid}, checkinListObj[uid]))
+        })
+      }
+      this.setState({danceCheckinList: danceCheckinList});
     });
   };
 
@@ -50,18 +61,53 @@ class DanceCheckinList extends PureComponent<Props, State> {
     return (
       <div>
         <h5>Class Checkins</h5>
-        {Object.keys(this.state.classCheckinList).map((uid) => {
-          return(
-            <div key={uid} value={uid}> Email: {this.state.classCheckinList[uid].email} | Classes: {this.state.classCheckinList[uid].classes.join(', ')}</div>
-          )
-        })}
+        <ReactTable
+          data={this.state.classCheckinList}
+          columns={[{
+            Header: "Name",
+            accessor: (d) => [d.firstName, d.lastName].join(' '),
+            id: "name",
+            maxWidth: 300
+          }, {
+            Header: "Email",
+            accessor: "email",
+            maxWidth: 300
+          }, {
+            Header: "Classes",
+            id: "classes",
+            accessor: (d) => d.classes.join('; ')
+          }, {
+            Header: "Notes",
+            accessor: "info"
+          }]}
+          defaultPageSize={5}
+          className="-striped"
+          filterable
+          defaultFilterMethod={reactTableFuzzyMatchFilter}
+        />
         <br></br>
         <h5>Dance Checkins</h5>
-        {Object.keys(this.state.danceCheckinList).map((uid) => {
-          return(
-            <div key={uid} value={uid}>{this.state.danceCheckinList[uid].email}</div>
-          )
-        })}
+
+        <ReactTable
+          data={this.state.danceCheckinList}
+          columns={[{
+            Header: "Name",
+            accessor: (d) => [d.firstName, d.lastName].join(' '),
+            id: "name",
+            maxWidth: 300
+          }, {
+            Header: "Email",
+            accessor: "email",
+            maxWidth: 300
+          }, {
+            Header: "Notes",
+            accessor: "info"
+          }]}
+          defaultPageSize={5}
+          className="-striped"
+          filterable
+          defaultFilterMethod={reactTableFuzzyMatchFilter}
+        />
       </div>
     );
   }

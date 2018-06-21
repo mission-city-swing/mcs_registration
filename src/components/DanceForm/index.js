@@ -6,6 +6,7 @@ import queryString from 'query-string';
 import { getDances } from "../../lib/api.js";
 import DanceForm from "./form.js"
 import DanceCheckinList from "./checkins.js"
+import { sortByDate } from '../../lib/utils.js'
 
 type State = {};
 
@@ -14,7 +15,7 @@ type Props = {};
 class DancePage extends PureComponent<Props, State> {
   state: State = {
     selected: "",
-    danceList: {},
+    danceList: [],
     checkinsSection: <div></div>
   };
 
@@ -25,13 +26,19 @@ class DancePage extends PureComponent<Props, State> {
       if (danceId) {
         this.setState({
           selected: danceId,
-          checkinsSection: <div><h4>Checkins</h4><DanceCheckinList {...this.props}></DanceCheckinList></div>
+          checkinsSection: <div><h4>Activity</h4><DanceCheckinList {...this.props}></DanceCheckinList></div>
         });
       }
     }
 
     getDances.on("value", (snapshot) => {
-      this.setState({danceList: snapshot.val()});
+      var dancesSnap = snapshot.val();
+      var danceList = [];
+      Object.keys(dancesSnap).forEach((uid => {
+        danceList.push(Object.assign({uid: uid}, dancesSnap[uid]))
+      }))
+      danceList.sort(sortByDate)
+      this.setState({danceList: danceList});
     });
   };
 
@@ -54,9 +61,9 @@ class DancePage extends PureComponent<Props, State> {
             <FormGroup>
               <select onChange={this.onDanceSelectChange} value={this.state.selected}>
                 <option value="">Create a New Dance</option>
-                {Object.keys(this.state.danceList).map((uid) => {
+                {this.state.danceList.map((dance) => {
                   return(
-                    <option key={uid} value={uid}>{this.state.danceList[uid].date}, {this.state.danceList[uid].title}</option>
+                    <option key={dance.uid} value={dance.uid}>{dance.date}, {dance.title}</option>
                   )
                 })}
               </select>

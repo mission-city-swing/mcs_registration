@@ -2,9 +2,7 @@
 
 ### Known bugs
 
-[x] Clear warning "Links must not point to '#'. Use a more descriptive href or use a button instead"
-
-[x] After alert widget is closed, it doesn't reopen until the page is refreshed
+[ ] Dance events are not connected to dance checkin events-- right now they just have the day (date), but maybe we should do foreign keys?
 
 
 ### UI flow
@@ -17,7 +15,7 @@
 
 #### Other
 
-[ ] Clean up tables for class and dance checkin history-- look into https://www.npmjs.com/package/react-table ?
+[x] Clean up tables for class and dance checkin history-- look into https://www.npmjs.com/package/react-table ?
 
 [ ] Add success/failure to admin sign in
 
@@ -35,11 +33,6 @@
 ### Style
 
 [ ] Logo for nav
-
-
-### Data organization
-
-[ ] Connect dance events to dance checkin events-- right now they just have the day (date), also, how do we do foreign keys?
 
 
 ### JS tools

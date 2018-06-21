@@ -20,7 +20,7 @@ function MiscException(message, name = "MiscException") {
 
 function sortByDate(a, b) {
   // most recent checkins first
-  var [dateA, dateB] = [Date.parse(a.date), Date.parse(b.date)]
+  var [dateA, dateB] = [new Date(a.date), new Date(b.date)]
   if (dateA > dateB) {
     return -1
   } else if (dateA < dateB) {
@@ -29,6 +29,17 @@ function sortByDate(a, b) {
     return 0
   }
 };
+
+function sortDateStrings(a, b) {
+  var [aDate, bDate] = [new Date(a), new Date(b)];
+  if (aDate > bDate) {
+    return 1
+  } else if (aDate < bDate) {
+    return -1
+  } else if (aDate === bDate) {
+    return 0
+  }
+}
 
 function currentMonthIndex() {
   var today = new Date();
@@ -40,4 +51,8 @@ function currentMonthString() {
   return months[currentMonthIndex()]
 }
 
-export { getSubstringIndex, MiscException, sortByDate, currentMonthIndex, currentMonthString }
+function reactTableFuzzyMatchFilter(filter, row) {
+  return String(row[filter.id]).toLowerCase().includes(String(filter.value).toLowerCase())
+}
+
+export { getSubstringIndex, MiscException, sortByDate, sortDateStrings, currentMonthIndex, currentMonthString, reactTableFuzzyMatchFilter }

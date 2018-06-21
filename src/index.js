@@ -11,7 +11,9 @@ import App from "./App";
 
 import "./index.css";
 import 'bootstrap/dist/css/bootstrap.css';
-import 'react-widgets/dist/css/react-widgets.css'
+import 'react-widgets/dist/css/react-widgets.css';
+import 'react-table/react-table.css';
+
 
 // localize for date dropdown
 Moment.locale('en');
