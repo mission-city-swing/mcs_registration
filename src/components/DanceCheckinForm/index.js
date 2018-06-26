@@ -26,8 +26,8 @@ class DanceCheckinPage extends PureComponent<Props, State> {
   render() {
     return (
       <div className="App">
-        <h1>Dance</h1>
-        <p>Create a new dance checkin object!</p>
+        <h1>Dance Checkin</h1>
+        <p>Fill out this form to check in for the dance. Please select today's date and your email address to sign in.</p>
         <ErrorBoundary>
 	        <DanceCheckinForm addActionsOnSubmit={this.addActionsOnSubmit}></DanceCheckinForm>
         </ErrorBoundary>

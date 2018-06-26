@@ -16,6 +16,7 @@ class ProfileAdminInfoForm extends PureComponent<Props, State> {
 
   defaultFields = {
     completedFundamentals: false,
+    guest: false,
     info: ""
   }
 
@@ -110,6 +111,13 @@ class ProfileAdminInfoForm extends PureComponent<Props, State> {
             <Label check>
               <Input onChange={this.onAdminInfoChange} name="completedFundamentals" type="checkbox" checked={this.state.adminInfo.completedFundamentals} />
               <strong>Student has completed the fundamentals program</strong>
+            </Label>
+          </FormGroup>
+          <br></br>
+          <FormGroup check>
+            <Label check>
+              <Input onChange={this.onAdminInfoChange} name="guest" type="checkbox" checked={this.state.adminInfo.guest} />
+              <strong>Patron is a guest of MCS</strong>
             </Label>
           </FormGroup>
           <br></br>

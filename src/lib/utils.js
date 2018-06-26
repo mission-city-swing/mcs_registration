@@ -41,6 +41,11 @@ function sortDateStrings(a, b) {
   }
 }
 
+function currentYear() {
+  var today = new Date();
+  return today.getFullYear()
+}
+
 function currentMonthIndex() {
   var today = new Date();
   return today.getMonth()
@@ -55,4 +60,4 @@ function reactTableFuzzyMatchFilter(filter, row) {
   return String(row[filter.id]).toLowerCase().includes(String(filter.value).toLowerCase())
 }
 
-export { getSubstringIndex, MiscException, sortByDate, sortDateStrings, currentMonthIndex, currentMonthString, reactTableFuzzyMatchFilter }
+export { getSubstringIndex, MiscException, sortByDate, sortDateStrings, currentMonthIndex, currentMonthString, reactTableFuzzyMatchFilter, currentYear }

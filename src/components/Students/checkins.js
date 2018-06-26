@@ -1,10 +1,11 @@
 // @flow
 // src/components/NewStudentForm/form.js
 import React, { PureComponent } from "react";
-import ReactTable from 'react-table';
-import queryString from 'query-string';
-import { getClassCheckinByEmail, getDanceCheckinByEmail, getProfileByEmail, getDanceByDate } from "../../lib/api.js";
-import { sortDateStrings, currentMonthString, reactTableFuzzyMatchFilter } from '../../lib/utils.js'
+import { Table } from "reactstrap";
+import ReactTable from "react-table";
+import queryString from "query-string";
+import { getClassCheckinByEmail, getDanceCheckinByEmail, getProfileByEmail, getDanceByDate, getMonthlyPassesByEmail } from "../../lib/api.js";
+import { sortDateStrings, currentMonthString, currentYear, reactTableFuzzyMatchFilter } from "../../lib/utils.js";
 
 type State = {};
 
@@ -14,6 +15,7 @@ class StudentCheckinList extends PureComponent<Props, State> {
   state: State = {
     danceCheckinList: [],
     classCheckinList: [],
+    monthlyPassesList: [],
     latestMonthlyPass: {}
   };
 
@@ -58,6 +60,18 @@ class StudentCheckinList extends PureComponent<Props, State> {
         })
       }
     });
+    getMonthlyPassesByEmail(studentEmail).on("value", (snapshot) => {
+      if (snapshot.val()) {
+        var passesObj = snapshot.val();
+        Object.keys(passesObj).forEach((uid) => {
+          var pass = Object.assign({uid: uid}, passesObj[uid]);
+          pass.dateString = [pass.year, pass.monthName].join(" ")
+          this.setState({ 
+            monthlyPassesList: this.state.monthlyPassesList.concat([pass])
+          });
+        })
+      }
+    });
   };
 
   getLatestMonthlyPassFromEmail = (studentEmail) => {
@@ -86,52 +100,95 @@ class StudentCheckinList extends PureComponent<Props, State> {
   render() {
     return (
       <div>
-        <h5>Class Checkins</h5>
-        {this.state.latestMonthlyPass.monthName === currentMonthString() &&
-          <p><strong>Student has monthly pass for {this.state.latestMonthlyPass.numClasses} classes for {this.state.latestMonthlyPass.monthName}</strong></p>
+        <h4>Activity</h4>
+        {this.state.latestMonthlyPass.monthName === currentMonthString() && this.state.latestMonthlyPass.year === currentYear() &&
+          <p><strong>Student has monthly pass for {this.state.latestMonthlyPass.numClasses} classes for {this.state.latestMonthlyPass.monthName} {this.state.latestMonthlyPass.year}</strong></p>
         }
-        <ReactTable
-          data={this.state.classCheckinList}
-          columns={[{
-            Header: "Date",
-            accessor: "date",
-            sortMethod: sortDateStrings,
-            maxWidth: 200
-          }, {
-            Header: "Classes",
-            id: "classes",
-            accessor: (d) => d.classes.join('; ')
-          }, {
-            Header: "Checkin Notes",
-            accessor: "info"
-          }]}
-          defaultPageSize={5}
-          className="-striped"
-          filterable
-          defaultFilterMethod={reactTableFuzzyMatchFilter}
-        />
-        <br></br>
-        <h5>Dance Checkins</h5>
-        <ReactTable
-          data={this.state.danceCheckinList}
-          columns={[{
-            Header: "Date",
-            accessor: "date",
-            sortMethod: sortDateStrings,
-            maxWidth: 200
-          }, {
-            Header: "Dance",
-            accessor: (d) => d.dance.title,
-            id: "dance"
-          }, {
-            Header: "Checkin Notes",
-            accessor: "info"
-          }]}
-          defaultPageSize={5}
-          className="-striped"
-          filterable
-          defaultFilterMethod={reactTableFuzzyMatchFilter}
-        />
+        <div>
+          <h5>Stats</h5>
+          {/* Used a regular react-strap table here just to display this info nicely */}
+          <Table bordered>
+            <thead>
+              <tr>
+                <th>Total Checkins</th>
+                <th>Class Checkins</th>
+                <th>Dance Checkins</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{this.state.classCheckinList.length + this.state.danceCheckinList.length}</td>
+                <td>{this.state.classCheckinList.length}</td>
+                <td>{this.state.danceCheckinList.length}</td>
+              </tr>
+            </tbody>
+          </Table>
+          <h5>Class Checkins</h5>
+          <ReactTable
+            data={this.state.classCheckinList}
+            columns={[{
+              Header: "Date",
+              accessor: "date",
+              sortMethod: sortDateStrings,
+              maxWidth: 200
+            }, {
+              Header: "Classes",
+              id: "classes",
+              accessor: (d) => d.classes.join('; ')
+            }, {
+              Header: "Checkin Notes",
+              accessor: "info"
+            }]}
+            defaultPageSize={5}
+            className="-striped"
+            filterable
+            defaultFilterMethod={reactTableFuzzyMatchFilter}
+          />
+          <br></br>
+          <h5>Dance Checkins</h5>
+          <ReactTable
+            data={this.state.danceCheckinList}
+            columns={[{
+              Header: "Date",
+              accessor: "date",
+              sortMethod: sortDateStrings,
+              maxWidth: 200
+            }, {
+              Header: "Dance",
+              accessor: (d) => d.dance.title,
+              id: "dance"
+            }, {
+              Header: "Checkin Notes",
+              accessor: "info"
+            }]}
+            defaultPageSize={5}
+            className="-striped"
+            filterable
+            defaultFilterMethod={reactTableFuzzyMatchFilter}
+          />
+          <br></br>
+          <h5>Monthly Passes</h5>
+          <ReactTable
+            data={this.state.monthlyPassesList}
+            columns={[{
+              Header: "Month",
+              accessor: "dateString",
+              maxWidth: 200
+            }, {
+              Header: "No. Classes",
+              accessor: "numClasses",
+              maxWidth: 100
+            }, {
+              Header: "Classes",
+              id: "classes",
+              accessor: (d) => d.classes.join('; ')
+            }]}
+            defaultPageSize={5}
+            className="-striped"
+            filterable
+            defaultFilterMethod={reactTableFuzzyMatchFilter}
+          />
+        </div>
       </div>
     );
   }

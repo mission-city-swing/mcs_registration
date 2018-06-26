@@ -92,6 +92,14 @@ class StudentInfoForm extends PureComponent<Props, State> {
     });
   };
 
+  afterWaiverConfirm(args) {
+    this.setState({waiverAgree: args.agree});
+  }
+
+  afterConductConfirm(args) {
+    this.setState({conductAgree: args.agree});
+  }
+
   clearFormEvent = (event: any) => {
     this.clearForm();
   };
@@ -122,7 +130,11 @@ class StudentInfoForm extends PureComponent<Props, State> {
     var onSuccess = () => {
       var successText = "Updated profile for " + this.state.email
       this.setState({success: successText});
-      this.addActionsOnSubmit({email: this.state.email});
+
+      this.addActionsOnSubmit({
+        email: this.state.email,
+        newDancer: !this.state.otherDances.includes("West Coast Swing")
+      });
     }
     var onError = (errorText) => {
       this.setState({error: errorText});
@@ -182,11 +194,6 @@ class StudentInfoForm extends PureComponent<Props, State> {
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'work'} value="work" /> Work
-              </Label>
-            </FormGroup>
-            <FormGroup check>
-              <Label check>
                 <Input onChange={this.onChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'web search'} value="web search" /> Web Search
               </Label>
             </FormGroup>
@@ -227,42 +234,52 @@ class StudentInfoForm extends PureComponent<Props, State> {
             <legend className="h5">Do you already know any of these partner dances? (Select all that apply.)</legend>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('Lindy hop') !== -1} value="Lindy hop" /> {' '} Lindy hop
+                <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('West Coast Swing') !== -1} value="West Coast Swing" /> West Coast Swing
               </Label>
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('Blues') !== -1} value="Blues" /> {' '} Blues
+                <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('Lindy Hop') !== -1} value="Lindy Hop" /> Lindy Hop
               </Label>
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('Country') !== -1} value="Country" /> {' '} Country
+                <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('Blues') !== -1} value="Blues" /> Blues
               </Label>
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('Tango') !== -1} value="Tango" /> {' '} Tango
+                <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('Ballroom') !== -1} value="Ballroom" /> Ballroom
               </Label>
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('Salsa') !== -1} value="Salsa" /> {' '} Salsa
+                <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('Country') !== -1} value="Country" /> Country
               </Label>
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('Other Latin') !== -1} value="Other Latin" /> {' '} Other Latin
+                <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('Salsa') !== -1} value="Salsa" /> Salsa
               </Label>
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('Ballroom') !== -1} value="Ballroom" /> {' '} Ballroom
+                <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('Tango') !== -1} value="Tango" /> Tango
               </Label>
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('Other') !== -1} value="Other" /> {' '} Other
+                <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('Zouk') !== -1} value="Zouk" /> Zouk
+              </Label>
+            </FormGroup>
+            <FormGroup check>
+              <Label check>
+                <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('Other Latin') !== -1} value="Other Latin" /> Other Latin
+              </Label>
+            </FormGroup>
+            <FormGroup check>
+              <Label check>
+                <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('Other') !== -1} value="Other" /> Other
                 <Input onChange={this.onChange} name="otherDancesOther" value={this.state.otherDancesOther} />
               </Label>
             </FormGroup>
@@ -277,21 +294,9 @@ class StudentInfoForm extends PureComponent<Props, State> {
           </FormGroup>
           <br></br>
           <h5>Legal Stuff</h5>
-          <FormGroup check>
-            <Label check>
-              <Input name="waiverAgree" type="checkbox" checked={this.state.waiverAgree} />
-              <LiabilityWaiverModalLink afterConfirm={(args) => {this.setState({waiverAgree: args.agree})}}>
-                <strong>I agree to the Mission City Swing Liability Waiver</strong>
-              </LiabilityWaiverModalLink>
-            </Label>
-          </FormGroup>
+          <LiabilityWaiverModalLink checked={this.state.waiverAgree} afterConfirm={this.afterWaiverConfirm.bind(this)}  />
           <br></br>
-          <FormGroup check>
-            <Label check>
-              <Input name="conductAgree" type="checkbox" checked={this.state.conductAgree} />
-              <strong><CodeOfConductModalLink afterConfirm={(args) => {this.setState({conductAgree: args.agree})}}>I agree to the Mission City Swing Code of Conduct</CodeOfConductModalLink></strong>
-            </Label>
-          </FormGroup>
+          <CodeOfConductModalLink checked={this.state.conductAgree} afterConfirm={this.afterConductConfirm.bind(this)} />
           <br></br>
           <ConfirmButtonPopover buttonOptions={{color: "primary"}} popoverOptions={{placement: "top"}} afterConfirm={this.onSubmit} popoverHeader="Confirm Your Information" popoverBody="Please confirm that your name and email are correct and that you have signed our liability waiver and code of conduct.">Submit</ConfirmButtonPopover>
           <span className="mr-1"></span>

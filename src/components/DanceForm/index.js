@@ -15,8 +15,7 @@ type Props = {};
 class DancePage extends PureComponent<Props, State> {
   state: State = {
     selected: "",
-    danceList: [],
-    checkinsSection: <div></div>
+    danceList: []
   };
 
   componentDidMount() {
@@ -24,10 +23,7 @@ class DancePage extends PureComponent<Props, State> {
     if (this.props.location.search) {
       var danceId = parsedSearch["uid"];
       if (danceId) {
-        this.setState({
-          selected: danceId,
-          checkinsSection: <div><h4>Activity</h4><DanceCheckinList {...this.props}></DanceCheckinList></div>
-        });
+        this.setState({selected: danceId});
       }
     }
 
@@ -76,7 +72,11 @@ class DancePage extends PureComponent<Props, State> {
           <DanceForm {...this.props} ></DanceForm>
         </div>
         <br></br>
-        {this.state.checkinsSection}
+        {this.state.selected && 
+          <div>
+            <DanceCheckinList {...this.props}></DanceCheckinList>
+          </div>          
+        }
       </div>
     );
   }
