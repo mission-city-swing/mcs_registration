@@ -39,25 +39,38 @@ function sortDateStrings(a, b) {
   } else if (aDate === bDate) {
     return 0
   }
-}
+};
+
+
+function sortByNameAndEmail(profileA, profileB) {
+  var nameA = (profileA.firstName + profileA.lastName + profileA.email).toLowerCase();
+  var nameB = (profileB.firstName + profileB.lastName + profileB.email).toLowerCase();
+  if (nameA > nameB) {
+    return 1
+  } else if (nameA < nameB) {
+    return -1
+  } else if (nameA === nameB) {
+    return 0
+  }
+};
 
 function currentYear() {
   var today = new Date();
   return today.getFullYear()
-}
+};
 
 function currentMonthIndex() {
   var today = new Date();
   return today.getMonth()
-}
+};
 
 function currentMonthString() {
   var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   return months[currentMonthIndex()]
-}
+};
 
 function reactTableFuzzyMatchFilter(filter, row) {
   return String(row[filter.id]).toLowerCase().includes(String(filter.value).toLowerCase())
-}
+};
 
-export { getSubstringIndex, MiscException, sortByDate, sortDateStrings, currentMonthIndex, currentMonthString, reactTableFuzzyMatchFilter, currentYear }
+export { getSubstringIndex, MiscException, sortByDate, sortDateStrings, sortByNameAndEmail, currentMonthIndex, currentMonthString, reactTableFuzzyMatchFilter, currentYear }

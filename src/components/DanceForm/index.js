@@ -28,12 +28,14 @@ class DancePage extends PureComponent<Props, State> {
     }
 
     getDances.on("value", (snapshot) => {
-      var dancesSnap = snapshot.val();
       var danceList = [];
-      Object.keys(dancesSnap).forEach((uid => {
-        danceList.push(Object.assign({uid: uid}, dancesSnap[uid]))
-      }))
-      danceList.sort(sortByDate)
+      var dancesSnap = snapshot.val();
+      if (dancesSnap) {
+        Object.keys(dancesSnap).forEach((uid => {
+          danceList.push(Object.assign({uid: uid}, dancesSnap[uid]))
+        }))
+        danceList.sort(sortByDate)
+      }
       this.setState({danceList: danceList});
     });
   };

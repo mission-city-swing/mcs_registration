@@ -34,12 +34,14 @@ class DanceForm extends PureComponent<Props, State> {
 
   getDanceFromUid = (danceId) => {
     getDance(danceId).on("value", (snapshot) => {
-      this.setState({
-        date: new Date(snapshot.val().date),
-        title: snapshot.val().title,
-        fbLink: snapshot.val().fbLink,
-        info: snapshot.val().info
-      });
+      if (snapshot.val()) {
+        this.setState({
+          date: new Date(snapshot.val().date),
+          title: snapshot.val().title,
+          fbLink: snapshot.val().fbLink,
+          info: snapshot.val().info
+        });
+      }
     });
   }
 
