@@ -43,8 +43,8 @@ function sortDateStrings(a, b) {
 
 
 function sortByNameAndEmail(profileA, profileB) {
-  var nameA = (profileA.firstName + profileA.lastName + profileA.email).toLowerCase();
-  var nameB = (profileB.firstName + profileB.lastName + profileB.email).toLowerCase();
+  var nameA = (profileA.firstName + " " + profileA.lastName + " " + profileA.email).toLowerCase();
+  var nameB = (profileB.firstName + " " + profileB.lastName + " " + profileB.email).toLowerCase();
   if (nameA > nameB) {
     return 1
   } else if (nameA < nameB) {
