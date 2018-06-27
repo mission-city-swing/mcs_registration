@@ -8,6 +8,7 @@ import StudentInfoForm from "../NewStudentForm/form.js";
 import StudentCheckinList from "./checkins.js";
 import ProfileAdminInfoForm from "./infoForm.js";
 import { getProfiles } from "../../lib/api.js";
+import { sortByNameAndEmail } from "../../lib/utils.js";
 
 type State = {};
 
@@ -17,7 +18,7 @@ class StudentPage extends PureComponent<Props, State> {
 
   state: State = {
   	selected: "",
-    profileList: {}
+    profileList: []
   };
 
   componentDidMount() {
@@ -31,15 +32,19 @@ class StudentPage extends PureComponent<Props, State> {
     }
 
     getProfiles.on("value", (snapshot) => {
+      var profiles = [];
       var snapshotVal = snapshot.val();
-      var profiles = {};
-      Object.keys(snapshotVal).forEach(function(key) {
-        profiles[snapshotVal[key].email] = {
-          firstName: snapshotVal[key].firstName,
-          lastName: snapshotVal[key].lastName,
-          email: snapshotVal[key].email
-        }
-      });
+      if (snapshotVal) {
+        Object.keys(snapshotVal).forEach(function(key) {
+          profiles.push({
+            firstName: snapshotVal[key].firstName,
+            lastName: snapshotVal[key].lastName,
+            email: snapshotVal[key].email,
+            uid: key
+          });
+        });
+      }
+      profiles.sort(sortByNameAndEmail)
       this.setState({profileList: profiles});
     });
   };
@@ -63,9 +68,9 @@ class StudentPage extends PureComponent<Props, State> {
             <FormGroup>
               <select onChange={this.onCheckinSelectChange} value={this.state.selected}>
                 <option value="">Please Select a Student</option>
-                {Object.keys(this.state.profileList).map((uid) => {
+                {this.state.profileList.map((profile) => {
                   return(
-                    <option key={uid} value={uid}>{this.state.profileList[uid].firstName} {this.state.profileList[uid].lastName}, {this.state.profileList[uid].email}</option>
+                    <option key={profile.uid} value={profile.uid}>{profile.firstName} {profile.lastName}, {profile.email}</option>
                   )
                 })}
               </select>

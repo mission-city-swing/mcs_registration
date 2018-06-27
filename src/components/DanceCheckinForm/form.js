@@ -4,6 +4,7 @@ import React, { PureComponent } from "react";
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { DateTimePicker } from 'react-widgets';
 import { addNewDanceCheckin, getProfiles } from "../../lib/api.js";
+import { sortByNameAndEmail } from "../../lib/utils.js";
 import McsAlert from "../Utilities/alert.js";
 import { AdminConfirmButtonModal } from "../Utilities/confirmCheckinModal.js";
 import { CodeOfConductModalLink } from "../Utilities/conductModal.js";
@@ -31,7 +32,8 @@ class DanceCheckinForm extends PureComponent<Props, State> {
   state: State = {
     date: new Date(),
     checkin: {...this.defaultCheckin},
-    profileList: {},
+    profileMap: {},
+    profileList: [],
     success: "",
     error: ""
   };
@@ -39,20 +41,30 @@ class DanceCheckinForm extends PureComponent<Props, State> {
   componentDidMount() {
     // Get list of profiles
     getProfiles.on("value", (snapshot) => {
+      // Need map and list-- map for easy access by email
+      // and ordered list for select drop-down
+      var profileMap = {};
+      var profileList = [];
       var snapshotVal = snapshot.val();
-      var profiles = {};
-      var defaultCheckin = this.defaultCheckin;
-      Object.keys(snapshotVal).forEach(function(key1) {
-        var thisProfile = snapshotVal[key1];
-        profiles[thisProfile.email] = {...defaultCheckin};
-        Object.keys(defaultCheckin).forEach(function(key2){
-          profiles[thisProfile.email][key2] = thisProfile[key2] ? thisProfile[key2] : profiles[thisProfile.email][key2]
+      if (snapshotVal) {
+        var defaultCheckin = this.defaultCheckin;
+        Object.keys(snapshotVal).forEach(function(key1) {
+          var thisProfile = snapshotVal[key1];
+          profileMap[thisProfile.email] = {...defaultCheckin};
+          Object.keys(defaultCheckin).forEach(function(key2){
+            profileMap[thisProfile.email][key2] = thisProfile[key2] ? thisProfile[key2] : profileMap[thisProfile.email][key2]
+          });
+          var guest = thisProfile.adminInfo ? thisProfile.adminInfo.guest : false
+          profileMap[thisProfile.email].info = guest ? "Guest" : "";
+          profileMap[thisProfile.email].alreadySigned = thisProfile.waiverAgree && thisProfile.conductAgree;
         });
-        var guest = thisProfile.adminInfo ? thisProfile.adminInfo.guest : false
-        profiles[thisProfile.email].info = guest ? "Guest" : "";
-        profiles[thisProfile.email].alreadySigned = thisProfile.waiverAgree && thisProfile.conductAgree;
+        profileList = Object.values(this.state.profileMap)
+        profileList.sort(sortByNameAndEmail)
+      }
+      this.setState({
+        profileMap: profileMap,
+        profileList: profileList
       });
-      this.setState({profileList: profiles});
     });
     // Set function for additional actions on submit, like a redirect
     if (this.props.addActionsOnSubmit) {
@@ -68,8 +80,8 @@ class DanceCheckinForm extends PureComponent<Props, State> {
     var newStateCheckin = {...this.state.checkin};
     if (name === "email") {
       // fixes an issue where updating the email wouldn't properly update other fields
-      if (this.state.profileList[value]) {
-        newStateCheckin = Object.assign(newStateCheckin, this.state.profileList[value]);
+      if (this.state.profileMap[value]) {
+        newStateCheckin = Object.assign(newStateCheckin, this.state.profileMap[value]);
       } else {
         // if the email isn't recognized, update the hidden "info" field to be the default
         newStateCheckin = Object.assign(newStateCheckin, {
@@ -87,7 +99,7 @@ class DanceCheckinForm extends PureComponent<Props, State> {
     var value = event.target.value;
     var newStateCheckin = {...this.defaultCheckin};
     if (value) {
-      newStateCheckin = Object.assign(newStateCheckin, this.state.profileList[value])
+      newStateCheckin = Object.assign(newStateCheckin, this.state.profileMap[value])
     } else {
       newStateCheckin = {...this.defaultCheckin}
     }
@@ -168,9 +180,9 @@ class DanceCheckinForm extends PureComponent<Props, State> {
           <FormGroup>
             <select onChange={this.onCheckinSelectChange} value={this.state.checkin.email}>
               <option value="">New Dancer</option>
-              {Object.keys(this.state.profileList).map((uid) => {
+              {this.state.profileList.map((profile) => {
                 return(
-                  <option key={uid} value={uid}>{this.state.profileList[uid].firstName} {this.state.profileList[uid].lastName}, {this.state.profileList[uid].email}</option>
+                  <option key={profile.email} value={profile.email}>{profile.firstName} {profile.lastName}</option>
                 )
               })}
             </select>

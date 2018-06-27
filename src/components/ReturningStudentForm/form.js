@@ -6,7 +6,7 @@ import { DateTimePicker } from 'react-widgets';
 import queryString from 'query-string';
 import type { ClassCheckin } from "../../types.js";
 import { addNewClassCheckin, getProfiles, getProfileByEmail, setLatestMonthlyPass } from "../../lib/api.js";
-import { getSubstringIndex, currentMonthIndex, currentMonthString, currentYear } from "../../lib/utils.js";
+import { getSubstringIndex, currentMonthIndex, currentMonthString, currentYear, sortByNameAndEmail } from "../../lib/utils.js";
 import McsAlert from "../Utilities/alert.js";
 import { AdminConfirmButtonModal } from "../Utilities/confirmCheckinModal.js";
 import { CodeOfConductModalLink } from "../Utilities/conductModal.js";
@@ -36,30 +36,45 @@ class ReturningStudentForm extends PureComponent<Props, State> {
   state: State = {
     date: new Date(),
     checkin: {...this.defaultCheckin},
-    profileList: {},
+    profileList: [],
+    profileMap: {},
     success: "",
     error: ""
   };
 
   componentDidMount() {
-    // Get list of profiles
-    getProfiles.on("value", (snapshot) => {
-      var snapshotVal = snapshot.val();
-      var profiles = {};
-      Object.keys(snapshotVal).forEach((key1) => {
-        var thisProfile = snapshotVal[key1];
-        profiles[thisProfile.email] = this.getCheckinStateForProfile(thisProfile)
-      });
-      this.setState({profileList: profiles});
-    });
+    // Get and set list of profiles for profile select
+    this.getAndSetProfilesList()
     // Get student if redirected from new student form
     this.getStudentFromQuery();
     // Set function for additional actions on submit, like a redirect
     if (this.props.addActionsOnSubmit) {
-      this.addActionsOnSubmit = this.props.addActionsOnSubmit
+      this.addActionsOnSubmit = this.props.addActionsOnSubmit;
     } else {
-      this.addActionsOnSubmit = () => {}
+      this.addActionsOnSubmit = () => {};
     }
+  };
+
+  getAndSetProfilesList = () => {
+    // Get list of profiles and set on the state
+    getProfiles.on("value", (snapshot) => {
+      // Need map and list-- map for easy access by email
+      // and ordered list for select drop-down
+      var profileMap = {};
+      var profileList = [];
+      var snapshotVal = snapshot.val();
+      if (snapshotVal) {
+        Object.keys(snapshotVal).forEach((key) => {
+          profileMap[snapshotVal[key].email] = this.getCheckinStateForProfile(snapshotVal[key]);
+        });
+        profileList = Object.values(profileMap);
+        profileList.sort(sortByNameAndEmail);
+      }
+      this.setState({
+        profileMap: profileMap,
+        profileList: profileList
+      });
+    });
   };
 
   getStudentFromQuery = () => {
@@ -107,8 +122,8 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     var newStateCheckin = {...this.state.checkin};
     if (name === "email") {
       // Fixes an issue where updating the email wouldn't properly update other fields
-      if (this.state.profileList[value]) {
-        newStateCheckin = Object.assign(newStateCheckin, this.state.profileList[value]);
+      if (this.state.profileMap[value]) {
+        newStateCheckin = Object.assign(newStateCheckin, this.state.profileMap[value]);
       } else {
         // If the email isn't recognized, update the hidden fields to be the default
         newStateCheckin = Object.assign(newStateCheckin, {
@@ -127,7 +142,7 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     var value = event.target.value;
     var newStateCheckin = {...this.state.checkin};
     if (value) {
-      newStateCheckin = Object.assign(newStateCheckin, this.state.profileList[value]);
+      newStateCheckin = Object.assign(newStateCheckin, this.state.profileMap[value]);
     } else {
       newStateCheckin = {...this.defaultCheckin}
     }
@@ -274,9 +289,9 @@ class ReturningStudentForm extends PureComponent<Props, State> {
           <FormGroup>
             <select onChange={this.onCheckinSelectChange} value={this.state.checkin.email}>
               <option value="">Select A Student</option>
-              {Object.keys(this.state.profileList).map((uid) => {
+              {this.state.profileList.map((profile) => {
                 return(
-                  <option key={uid} value={uid}>{this.state.profileList[uid].firstName} {this.state.profileList[uid].lastName}, {this.state.profileList[uid].email}</option>
+                  <option key={profile.email} value={profile.email}>{profile.firstName} {profile.lastName}</option>
                 )
               })}
             </select>
