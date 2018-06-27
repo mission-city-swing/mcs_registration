@@ -77,7 +77,7 @@ class StudentCheckinList extends PureComponent<Props, State> {
   getLatestMonthlyPassFromEmail = (studentEmail) => {
     getProfileByEmail(studentEmail).on("value", (snapshot) => {
       var profile = snapshot.val();
-      if (profile.latestMonthlyPass) {
+      if (profile && profile.latestMonthlyPass) {
         this.setState({latestMonthlyPass: profile.latestMonthlyPass})
       }
     })

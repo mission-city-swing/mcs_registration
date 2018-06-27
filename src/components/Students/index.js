@@ -35,13 +35,12 @@ class StudentPage extends PureComponent<Props, State> {
       var profiles = [];
       var snapshotVal = snapshot.val();
       if (snapshotVal) {
-        Object.keys(snapshotVal).forEach(function(key) {
-          profiles.push({
-            firstName: snapshotVal[key].firstName,
-            lastName: snapshotVal[key].lastName,
-            email: snapshotVal[key].email,
-            uid: key
-          });
+        profiles = Object.values(snapshotVal).map((profile) => {
+          return {
+            firstName: profile.firstName,
+            lastName: profile.lastName,
+            email: profile.email
+          };
         });
       }
       profiles.sort(sortByNameAndEmail)
@@ -70,7 +69,7 @@ class StudentPage extends PureComponent<Props, State> {
                 <option value="">Please Select a Student</option>
                 {this.state.profileList.map((profile) => {
                   return(
-                    <option key={profile.uid} value={profile.uid}>{profile.firstName} {profile.lastName}, {profile.email}</option>
+                    <option key={profile.email} value={profile.email}>{profile.firstName} {profile.lastName}</option>
                   )
                 })}
               </select>
