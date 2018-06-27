@@ -68,18 +68,15 @@ class StudentInfoForm extends PureComponent<Props, State> {
   }
 
   onChange = (event: any) => {
-    const name = event.target.name;
-    const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
+    var name = event.target.name;
+    var value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
     this.setState({
       [name]: value
     });
   };
 
   onMultiChange = (event: any) => {
-    const name = event.target.name;
-    const checked = event.target.checked;
-    const value = event.target.value;
-
+    var [name, checked, value] = [event.target.name, event.target.checked, event.target.value];
     var newArray = this.state[name].slice()
     if (checked) {
       newArray.push(value);

@@ -43,22 +43,12 @@ class DanceCheckinForm extends PureComponent<Props, State> {
     getProfiles.on("value", (snapshot) => {
       // Need map and list-- map for easy access by email
       // and ordered list for select drop-down
-      var profileMap = {};
-      var profileList = [];
-      var snapshotVal = snapshot.val();
+      var [profileMap, profileList, snapshotVal] = [{}, [], snapshot.val()];
       if (snapshotVal) {
-        var defaultCheckin = this.defaultCheckin;
-        Object.keys(snapshotVal).forEach(function(key1) {
-          var thisProfile = snapshotVal[key1];
-          profileMap[thisProfile.email] = {...defaultCheckin};
-          Object.keys(defaultCheckin).forEach(function(key2){
-            profileMap[thisProfile.email][key2] = thisProfile[key2] ? thisProfile[key2] : profileMap[thisProfile.email][key2]
-          });
-          var guest = thisProfile.adminInfo ? thisProfile.adminInfo.guest : false
-          profileMap[thisProfile.email].info = guest ? "Guest" : "";
-          profileMap[thisProfile.email].alreadySigned = thisProfile.waiverAgree && thisProfile.conductAgree;
+        Object.keys(snapshotVal).forEach((key) => {
+          profileMap[snapshotVal[key].email] = this.getCheckinStateForProfile(snapshotVal[key]);
         });
-        profileList = Object.values(this.state.profileMap)
+        profileList = Object.values(profileMap)
         profileList.sort(sortByNameAndEmail)
       }
       this.setState({
@@ -73,6 +63,19 @@ class DanceCheckinForm extends PureComponent<Props, State> {
       this.addActionsOnSubmit = () => {}
     }
   };
+
+  getCheckinStateForProfile = (profile) => {
+    // Helper method for getting the appropriate info from a profile
+    // for the class checkin
+    var newCheckinState = {...this.defaultCheckin};
+    Object.keys(newCheckinState).forEach((key) => {
+      newCheckinState[key] = profile[key] ? profile[key] : newCheckinState[key]
+    });
+    var guest = profile.adminInfo ? profile.adminInfo.guest : false;
+    newCheckinState.info = guest ? "Guest" : "";
+    newCheckinState.alreadySigned = profile.waiverAgree && profile.conductAgree;
+    return newCheckinState
+  }
 
   onCheckinChange = (event: any) => {
     const name = event.target.name;

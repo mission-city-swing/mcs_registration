@@ -37,9 +37,7 @@ export default class MyNavbar extends Component {
       <div>
         <Navbar color="faded" light expand="md">
           <NavbarBrand href="/">
-            {/*<a href="/">*/}
-              <img alt="Mission City Swing" style={{ height: 50 }} src="http://mcs-static.s3-website-us-east-1.amazonaws.com/mcs-blank-cropped.png" />
-            {/*</a>*/}
+            <img alt="Mission City Swing" style={{ height: 30 }} src="http://mcs-static.s3-website-us-east-1.amazonaws.com/mcs-blank-cropped.png" />
           </NavbarBrand>
           <NavbarToggler onClick={this.toggle} />
           <Collapse isOpen={this.state.isOpen} navbar>

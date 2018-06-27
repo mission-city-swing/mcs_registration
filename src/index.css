@@ -3,3 +3,8 @@ body {
   padding: 1em;
   font-family: sans-serif;
 }
+
+/* Custom class for the home page cards */
+.minHeight-50px {
+	min-height: 50px
+}
