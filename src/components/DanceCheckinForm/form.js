@@ -20,10 +20,12 @@ class DanceCheckinForm extends PureComponent<Props, State> {
     firstName: "",
     lastName: "",
     email: "",
-    info: "New Dancer",
+    info: "",
+    guest: false,
     student: false,
     waiverAgree: false,
-    conductAgree: false
+    conductAgree: false,
+    alreadySigned: false
   }
 
   state: State = {
@@ -46,7 +48,9 @@ class DanceCheckinForm extends PureComponent<Props, State> {
         Object.keys(defaultCheckin).forEach(function(key2){
           profiles[thisProfile.email][key2] = thisProfile[key2] ? thisProfile[key2] : profiles[thisProfile.email][key2]
         });
-        profiles[thisProfile.email].info = "";
+        var guest = thisProfile.adminInfo ? thisProfile.adminInfo.guest : false
+        profiles[thisProfile.email].info = guest ? "Guest" : "";
+        profiles[thisProfile.email].alreadySigned = thisProfile.waiverAgree && thisProfile.conductAgree;
       });
       this.setState({profileList: profiles});
     });
@@ -188,22 +192,14 @@ class DanceCheckinForm extends PureComponent<Props, State> {
             </Label>
           </FormGroup>
           <br></br>
-          <FormGroup check>
-            <Label check>
-              <Input name="waiverAgree" type="checkbox" checked={this.state.checkin.waiverAgree} />
-              <LiabilityWaiverModalLink afterConfirm={this.afterWaiverConfirm.bind(this)}>
-                <strong>I agree to the Mission City Swing Liability Waiver</strong>
-              </LiabilityWaiverModalLink>
-            </Label>
-          </FormGroup>
-          <br></br>
-          <FormGroup check>
-            <Label check>
-              <Input name="conductAgree" type="checkbox" checked={this.state.checkin.conductAgree} />
-              <strong><CodeOfConductModalLink afterConfirm={this.afterConductConfirm.bind(this)}>I agree to the Mission City Swing Code of Conduct</CodeOfConductModalLink></strong>
-            </Label>
-          </FormGroup>
-          <br></br>
+          { !this.state.checkin.alreadySigned &&
+            <div>
+              <LiabilityWaiverModalLink checked={this.state.checkin.waiverAgree} afterConfirm={this.afterWaiverConfirm.bind(this)}  />
+              <br></br>
+              <CodeOfConductModalLink checked={this.state.checkin.conductAgree} afterConfirm={this.afterConductConfirm.bind(this)} />
+              <br></br>
+            </div>
+          }
           {this.state.checkin.email.length > 0 &&
             <div>
               <AdminConfirmButtonModal buttonOptions={{color: "primary"}} afterConfirm={this.onSubmit} modalHeader="Confirm" modalBody="Please hand the tablet to the desk attendant for confirmation and payment. Thank you!" modalData={Object.assign({date: this.state.date}, this.state.checkin)}>Submit</AdminConfirmButtonModal>

@@ -25,10 +25,12 @@ export type ProfileAdminInfo = {
   author: string
 };
 
-export type LatestMonthlyPass = {
+export type MonthlyPass = {
   email: string,
   numClasses: int,
   monthName: string,
+  year: string,
+  classes: [],
   author: string
 };
 

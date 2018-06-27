@@ -6,7 +6,7 @@ import { DateTimePicker } from 'react-widgets';
 import queryString from 'query-string';
 import type { ClassCheckin } from "../../types.js";
 import { addNewClassCheckin, getProfiles, getProfileByEmail, setLatestMonthlyPass } from "../../lib/api.js";
-import { getSubstringIndex, currentMonthIndex, currentMonthString } from "../../lib/utils.js";
+import { getSubstringIndex, currentMonthIndex, currentMonthString, currentYear } from "../../lib/utils.js";
 import McsAlert from "../Utilities/alert.js";
 import { AdminConfirmButtonModal } from "../Utilities/confirmCheckinModal.js";
 import { CodeOfConductModalLink } from "../Utilities/conductModal.js";
@@ -23,11 +23,12 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     firstName: "",
     lastName: "",
     email: "",
-    info: "New Dancer",
+    info: "",
     student: false,
     waiverAgree: false,
     conductAgree: false,
     completedFundamentals: false,
+    alreadySigned: false,
     latestMonthlyPass: {},
     classes: []
   }
@@ -45,16 +46,9 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     getProfiles.on("value", (snapshot) => {
       var snapshotVal = snapshot.val();
       var profiles = {};
-      var defaultCheckin = this.defaultCheckin;
-      Object.keys(snapshotVal).forEach(function(key1) {
+      Object.keys(snapshotVal).forEach((key1) => {
         var thisProfile = snapshotVal[key1];
-        profiles[thisProfile.email] = {...defaultCheckin};
-        // For all fields in checkin, set those values, if they exist
-        Object.keys(defaultCheckin).forEach(function(key2){
-          profiles[thisProfile.email][key2] = thisProfile[key2] ? thisProfile[key2] : profiles[thisProfile.email][key2]
-        });
-        profiles[thisProfile.email].completedFundamentals = (thisProfile.adminInfo ? thisProfile.adminInfo : {}).completedFundamentals ? true : false
-        profiles[thisProfile.email].info = "";
+        profiles[thisProfile.email] = this.getCheckinStateForProfile(thisProfile)
       });
       this.setState({profileList: profiles});
     });
@@ -77,20 +71,35 @@ class ReturningStudentForm extends PureComponent<Props, State> {
           getProfileByEmail(parsedSearch["email"]).on("value", (snapshot) => {
             var student = snapshot.val();
             if (student) {
-              var newStateCheckin = {...this.state.checkin};
-              Object.keys(newStateCheckin).forEach(function(key){
-                newStateCheckin[key] = student[key] ? student[key] : newStateCheckin[key]
-              });
-              newStateCheckin.completedFundamentals = (student.adminInfo ? student.adminInfo : {}).completedFundamentals ? true : false
-              // Make sure to note if they're a new dancer
-              newStateCheckin.info = parsedSearch["new-dancer"] ? "New Dancer" : "";
-              this.setState({checkin: newStateCheckin});
+              this.setState({checkin: this.getCheckinStateForProfile(student, parsedSearch["new-dancer"])});
             }
           });
         }
       }
     }
   };
+
+  getCheckinStateForProfile = (profile, newDancer = false) => {
+    // Helper method for getting the appropriate info from a profile
+    // for the class checkin
+    var newCheckinState = {...this.defaultCheckin};
+    Object.keys(newCheckinState).forEach(function(key){
+      newCheckinState[key] = profile[key] ? profile[key] : newCheckinState[key]
+    });
+    newCheckinState.completedFundamentals = (profile.adminInfo ? profile.adminInfo : {}).completedFundamentals ? true : false
+    var info = []
+    // Make sure to note if they're a new dancer
+    if ((profile.adminInfo ? profile.adminInfo : {}).guest) { info.push("Guest") }
+    // Make sure to note if profile is a guest of MCS
+    if (newDancer) { info.push("New Dancer") }
+    newCheckinState.info = info.join(", ")
+    // Set latest monthly pass info, including classes
+    if (newCheckinState.latestMonthlyPass.monthName === currentMonthString() && newCheckinState.latestMonthlyPass.year === currentYear()) {
+      newCheckinState.classes = [...newCheckinState.latestMonthlyPass.classes]
+    }
+    newCheckinState.alreadySigned = profile.waiverAgree && profile.conductAgree;
+    return newCheckinState
+  }
 
   onCheckinChange = (event: any) => {
     const name = event.target.name;
@@ -101,7 +110,7 @@ class ReturningStudentForm extends PureComponent<Props, State> {
       if (this.state.profileList[value]) {
         newStateCheckin = Object.assign(newStateCheckin, this.state.profileList[value]);
       } else {
-        // if the email isn't recognized, update the hidden fields to be the default
+        // If the email isn't recognized, update the hidden fields to be the default
         newStateCheckin = Object.assign(newStateCheckin, {
           email: value,
           completedFundamentals: this.defaultCheckin.completedFundamentals,
@@ -187,7 +196,7 @@ class ReturningStudentForm extends PureComponent<Props, State> {
   }
 
   updateMonthlyPass() {
-    if (this.state.checkin.latestMonthlyPass.monthName === currentMonthString()) {
+    if (this.state.checkin.latestMonthlyPass.monthName === currentMonthString() && this.state.checkin.latestMonthlyPass.year === currentYear()) {
       return new Promise(function(resolve, reject) {
         resolve("Already have a monthly pass for this month");
       })
@@ -202,7 +211,9 @@ class ReturningStudentForm extends PureComponent<Props, State> {
         return setLatestMonthlyPass({
           email: this.state.checkin.email,
           numClasses: monthClasses.length,
+          classes: monthClasses,
           monthName: currentMonthString(),
+          year: currentYear()
         })
       } else {
         return new Promise(function(resolve, reject) {
@@ -226,17 +237,16 @@ class ReturningStudentForm extends PureComponent<Props, State> {
       this.setState({error: errorText});
       window.scrollTo(0, 0);
     }
-    // Additionally update the monthly pass status
-    var updateMonthlyPass = this.updateMonthlyPass.bind(this)
     // DB request
     try {
-      addNewClassCheckin(Object.assign({...this.state.checkin}, options)).then(function(success) {
-        updateMonthlyPass().then(function(success) {
+      addNewClassCheckin(Object.assign({...this.state.checkin}, options)).then((success) => {
+        // Additionally update the monthly pass status
+        this.updateMonthlyPass().then((success) => {
           onSuccess();
-        }).catch(function(error) {
+        }).catch((error) => {
           onError(error.toString());
-        })
-      }).catch(function(error) {
+        });
+      }).catch((error) => {
         onError(error.toString());
       });
     } catch(error) {
@@ -274,8 +284,8 @@ class ReturningStudentForm extends PureComponent<Props, State> {
           {this.state.checkin.completedFundamentals && 
             <p><strong>{this.state.checkin.firstName} {this.state.checkin.lastName} has completed the MCS fundamentals course.</strong></p>
           }
-          {this.state.checkin.latestMonthlyPass.monthName === currentMonthString() &&
-            <p><strong>Student has a monthly pass for {this.state.checkin.latestMonthlyPass.numClasses} classes for {this.state.checkin.latestMonthlyPass.monthName}</strong></p>
+          {this.state.checkin.latestMonthlyPass.monthName === currentMonthString() && this.state.checkin.latestMonthlyPass.year === currentYear() &&
+            <p><strong>Student has a monthly pass for {this.state.checkin.latestMonthlyPass.numClasses} classes for {this.state.checkin.latestMonthlyPass.monthName} {this.state.checkin.latestMonthlyPass.year}</strong></p>
           }
           <FormGroup>
             <Label for="firstName">First Name</Label><Input placeholder="First Name" value={this.state.checkin.firstName} onChange={this.onCheckinChange} name="firstName" />
@@ -293,22 +303,14 @@ class ReturningStudentForm extends PureComponent<Props, State> {
             </Label>
           </FormGroup>
           <br></br>
-          <FormGroup check>
-            <Label check>
-              <Input name="waiverAgree" type="checkbox" checked={this.state.checkin.waiverAgree} />
-              <LiabilityWaiverModalLink afterConfirm={this.afterWaiverConfirm.bind(this)}>
-                <strong>I agree to the Mission City Swing Liability Waiver</strong>
-              </LiabilityWaiverModalLink>
-            </Label>
-          </FormGroup>
-          <br></br>
-          <FormGroup check>
-            <Label check>
-              <Input name="conductAgree" type="checkbox" checked={this.state.checkin.conductAgree} />
-              <strong><CodeOfConductModalLink afterConfirm={this.afterConductConfirm.bind(this)}>I agree to the Mission City Swing Code of Conduct</CodeOfConductModalLink></strong>
-            </Label>
-          </FormGroup>
-          <br></br>
+          { !this.state.checkin.alreadySigned &&
+            <div>
+              <LiabilityWaiverModalLink checked={this.state.checkin.waiverAgree} afterConfirm={this.afterWaiverConfirm.bind(this)}  />
+              <br></br>
+              <CodeOfConductModalLink checked={this.state.checkin.conductAgree} afterConfirm={this.afterConductConfirm.bind(this)} />
+              <br></br>
+            </div>
+          }
           <FormGroup tag="fieldset">
             <legend>Checking in for... (Select all that apply.)</legend>
             <FormGroup check>

@@ -79,7 +79,6 @@ class StudentPage extends PureComponent<Props, State> {
         <br></br>
         <hr/>
         <div>
-          <h4>Activity</h4>
           <StudentCheckinList {...this.props} ></StudentCheckinList>
         </div>
         <br></br>

@@ -1,5 +1,5 @@
 // @flow
-import type { Profile, Dance, User, ClassCheckin, DanceCheckin, ProfileAdminInfo, LatestMonthlyPass } from "../types.js";
+import type { Profile, Dance, User, ClassCheckin, DanceCheckin, ProfileAdminInfo, MonthlyPass } from "../types.js";
 import uuidv3 from "uuid/v3";
 import Cookies from 'universal-cookie';
 // I don't know if I need this
@@ -20,8 +20,8 @@ const MCS_APP = "9f9e25a0-3087-11e8-9d77-e3d459600d35";
 
 
 // Dancer Profile API
-export const getProfileById = (prodileId) => {
-  return fireDB.database().ref("profiles/" + prodileId);
+export const getProfileById = (profileId) => {
+  return fireDB.database().ref("profiles/" + profileId);
 };
 
 export const getProfileByEmail = (profileEmail) => {
@@ -63,8 +63,8 @@ export const createOrUpdateProfileAdminInfo = (options: ProfileAdminInfo) => {
   return fireDB.database().ref("profiles/" + profileId + "/adminInfo").set(options);
 };
 
-// Set latest monthly pass
-export const setLatestMonthlyPass = (options: LatestMonthlyPass) => {
+// Cache latest monthly pass on profile
+export const setLatestMonthlyPass = (options: MonthlyPass) => {
   var currentUser = getCurrentUser();
   if (currentUser.uuid == null) {
     throw MiscException("Admin must log in to authorize this event", "AuthException")
@@ -73,10 +73,32 @@ export const setLatestMonthlyPass = (options: LatestMonthlyPass) => {
     throw MiscException("Must include profile email", "FormException")
   }
   const profileId = uuidv3(options.email, MCS_APP);
-  // Don't want to add email to profile twice
-  delete options.email;
-  return fireDB.database().ref("profiles/" + profileId + "/latestMonthlyPass").set(options);
+  // Don't want to add email to profile object twice, but we want it when
+  // we save the monthly pass object
+  var withoutEmail = {...options}
+  delete withoutEmail.email;
+  return fireDB.database().ref("profiles/" + profileId + "/latestMonthlyPass").set(withoutEmail).then((success) => {
+    return addMonthlyPass(options)
+  })
 };
+
+// Monthly Pass API
+export const addMonthlyPass = (options: MonthlyPass) => {
+  var currentUser = getCurrentUser();
+  if (currentUser.uuid == null) {
+    throw MiscException("Admin must log in to authorize this event", "AuthException")
+  }
+  if (!options.email) {
+    throw MiscException("Must include profile email", "FormException")
+  }
+  const passId = uuidv3(options.email + options.year + options.monthName, MCS_APP);
+  // Don't want to add email to profile twice
+  return fireDB.database().ref("monthly-passes/" + passId).set(options);
+};
+
+export const getMonthlyPassesByEmail = (profileEmail) => {
+  return fireDB.database().ref("monthly-passes/").orderByChild("email").equalTo(profileEmail)
+}
 
 // Dance API
 export const getDances = fireDB.database().ref("dances/").orderByChild('date');

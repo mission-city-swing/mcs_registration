@@ -13,6 +13,9 @@
     },
     "dances": {
       ".indexOn": ["date"]
+    },
+    "monthly-passes": {
+      ".indexOn": ["year", "monthName", "email"]
     }
   }
 }

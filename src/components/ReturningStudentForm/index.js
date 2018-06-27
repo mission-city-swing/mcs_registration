@@ -26,8 +26,8 @@ class ReturningStudentPage extends PureComponent<Props, State> {
   render() {
     return (
       <div className="App">
-        <h1>Returning Student</h1>
-        <p>Welcome back! Please select today's date and enter your email to sign in!</p>
+        <h1>Class Checkin</h1>
+        <p>Fill out this form to check in for class. Please select today's date and your email address to sign in.</p>
         <ErrorBoundary>
 	        <ReturningStudentForm {...this.props} addActionsOnSubmit={this.addActionsOnSubmit}></ReturningStudentForm>
         </ErrorBoundary>

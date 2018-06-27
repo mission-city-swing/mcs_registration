@@ -54,7 +54,7 @@ class AdminConfirmButtonModal extends React.Component {
             </div>
             <div>
               <FormGroup>
-                <Label for="info">Additional Info</Label><Input type="textarea" placeholder="New dancer? Guest?" onChange={this.onInfoChange} value={this.state.modalData.info} name="info" />
+                <Label for="info">Additional Info</Label><Input type="textarea" placeholder="Placeholder: please note if student is a new dancer and/or guest" onChange={this.onInfoChange} value={this.state.modalData.info} name="info" />
               </FormGroup>
             </div>
           </ModalBody>
