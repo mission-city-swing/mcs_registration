@@ -60,9 +60,7 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     getProfiles.on("value", (snapshot) => {
       // Need map and list-- map for easy access by email
       // and ordered list for select drop-down
-      var profileMap = {};
-      var profileList = [];
-      var snapshotVal = snapshot.val();
+      var [profileMap, profileList, snapshotVal] = [{}, [], snapshot.val()];
       if (snapshotVal) {
         Object.keys(snapshotVal).forEach((key) => {
           profileMap[snapshotVal[key].email] = this.getCheckinStateForProfile(snapshotVal[key]);
@@ -117,8 +115,8 @@ class ReturningStudentForm extends PureComponent<Props, State> {
   }
 
   onCheckinChange = (event: any) => {
-    const name = event.target.name;
-    const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
+    var name = event.target.name;
+    var value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
     var newStateCheckin = {...this.state.checkin};
     if (name === "email") {
       // Fixes an issue where updating the email wouldn't properly update other fields
@@ -154,10 +152,8 @@ class ReturningStudentForm extends PureComponent<Props, State> {
   };
 
   onMultiTypeCheckinChange = (event: any) => {
-    const name = event.target.name;
-    const checked = event.target.checked;
-    const value = event.target.value;
-    const valueType = value.split(', ')[0];
+    var [name, checked, value] = [event.target.name, event.target.checked, event.target.value];
+    var valueType = value.split(', ')[0];
 
     var newArray = this.state.checkin[name].slice()
     var typeIndex = getSubstringIndex(newArray, valueType);

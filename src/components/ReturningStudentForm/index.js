@@ -11,12 +11,12 @@ class ReturningStudentPage extends PureComponent<Props, State> {
   addActionsOnSubmit = (options = null) => {
     var toUrl = "/";
     if (options.success || options.error) {
-      toUrl = toUrl + "?"
+      toUrl = toUrl + "?";
       if (options.success) {
-        toUrl = toUrl + "success=" + options.success
+        toUrl = toUrl + "success=" + encodeURIComponent(options.success);
       }
       if (options.error) {
-        toUrl = toUrl + "error=" + options.error
+        toUrl = toUrl + "error=" + encodeURIComponent(options.error);
       }
     }
     this.props.history.push(toUrl);

@@ -46,23 +46,23 @@ class Home extends Component {
           <Container>
             <Row>
               <Col>
-                <Card className="card-body text-center">
-                  <CardTitle>New Student Form</CardTitle>
-                  <CardText>Fill out new student details form.</CardText>
+                <Card className="card-body text-center mb-2">
+                  <CardTitle className="minHeight-50px">New Student Form</CardTitle>
+                  <CardText className="minHeight-50px">Fill out new student details form.</CardText>
                   <Link to="/new-student"><Button size="lg">New Student</Button></Link>
                 </Card>
               </Col>
               <Col>
-                <Card className="card-body text-center">
-                  <CardTitle>Returning Student Class Checkin</CardTitle>
-                  <CardText>Returning students check in here.</CardText>
+                <Card className="card-body text-center mb-2">
+                  <CardTitle className="minHeight-50px">Returning Student Class Checkin</CardTitle>
+                  <CardText className="minHeight-50px">Returning students check in here.</CardText>
                   <Link to="/class-checkin"><Button size="lg">Class Checkin</Button></Link>
                 </Card>
               </Col>
               <Col>
-                <Card className="card-body text-center">
-                  <CardTitle>Dance Checkin</CardTitle>
-                  <CardText>Check into the dance.</CardText>
+                <Card className="card-body text-center mb-2">
+                  <CardTitle className="minHeight-50px">Dance Checkin</CardTitle>
+                  <CardText className="minHeight-50px">Check into the dance.</CardText>
                   <Link to="/dance-checkin"><Button size="lg">Dance Checkin</Button></Link>
                 </Card>
 
