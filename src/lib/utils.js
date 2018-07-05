@@ -64,13 +64,17 @@ function currentMonthIndex() {
   return today.getMonth()
 };
 
-function currentMonthString() {
+function getMonthString(index) {
   var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-  return months[currentMonthIndex()]
+  return months[index]
+}
+
+function currentMonthString() {
+  return getMonthString(currentMonthIndex())
 };
 
 function reactTableFuzzyMatchFilter(filter, row) {
   return String(row[filter.id]).toLowerCase().includes(String(filter.value).toLowerCase())
 };
 
-export { getSubstringIndex, MiscException, sortByDate, sortDateStrings, sortByNameAndEmail, currentMonthIndex, currentMonthString, reactTableFuzzyMatchFilter, currentYear }
+export { getSubstringIndex, MiscException, sortByDate, sortDateStrings, sortByNameAndEmail, currentMonthIndex, currentMonthString, getMonthString, reactTableFuzzyMatchFilter, currentYear }

@@ -6,7 +6,7 @@ import Cookies from 'universal-cookie';
 import firebase from 'firebase';
 // I have purposely added fire.js to the .gitignore so we don't check in our keys
 import { StageDB, ProductionDB } from '../fire.js'
-import { MiscException } from './utils.js'
+import { MiscException, getMonthString } from './utils.js'
 
 
 const cookies = new Cookies();
@@ -41,11 +41,13 @@ export const createOrUpdateProfile = (options: Profile) => {
   if (!(options.email && options.firstName && options.lastName)) {
     throw MiscException("First name, last name, and email required", "FormException")
   }
+  options.birthday = getMonthString(options.birthday.getMonth()) + " " + options.birthday.getDate();
+  options.memberDate = options.memberDate.toDateString()
   const profileId = uuidv3(options.email, MCS_APP);
-  return fireDB.database().ref("profiles/" + profileId).set(options);
+  return fireDB.database().ref("profiles/" + profileId + "/profile").set(options);
 };
 
-export const getProfiles = fireDB.database().ref("profiles/").orderByChild('lastName');
+export const getProfiles = fireDB.database().ref("profiles/");
 
 // Admin Info API
 export const createOrUpdateProfileAdminInfo = (options: ProfileAdminInfo) => {
@@ -69,6 +71,7 @@ export const setLatestMonthlyPass = (options: MonthlyPass) => {
   if (currentUser.uuid == null) {
     throw MiscException("Admin must log in to authorize this event", "AuthException")
   }
+  options.author = currentUser.uuid;
   if (!options.email) {
     throw MiscException("Must include profile email", "FormException")
   }
@@ -150,9 +153,11 @@ export const addNewDanceCheckin = (options: DanceCheckin) => {
   const profileId = uuidv3(options.email, MCS_APP);
   return fireDB.database().ref("profiles/" + profileId).once("value").then(function(snapshot){
     if (snapshot.val() == null) {
-      return fireDB.database().ref("profiles/" + profileId).set(options);
+      var profile = {...options};
+      profile.memberDate = (new Date()).toDateString();
+      return fireDB.database().ref("profiles/" + profileId + "/profile").set(profile);
     } else {
-      return fireDB.database().ref("profiles/" + profileId).once("value");
+      return fireDB.database().ref("profiles/" + profileId).once("value")
     }
   });
 };
@@ -191,7 +196,10 @@ export const addNewClassCheckin = (options: ClassCheckin) => {
     const profileId = uuidv3(options.email, MCS_APP);
     fireDB.database().ref("profiles/" + profileId).once("value").then(function(snapshot){
       if (snapshot.val() == null) {
-        return fireDB.database().ref("profiles/" + profileId).set(options);
+        var profile = {...options};
+        profile.memberDate = (new Date()).toDateString();
+        delete profile.classes;
+        return fireDB.database().ref("profiles/" + profileId + "/profile").set(profile);
       } else {
         return fireDB.database().ref("profiles/" + profileId).once("value")
       }

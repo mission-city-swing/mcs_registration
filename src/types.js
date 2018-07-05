@@ -5,6 +5,8 @@ export type Profile = {
   lastName: string,
   email: string,
   phoneNumber: string,
+  birthday: Date,
+  memberDate: Date,
   discoveryMethod: string,
   discoveryMethodFriend: string,
   discoveryMethodOther: string,
@@ -35,7 +37,7 @@ export type MonthlyPass = {
 };
 
 export type Dance = {
-  date: string,
+  date: Date,
   title: string,
   fbLink: string,
   info: string,

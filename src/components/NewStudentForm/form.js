@@ -3,6 +3,7 @@
 import React, { PureComponent } from "react";
 import { withRouter } from 'react-router-dom';
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import { DateTimePicker } from 'react-widgets';
 import queryString from 'query-string';
 import type { Profile } from "../../types.js";
 import { createOrUpdateProfile, getProfileByEmail } from "../../lib/api.js";
@@ -23,6 +24,8 @@ class StudentInfoForm extends PureComponent<Props, State> {
     lastName: "",
     email: "",
     phoneNumber: "",
+    birthday: new Date(),
+    memberDate: new Date(),
     discoveryMethod: "",
     discoveryMethodFriend: "",
     discoveryMethodOther: "",
@@ -63,7 +66,12 @@ class StudentInfoForm extends PureComponent<Props, State> {
 
   getStudentFromEmail = (studentEmail) => {
     getProfileByEmail(studentEmail).on("value", (snapshot) => {
-      this.setState(snapshot.val())
+      if (snapshot.val()) {
+        var profile = snapshot.val().profile;
+        profile.birthday = new Date(profile.birthday)
+        profile.memberDate = new Date(profile.memberDate)
+        this.setState(profile)
+      }
     });
   }
 
@@ -73,6 +81,14 @@ class StudentInfoForm extends PureComponent<Props, State> {
     this.setState({
       [name]: value
     });
+  };
+
+  onDateChange = (value) => {
+    this.setState({birthday: value});
+  };
+
+  onMemberDateChange = (value) => {
+    this.setState({memberDate: value});
   };
 
   onMultiChange = (event: any) => {
@@ -172,6 +188,19 @@ class StudentInfoForm extends PureComponent<Props, State> {
           </FormGroup>
           <FormGroup>
             <Label>Phone Number</Label><Input placeholder="123-456-7890" onChange={this.onChange} value={this.state.phoneNumber} type="tel" id="phoneNumber" name="phoneNumber" />
+          </FormGroup>
+          <FormGroup>
+            <Label for="birthday">Birthday (so that we can invite you to birthday jams)</Label>
+            <DateTimePicker 
+              time={false}
+              format={'MMMM D'}
+              value={this.state.birthday}
+              name="birthday"
+              onChange={this.onDateChange}
+              views={['month']}
+              footer={false}
+              headerFormat={'MMMM'}
+            />
           </FormGroup>
           <br></br>
           <FormGroup check>
@@ -294,6 +323,17 @@ class StudentInfoForm extends PureComponent<Props, State> {
           <LiabilityWaiverModalLink checked={this.state.waiverAgree} afterConfirm={this.afterWaiverConfirm.bind(this)}  />
           <br></br>
           <CodeOfConductModalLink checked={this.state.conductAgree} afterConfirm={this.afterConductConfirm.bind(this)} />
+          <br></br>
+          <FormGroup>
+            <Label for="memberDate">Member Since</Label>
+            <DateTimePicker 
+              time={false}
+              format={'dddd, MMMM Do YYYY'}
+              value={this.state.memberDate}
+              name="memberDate"
+              onChange={this.onMemberDateChange}
+            />
+          </FormGroup>
           <br></br>
           <ConfirmButtonPopover buttonOptions={{color: "primary"}} popoverOptions={{placement: "top"}} afterConfirm={this.onSubmit} popoverHeader="Confirm Your Information" popoverBody="Please confirm that your name and email are correct and that you have signed our liability waiver and code of conduct.">Submit</ConfirmButtonPopover>
           <span className="mr-1"></span>

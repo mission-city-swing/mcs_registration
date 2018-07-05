@@ -46,7 +46,7 @@ class DanceCheckinForm extends PureComponent<Props, State> {
       var [profileMap, profileList, snapshotVal] = [{}, [], snapshot.val()];
       if (snapshotVal) {
         Object.keys(snapshotVal).forEach((key) => {
-          profileMap[snapshotVal[key].email] = this.getCheckinStateForProfile(snapshotVal[key]);
+          profileMap[snapshotVal[key].profile.email] = this.getCheckinStateForProfile(snapshotVal[key].profile);
         });
         profileList = Object.values(profileMap)
         profileList.sort(sortByNameAndEmail)
@@ -152,7 +152,11 @@ class DanceCheckinForm extends PureComponent<Props, State> {
       this.setState({error: errorText});
       window.scrollTo(0, 0);
     }
-
+    var thisDanceCheckin = Object.assign({...this.state.checkin}, options)
+    // delete convenience attrs
+    delete thisDanceCheckin.alreadySigned;
+    delete thisDanceCheckin.guest;
+    // DB request
     try {
       addNewDanceCheckin(Object.assign({...this.state.checkin}, options)).then(function(){
         onSuccess();

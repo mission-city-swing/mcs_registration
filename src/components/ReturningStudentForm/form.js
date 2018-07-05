@@ -63,7 +63,7 @@ class ReturningStudentForm extends PureComponent<Props, State> {
       var [profileMap, profileList, snapshotVal] = [{}, [], snapshot.val()];
       if (snapshotVal) {
         Object.keys(snapshotVal).forEach((key) => {
-          profileMap[snapshotVal[key].email] = this.getCheckinStateForProfile(snapshotVal[key]);
+          profileMap[snapshotVal[key].profile.email] = this.getCheckinStateForProfile(snapshotVal[key]);
         });
         profileList = Object.values(profileMap);
         profileList.sort(sortByNameAndEmail);
@@ -82,9 +82,11 @@ class ReturningStudentForm extends PureComponent<Props, State> {
         if (parsedSearch["email"]) {
           // Get student info from their email
           getProfileByEmail(parsedSearch["email"]).on("value", (snapshot) => {
-            var student = snapshot.val();
-            if (student) {
-              this.setState({checkin: this.getCheckinStateForProfile(student, parsedSearch["new-dancer"])});
+            if (snapshot.val()) {
+              var student = snapshot.val();
+              if (student) {
+                this.setState({checkin: this.getCheckinStateForProfile(student, parsedSearch["new-dancer"])});
+              }
             }
           });
         }
@@ -92,17 +94,18 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     }
   };
 
-  getCheckinStateForProfile = (profile, newDancer = false) => {
+  getCheckinStateForProfile = (profileObj, newDancer = false) => {
     // Helper method for getting the appropriate info from a profile
     // for the class checkin
     var newCheckinState = {...this.defaultCheckin};
     Object.keys(newCheckinState).forEach(function(key){
-      newCheckinState[key] = profile[key] ? profile[key] : newCheckinState[key]
+      newCheckinState[key] = profileObj.profile[key] ? profileObj.profile[key] : newCheckinState[key]
     });
-    newCheckinState.completedFundamentals = (profile.adminInfo ? profile.adminInfo : {}).completedFundamentals ? true : false
+    newCheckinState.completedFundamentals = (profileObj.adminInfo ? profileObj.adminInfo : {}).completedFundamentals ? true : false
+    newCheckinState.latestMonthlyPass = profileObj.latestMonthlyPass ? profileObj.latestMonthlyPass : {}
     var info = []
     // Make sure to note if they're a new dancer
-    if ((profile.adminInfo ? profile.adminInfo : {}).guest) { info.push("Guest") }
+    if ((profileObj.adminInfo ? profileObj.adminInfo : {}).guest) { info.push("Guest") }
     // Make sure to note if profile is a guest of MCS
     if (newDancer) { info.push("New Dancer") }
     newCheckinState.info = info.join(", ")
@@ -110,7 +113,7 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     if (newCheckinState.latestMonthlyPass.monthName === currentMonthString() && newCheckinState.latestMonthlyPass.year === currentYear()) {
       newCheckinState.classes = [...newCheckinState.latestMonthlyPass.classes]
     }
-    newCheckinState.alreadySigned = profile.waiverAgree && profile.conductAgree;
+    newCheckinState.alreadySigned = profileObj.profile.waiverAgree && profileObj.profile.conductAgree;
     return newCheckinState
   }
 
@@ -248,9 +251,14 @@ class ReturningStudentForm extends PureComponent<Props, State> {
       this.setState({error: errorText});
       window.scrollTo(0, 0);
     }
+    var thisCheckin = Object.assign({...this.state.checkin}, options)
+    // Remove helper data not necessary for checkin object
+    delete thisCheckin.latestMonthlyPass;
+    delete thisCheckin.alreadySigned;
+    delete thisCheckin.completedFundamentals;
     // DB request
     try {
-      addNewClassCheckin(Object.assign({...this.state.checkin}, options)).then((success) => {
+      addNewClassCheckin(thisCheckin).then((success) => {
         // Additionally update the monthly pass status
         this.updateMonthlyPass().then((success) => {
           onSuccess();

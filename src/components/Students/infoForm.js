@@ -23,6 +23,7 @@ class ProfileAdminInfoForm extends PureComponent<Props, State> {
   state: State = {
     email: "",
     adminInfo: {...this.defaultFields},
+    profileInfo: {},
     success: "",
     error: ""
   }
@@ -46,7 +47,7 @@ class ProfileAdminInfoForm extends PureComponent<Props, State> {
       if (snapshot.val()) {
         var adminInfo = snapshot.val()["adminInfo"] ? snapshot.val()["adminInfo"] : {};
         var newAdminInfo = Object.assign({...this.state.adminInfo}, adminInfo)
-        this.setState({email: studentEmail, adminInfo: newAdminInfo});
+        this.setState({email: studentEmail, adminInfo: newAdminInfo, profileInfo: snapshot.val()});
       }
     });
   }
@@ -104,6 +105,7 @@ class ProfileAdminInfoForm extends PureComponent<Props, State> {
 
     return (
       <div>
+        <h4>Update Admin Info</h4>
         <McsAlert color="success" text={this.state.success} visible={this.state.success.length > 0} onToggle={this.toggleAlerts.bind(this)}></McsAlert>
         <McsAlert color="danger" text={this.state.error} visible={this.state.error.length > 0} onToggle={this.toggleAlerts.bind(this)}></McsAlert>
         <Form onSubmit={this.onSubmit}>
