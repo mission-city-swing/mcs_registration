@@ -1,5 +1,12 @@
 # TODO
 
+
+[ ] Workshop or special event checkin flow
+
+[x] Add birthday to new student form
+
+[x] Add "member since" because it would be a shame to lose that historical info for our members
+
 ### From 2018-06-20 Sync
 
 [x] "Returning students" need to say "Class checkin"
@@ -23,8 +30,9 @@
 
 [x] If you click on the waiver and CoC checkmark, the modals don't open
 
-[ ] Dance events are not connected to dance checkin events-- right now they just have the day (date), but maybe we should do foreign keys?
+[x] On the home page, even after you close the alert, if you refresh the page, the alert shows up again
 
+[x] Profile updates overriding admin info and cached latest monthly pass
 
 
 ### Style

@@ -36,13 +36,24 @@ class Home extends Component {
     }
   };
 
+  onToggleSuccess = () => {
+    this.setState({success: ""});
+    window.history.replaceState("", "", "/");
+  }
+
+  onToggleError = () => {
+    this.setState({error: ""});
+    window.history.replaceState("", "", "/");
+  }
+
+
   render() {
 
     return (
       <div className="App">
         <div>
-          <McsAlert color="success" text={this.state.success} visible={this.state.success.length > 0}></McsAlert>
-          <McsAlert color="danger" text={this.state.error} visible={this.state.error.length > 0}></McsAlert>
+          <McsAlert color="success" text={this.state.success} visible={this.state.success.length > 0} onToggle={this.onToggleSuccess.bind(this)}></McsAlert>
+          <McsAlert color="danger" text={this.state.error} visible={this.state.error.length > 0} onToggle={this.onToggleError.bind(this)}></McsAlert>
           <Container>
             <Row>
               <Col>

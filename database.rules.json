@@ -3,7 +3,11 @@
     ".read": "auth != null",
     ".write": "auth != null",
     "profiles": {
-      ".indexOn": ["email"]
+      "$profilesid": {
+        "profiles": {
+          ".indexOn": ["email"]
+        }
+      }
     },
     "class-checkins": {
       ".indexOn": ["email", "date"]
