@@ -2,7 +2,7 @@
 
 ### From 2018-08-29 form filling notes
 
-[ ] When you enter the name of the referral, the box should get checked automatically
+[x] When you enter the name of the referral, the box should get checked automatically
 
 [ ] Phone number validation JS lib
 
