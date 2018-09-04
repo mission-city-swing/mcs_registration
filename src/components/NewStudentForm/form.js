@@ -83,7 +83,40 @@ class StudentInfoForm extends PureComponent<Props, State> {
     });
   };
 
-  onDateChange = (value) => {
+  clearDiscovery = (discoveryMethod: string) => {
+    this.setState({
+      discoveryMethod: discoveryMethod,
+      discoveryMethodFriend: "",
+      discoveryMethodOther: ""
+    })
+  };
+
+  onDiscoveryChange = (event: any) => {
+    this.clearDiscovery(event.target.name);
+    this.onChange(event);
+  };
+
+  onDiscoveryTextBoxChange = (event: any) => {
+    var name = event.target.name;
+    this.clearDiscovery(name);
+    var value;
+    if (event.target.type === 'checkbox') {
+      value = event.target.checked;
+    } else {
+      value = event.target.value;
+      // If text box is not empty, also set the discoveryMethod
+      if (value) {
+        this.setState({
+          'discoveryMethod': event.target.name === 'discoveryMethodFriend' ? 'friend' : 'other'
+        });
+      }
+    }
+    this.setState({
+      [name]: value
+    });
+  };
+
+  onBirthdayChange = (value) => {
     this.setState({birthday: value});
   };
 
@@ -196,7 +229,7 @@ class StudentInfoForm extends PureComponent<Props, State> {
               format={'MMMM D'}
               value={this.state.birthday}
               name="birthday"
-              onChange={this.onDateChange}
+              onChange={this.onBirthdayChange}
               views={['month']}
               footer={false}
               headerFormat={'MMMM'}
@@ -214,44 +247,44 @@ class StudentInfoForm extends PureComponent<Props, State> {
             <legend className="h5">How did you hear about us?</legend>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'friend'} value="friend" /> Friend
-                <Input onChange={this.onChange} name="discoveryMethodFriend" value={this.state.discoveryMethodFriend} />
+                <Input onChange={this.onDiscoveryTextBoxChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'friend'} value="friend" /> Friend
+                <Input onChange={this.onDiscoveryTextBoxChange} name="discoveryMethodFriend" value={this.state.discoveryMethodFriend} />
               </Label>
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'web search'} value="web search" /> Web Search
+                <Input onChange={this.onDiscoveryChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'web search'} value="web search" /> Web Search
               </Label>
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'flyer'} value="flyer" /> Flyer
+                <Input onChange={this.onDiscoveryChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'flyer'} value="flyer" /> Flyer
               </Label>
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'postcard'} value="postcard" /> Postcard
+                <Input onChange={this.onDiscoveryChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'postcard'} value="postcard" /> Postcard
               </Label>
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'facebook'} value="facebook" /> Facebook
+                <Input onChange={this.onDiscoveryChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'facebook'} value="facebook" /> Facebook
               </Label>
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'yelp'} value="yelp" /> Yelp
+                <Input onChange={this.onDiscoveryChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'yelp'} value="yelp" /> Yelp
               </Label>
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'meetup'} value="meetup" /> Meetup
+                <Input onChange={this.onDiscoveryChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'meetup'} value="meetup" /> Meetup
               </Label>
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'other'} value="other" /> Other
-                <Input onChange={this.onChange} name="discoveryMethodOther" value={this.state.discoveryMethodOther} />
+                <Input onChange={this.onDiscoveryTextBoxChange} type="radio" name="discoveryMethod" checked={this.state.discoveryMethod === 'other'} value="other" /> Other
+                <Input onChange={this.onDiscoveryTextBoxChange} name="discoveryMethodOther" value={this.state.discoveryMethodOther} />
               </Label>
             </FormGroup>
           </FormGroup>
