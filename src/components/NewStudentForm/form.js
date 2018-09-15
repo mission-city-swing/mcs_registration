@@ -6,7 +6,7 @@ import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { DateTimePicker } from 'react-widgets';
 import queryString from 'query-string';
 import type { Profile } from "../../types.js";
-import { createOrUpdateProfile, getProfileByEmail } from "../../lib/api.js";
+import { createOrUpdateProfile, getProfileByEmail, getAppDate } from "../../lib/api.js";
 import McsAlert from "../Utilities/alert.js";
 import { ConfirmButtonPopover } from "../Utilities/confirmButton.js";
 import { CodeOfConductModalLink } from "../Utilities/conductModal.js";
@@ -25,7 +25,7 @@ class StudentInfoForm extends PureComponent<Props, State> {
     email: "",
     phoneNumber: "",
     birthday: new Date(),
-    memberDate: new Date(),
+    memberDate: getAppDate(),
     discoveryMethod: "",
     discoveryMethodFriend: "",
     discoveryMethodOther: "",

@@ -5,7 +5,7 @@ import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { DateTimePicker } from 'react-widgets';
 import queryString from 'query-string';
 import type { Dance } from "../../types.js";
-import { addNewDance, getDance, deleteDance } from "../../lib/api.js";
+import { addNewDance, getDance, deleteDance, getAppDate } from "../../lib/api.js";
 import McsAlert from "../Utilities/alert.js";
 
 type State = Dance;
@@ -14,7 +14,7 @@ type Props = {};
 
 class DanceForm extends PureComponent<Props, State> {
   state: State = {
-    date: new Date(),
+    date: getAppDate(),
     title: "",
     fbLink: "",
     info: "",

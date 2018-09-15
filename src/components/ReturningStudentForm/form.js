@@ -5,7 +5,7 @@ import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { DateTimePicker } from 'react-widgets';
 import queryString from 'query-string';
 import type { ClassCheckin } from "../../types.js";
-import { addNewClassCheckin, getProfiles, getProfileByEmail, setLatestMonthlyPass } from "../../lib/api.js";
+import { addNewClassCheckin, getProfiles, getProfileByEmail, setLatestMonthlyPass, getAppDate } from "../../lib/api.js";
 import { getSubstringIndex, currentMonthIndex, currentMonthString, currentYear, sortByNameAndEmail } from "../../lib/utils.js";
 import McsAlert from "../Utilities/alert.js";
 import { AdminConfirmButtonModal } from "../Utilities/confirmCheckinModal.js";
@@ -34,7 +34,7 @@ class ReturningStudentForm extends PureComponent<Props, State> {
   }
 
   state: State = {
-    date: new Date(),
+    date: getAppDate(),
     checkin: {...this.defaultCheckin},
     profileList: [],
     profileMap: {},

@@ -8,3 +8,8 @@ body {
 .minHeight-50px {
 	min-height: 50px
 }
+
+.nav-sm.form-group {
+	width: 20em;
+	margin: 0 1em 0 1em;
+}
