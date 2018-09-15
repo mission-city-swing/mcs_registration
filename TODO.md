@@ -10,10 +10,14 @@
 
 [ ] Typeahead for checking into dance
 
+[ ] Adjust form size when on desktop
+
+[ ] Admin checkin in navbar
+
 
 ### Feature requests
 
-[ ] Batch/Admin form data entering mode with minimal steps-- should be very hidden from normal users
+[ ] Batch/Admin form data entering mode with minimal steps-- should be very hidden from normal users, only work in desktop mode, enable minimal data entry
 
 [ ] Workshop or special event checkin flow
 
