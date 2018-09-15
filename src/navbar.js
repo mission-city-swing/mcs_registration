@@ -10,9 +10,11 @@ import {
   NavbarToggler,
   NavbarBrand,
   Nav,
+  NavItem,
   NavLink } from 'reactstrap';
 
 import { logOutCurrentUser } from "./lib/api.js";
+import AppDateForm from "./components/Utilities/appDate.js";
 
 
 export default class MyNavbar extends Component {
@@ -42,6 +44,7 @@ export default class MyNavbar extends Component {
           <NavbarToggler onClick={this.toggle} />
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav className="ml-auto" navbar>
+              <NavItem><AppDateForm /></NavItem>
               <UncontrolledDropdown nav inNavbar>
                 <DropdownToggle nav caret>
                   Dance

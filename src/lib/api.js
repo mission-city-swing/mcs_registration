@@ -14,10 +14,47 @@ const fireDB = StageDB;
 // generated with UUID cli
 const MCS_APP = "9f9e25a0-3087-11e8-9d77-e3d459600d35";
 
-// TODO: think about how to structure the database
-// Dancers have profiles
-// "User" is a special word implying auth permissions
 
+// Utility Cookie APIs
+function setCurrentUser(currentUser: User) {
+  let d = new Date();
+  d.setDate(d.getDate() + 2);
+  cookies.set('currentUser', currentUser, { path: '/', expires: d});
+};
+
+export function getCurrentUser() {
+  var currentUser = cookies.get('currentUser');
+  if (currentUser === undefined) {
+    currentUser = {};
+  }
+  return currentUser
+};
+
+export function removeCurrentUser() {
+  cookies.remove('currentUser');
+};
+
+export function setAppDate(date: dateString) {
+  let d = new Date();
+  d.setDate(d.getDate() + 1);
+  cookies.set('appDate', date, { path: '/', expires: d});
+};
+
+export function getAppDate() {
+  var date = cookies.get('appDate');
+  if (date === undefined) {
+    date = new Date();
+  } else {
+    date = new Date(date);
+  }
+  return date
+};
+
+export function removeAppDate() {
+  cookies.remove('appDate');
+};
+
+// Real web APIs
 
 // Dancer Profile API
 export const getProfileById = (profileId) => {
@@ -219,24 +256,6 @@ export const getClassCheckinByDate = (classDate) => {
 
 // User API for _Auth_
 // Question: What is the difference between exporting function and exporting const?
-function setCurrentUser(user: User) {
-  var currentUser = user;
-  let d = new Date();
-  d.setDate(d.getDate() + 2);
-  cookies.set('currentUser', currentUser, { path: '/', expires: d});
-};
-
-export function getCurrentUser() {
-  var currentUser = cookies.get('currentUser');
-  if (currentUser === undefined) {
-    currentUser = {};
-  }
-  return currentUser
-};
-
-export function removeCurrentUser() {
-  cookies.remove('currentUser');
-};
 
 export const addNewUser = (options: User) => {
   var currentUser = {};

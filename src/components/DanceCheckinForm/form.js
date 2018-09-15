@@ -3,7 +3,7 @@
 import React, { PureComponent } from "react";
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { DateTimePicker } from 'react-widgets';
-import { addNewDanceCheckin, getProfiles } from "../../lib/api.js";
+import { addNewDanceCheckin, getProfiles, getAppDate } from "../../lib/api.js";
 import { sortByNameAndEmail } from "../../lib/utils.js";
 import McsAlert from "../Utilities/alert.js";
 import { AdminConfirmButtonModal } from "../Utilities/confirmCheckinModal.js";
@@ -30,7 +30,7 @@ class DanceCheckinForm extends PureComponent<Props, State> {
   }
 
   state: State = {
-    date: new Date(),
+    date: getAppDate(),
     checkin: {...this.defaultCheckin},
     profileMap: {},
     profileList: [],

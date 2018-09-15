@@ -6,7 +6,7 @@
 
 [x] Phone number validation JS lib -- really not necessary, neither is email validation beyond checking that there's a value
 
-[ ] Set default date across the app, save in a cookie that expires in 24 hours
+[x] Set default date across the app, save in a cookie that expires in 24 hours
 
 [ ] Typeahead for checking into dance
 
