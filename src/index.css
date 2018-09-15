@@ -4,12 +4,38 @@ body {
   font-family: sans-serif;
 }
 
-/* Custom class for the home page cards */
-.minHeight-50px {
+div.App {
+	margin-top: 1em;
+}
+
+div.App form {
+	max-width: 700px;
+}
+
+.front-page-card {
 	min-height: 50px
 }
 
-.nav-sm.form-group {
-	width: 20em;
-	margin: 0 1em 0 1em;
+.app-date-form .nav-sm.form-group {
+	max-width: 20em;
+    display: auto;
+    -ms-flex: auto;
+    flex: auto;
+    -ms-flex-flow: auto;
+    flex-flow: auto;
+    margin: 0 0.5em 0 0;
+}
+
+.app-date-form {
+	max-width: 30em;
+	margin-right: 1em;
+}
+
+.signin-nav-form {
+	margin: 1em;
+	min-width: 250px;
+}
+
+.signin-form-info {
+	margin: 1em 0;
 }

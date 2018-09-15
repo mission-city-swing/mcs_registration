@@ -15,7 +15,7 @@ const fireDB = StageDB;
 const MCS_APP = "9f9e25a0-3087-11e8-9d77-e3d459600d35";
 
 
-// Utility Cookie APIs
+// Current User Cookie APIs
 function setCurrentUser(currentUser: User) {
   let d = new Date();
   d.setDate(d.getDate() + 2);
@@ -23,10 +23,7 @@ function setCurrentUser(currentUser: User) {
 };
 
 export function getCurrentUser() {
-  var currentUser = cookies.get('currentUser');
-  if (currentUser === undefined) {
-    currentUser = {};
-  }
+  var currentUser = cookies.get('currentUser') || null;
   return currentUser
 };
 
@@ -34,6 +31,7 @@ export function removeCurrentUser() {
   cookies.remove('currentUser');
 };
 
+// App Date Cookies APIs
 export function setAppDate(date: dateString) {
   let d = new Date();
   d.setDate(d.getDate() + 1);
@@ -54,6 +52,15 @@ export function removeAppDate() {
   cookies.remove('appDate');
 };
 
+// Utility Functions
+function getCurrentUserId() {
+  var currentUser = getCurrentUser();
+  if (currentUser == null) {
+    throw MiscException("Admin must log in to authorize this event", "AuthException")
+  }
+  return currentUser.uuid;
+}
+
 // Real web APIs
 
 // Dancer Profile API
@@ -67,11 +74,7 @@ export const getProfileByEmail = (profileEmail) => {
 };
 
 export const createOrUpdateProfile = (options: Profile) => {
-  var currentUser = getCurrentUser();
-  if (currentUser.uuid == null) {
-    throw MiscException("Admin must log in to authorize this event", "AuthException")
-  }
-  options.author = currentUser.uuid;
+  options.author = getCurrentUserId();
   if (!(options.waiverAgree && options.conductAgree)) {
     throw MiscException("Must agree to liability waiver and code of conduct", "FormException")
   }
@@ -88,11 +91,7 @@ export const getProfiles = fireDB.database().ref("profiles/");
 
 // Admin Info API
 export const createOrUpdateProfileAdminInfo = (options: ProfileAdminInfo) => {
-  var currentUser = getCurrentUser();
-  if (currentUser.uuid == null) {
-    throw MiscException("Admin must log in to authorize this event", "AuthException")
-  }
-  options.author = currentUser.uuid;
+  options.author = getCurrentUserId();
   if (!options.email) {
     throw MiscException("Must include profile email", "FormException")
   }
@@ -104,11 +103,7 @@ export const createOrUpdateProfileAdminInfo = (options: ProfileAdminInfo) => {
 
 // Cache latest monthly pass on profile
 export const setLatestMonthlyPass = (options: MonthlyPass) => {
-  var currentUser = getCurrentUser();
-  if (currentUser.uuid == null) {
-    throw MiscException("Admin must log in to authorize this event", "AuthException")
-  }
-  options.author = currentUser.uuid;
+  options.author = getCurrentUserId();
   if (!options.email) {
     throw MiscException("Must include profile email", "FormException")
   }
@@ -124,10 +119,7 @@ export const setLatestMonthlyPass = (options: MonthlyPass) => {
 
 // Monthly Pass API
 export const addMonthlyPass = (options: MonthlyPass) => {
-  var currentUser = getCurrentUser();
-  if (currentUser.uuid == null) {
-    throw MiscException("Admin must log in to authorize this event", "AuthException")
-  }
+  options.author = getCurrentUserId();
   if (!options.email) {
     throw MiscException("Must include profile email", "FormException")
   }
@@ -156,11 +148,7 @@ export const deleteDance = (danceId) => {
 };
 
 export const addNewDance = (options: Dance) => {
-  var currentUser = getCurrentUser();
-  if (currentUser.uuid == null) {
-    throw MiscException("Admin must log in to authorize this checkin event", "AuthException")
-  }
-  options.author = currentUser.uuid;
+  options.author = getCurrentUserId();
   if (!options.date) {
     throw MiscException("Date required", "FormException")
   }
@@ -171,11 +159,7 @@ export const addNewDance = (options: Dance) => {
 
 // Checkins
 export const addNewDanceCheckin = (options: DanceCheckin) => {
-  var currentUser = getCurrentUser();
-  if (currentUser.uuid == null) {
-    throw MiscException("Admin must log in to authorize this checkin event", "AuthException")
-  }
-  options.author = currentUser.uuid;
+  options.author = getCurrentUserId();
   // check for name, email, and date
   if (!(options.date && options.email && options.firstName && options.lastName)) {
     throw MiscException("First name, last name, email, and date required", "FormException")
@@ -211,11 +195,7 @@ export const getDanceCheckinByDate = (classDate) => {
 
 export const addNewClassCheckin = (options: ClassCheckin) => {
   // set author
-  var currentUser = getCurrentUser();
-  if (currentUser.uuid == null) {
-    throw MiscException("Admin must log in to authorize this checkin event", "AuthException")
-  }
-  options.author = currentUser.uuid;
+  options.author = getCurrentUserId();
   // check for name, email, and date
   if (!(options.date && options.email && options.firstName && options.lastName)) {
     throw MiscException("First name, last name, email, and date required", "FormException")
@@ -284,10 +264,6 @@ export const signInUser = (options: User) => {
       currentUser.uuid = userId;
       setCurrentUser(currentUser);
     });
-  }).catch(function(error) {
-    var errorCode = error.code;
-    var errorMessage = error.message;
-    console.log([errorCode, errorMessage]);
   });
 };
 
