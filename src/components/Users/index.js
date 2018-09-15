@@ -2,6 +2,7 @@
 // src/components/Users/index.js
 import React, { PureComponent } from "react";
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import queryString from 'query-string';
 import type { User } from "../../types.js";
 import { signInUser } from "../../lib/api.js";
 import McsAlert from "../Utilities/alert.js";
@@ -16,6 +17,23 @@ class SignInUserForm extends PureComponent<Props, State> {
     password: "",
     success: "",
     error: ""
+  };
+
+  componentDidMount() {
+    this.setStateParamsFromQuery();
+  }
+
+  setStateParamsFromQuery = () => {
+    if (this.props.location) {
+      if (this.props.location.search) {
+        var parsedSearch = queryString.parse(this.props.location.search);
+        this.setState({
+          success: parsedSearch["success"] || "",
+          error: parsedSearch["error"] || "",
+          email: parsedSearch["email"] || "",
+        });
+      }
+    }
   };
 
   onChange = (event: any) => {
@@ -72,9 +90,7 @@ class SignInUserForm extends PureComponent<Props, State> {
 
     return (
       <div className="App">
-        <h1>Sign In</h1>
-        <p>Admins only</p>
-        <p>Forgot your password? <a href="/reset-password">Reset it here.</a></p>
+        <h1>Admin Sign In</h1>
         <McsAlert color="success" text={this.state.success} visible={this.state.success.length > 0} onToggle={this.toggleAlerts.bind(this)}></McsAlert>
         <McsAlert color="danger" text={this.state.error} visible={this.state.error.length > 0} onToggle={this.toggleAlerts.bind(this)}></McsAlert>
         <Form onSubmit={this.onSubmit}>
@@ -84,11 +100,13 @@ class SignInUserForm extends PureComponent<Props, State> {
           <FormGroup>
             <Label form="password" type="password">Password</Label><Input onChange={this.onChange} value={this.state.password} type="password" id="password" name="password" />
           </FormGroup>
-          <br></br>
           <Button color="primary" type="submit" value="Submit">Submit</Button>
           <span className="mr-1"></span>
           <Button outline value="clear" onClick={this.clearFormEvent}>Clear Form</Button>
         </Form>
+        <br></br>
+        <p>Forgot your password? <a href="/reset-password">Reset it here.</a></p>
+        <p>Are you a new admin? <a href="/new-user">Create an account here.</a></p>
       </div>
     );
   }

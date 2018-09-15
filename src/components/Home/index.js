@@ -58,22 +58,22 @@ class Home extends Component {
             <Row>
               <Col>
                 <Card className="card-body text-center mb-2">
-                  <CardTitle className="minHeight-50px">New Student Form</CardTitle>
-                  <CardText className="minHeight-50px">Fill out new student details form.</CardText>
+                  <CardTitle className="front-page-card">New Student Form</CardTitle>
+                  <CardText className="front-page-card">Fill out new student details form.</CardText>
                   <Link to="/new-student"><Button size="lg">New Student</Button></Link>
                 </Card>
               </Col>
               <Col>
                 <Card className="card-body text-center mb-2">
-                  <CardTitle className="minHeight-50px">Returning Student Class Checkin</CardTitle>
-                  <CardText className="minHeight-50px">Returning students check in here.</CardText>
+                  <CardTitle className="front-page-card">Returning Student Class Checkin</CardTitle>
+                  <CardText className="front-page-card">Returning students check in here.</CardText>
                   <Link to="/class-checkin"><Button size="lg">Class Checkin</Button></Link>
                 </Card>
               </Col>
               <Col>
                 <Card className="card-body text-center mb-2">
-                  <CardTitle className="minHeight-50px">Dance Checkin</CardTitle>
-                  <CardText className="minHeight-50px">Check into the dance.</CardText>
+                  <CardTitle className="front-page-card">Dance Checkin</CardTitle>
+                  <CardText className="front-page-card">Check into the dance.</CardText>
                   <Link to="/dance-checkin"><Button size="lg">Dance Checkin</Button></Link>
                 </Card>
 
@@ -81,11 +81,6 @@ class Home extends Component {
             </Row>
           </Container>
         </div>
-        <br></br>
-        <div>
-        Current User: { this.state.currentUser.email || "Not Signed In" }
-        </div>
-        <br></br>
       </div>
     );
   }

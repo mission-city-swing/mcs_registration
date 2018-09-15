@@ -6,7 +6,7 @@
 // You can clear the date and that calls removeAppDate
 // Once this is done, we should be able to call getAppDate across the app
 import React, { PureComponent } from "react";
-import { Form, FormGroup } from 'reactstrap';
+import { Form, FormGroup, Button } from 'reactstrap';
 import { DateTimePicker } from 'react-widgets';
 import { getAppDate, setAppDate } from "../../lib/api.js";
 
@@ -25,9 +25,13 @@ class AppDateForm extends PureComponent<Props, State> {
     setAppDate(value);
   };
 
+  reset = () => {
+    this.onDateChange(new Date())
+  }
+
   render() {
     return (
-      <div>
+      <div className="app-date-form">
         <Form inline >
           <FormGroup className="nav-sm">
             <DateTimePicker
@@ -38,6 +42,7 @@ class AppDateForm extends PureComponent<Props, State> {
               onChange={this.onDateChange}
             />
           </FormGroup>
+          <Button outline onClick={this.reset}>Today</Button>
         </Form>
       </div>
     );

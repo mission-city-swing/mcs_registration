@@ -13,8 +13,9 @@ import {
   NavItem,
   NavLink } from 'reactstrap';
 
-import { logOutCurrentUser } from "./lib/api.js";
-import AppDateForm from "./components/Utilities/appDate.js";
+import {logOutCurrentUser, getCurrentUser } from "./lib/api.js";
+import AppDateForm from "./components/Utilities/appDateForm.js";
+import CurrentUserNavForm from "./components/Utilities/currentUserNavForm.js";
 
 
 export default class MyNavbar extends Component {
@@ -22,22 +23,31 @@ export default class MyNavbar extends Component {
     super(props);
 
     this.toggle = this.toggle.bind(this);
+    this.logOut = this.logOut.bind(this);
     this.state = {
-      isOpen: false
+      isOpen: false,
+      currentUser: getCurrentUser()
     };
+  }
 
+  logOut() {
+    this.setState({
+      currentUser: null,
+    });
+    logOutCurrentUser();
+    window.location.href = "/";
   }
 
   toggle() {
     this.setState({
-      isOpen: !this.state.isOpen
+      isOpen: !this.state.isOpen,
     });
   }
 
   render() {
     return (
       <div>
-        <Navbar color="faded" light expand="md">
+        <Navbar color="faded" light expand="lg">
           <NavbarBrand href="/">
             <img alt="Mission City Swing" style={{ height: 30 }} src="http://mcs-static.s3-website-us-east-1.amazonaws.com/mcs-blank-cropped.png" />
           </NavbarBrand>
@@ -81,16 +91,17 @@ export default class MyNavbar extends Component {
                   Admin
                 </DropdownToggle>
                 <DropdownMenu right>
-                  <DropdownItem>
-                    <NavLink href="/new-user">New Admin User</NavLink>
-                  </DropdownItem>
-                  <DropdownItem divider />
-                  <DropdownItem>
-                    <NavLink href="/signin">Sign In</NavLink>
-                  </DropdownItem>
-                  <DropdownItem>
-                    <NavLink href="/" onClick={logOutCurrentUser}>Sign Out</NavLink>
-                  </DropdownItem>
+                  {this.state.currentUser &&
+                    <div>
+                      <DropdownItem header>{this.state.currentUser.firstName} {this.state.currentUser.lastName} is signed in.</DropdownItem>
+                      <DropdownItem>
+                        <NavLink href="#" onClick={this.logOut}>Sign Out</NavLink>
+                      </DropdownItem>
+                    </div>
+                  }
+                  {!this.state.currentUser &&
+                    <CurrentUserNavForm />
+                  }
                 </DropdownMenu>
               </UncontrolledDropdown>
             </Nav>
