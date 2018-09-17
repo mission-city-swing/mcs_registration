@@ -69,10 +69,10 @@ class CurrentUserNavForm extends PureComponent<Props, State> {
         <div className="signin-nav-form">
           <Form onSubmit={this.onSubmit}>
             <FormGroup>
-              <Label form="email" type="email">Email</Label><Input placeholder="me@example.com" onChange={this.onChange} value={this.state.email} type="email" id="email" name="email" />
+              <Label form="email" type="email">Email</Label><Input placeholder="me@example.com" onChange={this.onChange} value={this.state.email} type="email" id="admin-email" name="email" />
             </FormGroup>
             <FormGroup>
-              <Label form="password" type="password">Password</Label><Input onChange={this.onChange} value={this.state.password} type="password" id="password" name="password" />
+              <Label form="password" type="password">Password</Label><Input onChange={this.onChange} value={this.state.password} type="password" id="admin-password" name="password" />
             </FormGroup>
             <Button color="primary" type="submit" value="Submit">Submit</Button>
           </Form>
