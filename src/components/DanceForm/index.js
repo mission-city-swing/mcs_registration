@@ -45,7 +45,7 @@ class DancePage extends PureComponent<Props, State> {
     this.setState({
       selected: value
     });
-    window.location.href = "/dance?uid=" + encodeURIComponent(value);
+    window.location.href = "/admin/dance?uid=" + encodeURIComponent(value);
   };
 
   render() {

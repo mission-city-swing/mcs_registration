@@ -66,10 +66,6 @@ export default class MyNavbar extends Component {
                   <DropdownItem>
                     <NavLink href="/dance-checkin">Dance Checkin</NavLink>
                   </DropdownItem>
-                  <DropdownItem divider />
-                  <DropdownItem>
-                    <NavLink href="/dance">Create or Update a Dance</NavLink>
-                  </DropdownItem>
                 </DropdownMenu>
               </UncontrolledDropdown>
               <UncontrolledDropdown nav inNavbar>
@@ -82,10 +78,6 @@ export default class MyNavbar extends Component {
                   </DropdownItem>
                   <DropdownItem>
                     <NavLink href="/class-checkin">Class Checkin</NavLink>
-                  </DropdownItem>
-                  <DropdownItem divider />
-                  <DropdownItem>
-                    <NavLink href="/student">Update Student Info</NavLink>
                   </DropdownItem>
                 </DropdownMenu>
               </UncontrolledDropdown>
@@ -105,6 +97,10 @@ export default class MyNavbar extends Component {
                   {!this.state.currentUser &&
                     <CurrentUserNavForm />
                   }
+                  <DropdownItem divider />
+                  <DropdownItem>
+                    <NavLink href="/admin/">Admin Dashboard</NavLink>
+                  </DropdownItem>
                 </DropdownMenu>
               </UncontrolledDropdown>
             </Nav>

@@ -91,7 +91,7 @@ class DanceForm extends PureComponent<Props, State> {
 
   clearFormEvent = (event: any) => {
     this.clearForm();
-    this.props.history.push({ pathname: '/dance', query: {} })
+    this.props.history.push({ pathname: '/admin/dance', query: {} })
   };
 
   onSubmit = (event: any) => {

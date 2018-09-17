@@ -63,7 +63,7 @@ class StudentPage extends PureComponent<Props, State> {
     this.setState({
       selected: value
     });
-    window.location.href = "/student?email=" + encodeURIComponent(value);
+    window.location.href = "/admin/student?email=" + encodeURIComponent(value);
   };
 
   render() {
