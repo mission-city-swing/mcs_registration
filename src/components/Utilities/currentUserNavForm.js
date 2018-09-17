@@ -44,8 +44,7 @@ class CurrentUserNavForm extends PureComponent<Props, State> {
     }
     var onError = (errorText) => {
       this.setState({error: errorText});
-      console.log('hi')
-      window.location.href = "/signin?error=" + encodeURIComponent(errorText) + "&email=" + this.state.email;
+      window.location.href = "/admin/signin?error=" + encodeURIComponent(errorText) + "&email=" + this.state.email;
     }
     try {
       signInUser({
@@ -77,8 +76,8 @@ class CurrentUserNavForm extends PureComponent<Props, State> {
             <Button color="primary" type="submit" value="Submit">Submit</Button>
           </Form>
           <div className="signin-form-info">
-            <p>Forgot your password? <a href="/reset-password">Reset it here.</a></p>
-            <p>Create an admin account <a href="/new-user">here.</a></p>
+            <p>Forgot your password? <a href="/admin/reset-password">Reset it here.</a></p>
+            <p>Create an admin account <a href="/admin/new-user">here.</a></p>
           </div>
         </div>
       }

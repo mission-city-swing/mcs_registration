@@ -53,7 +53,7 @@ class NewUserForm extends PureComponent<Props, State> {
     var onSuccess = () => {
       var successText = "Created new admin user for " + this.state.email;
       this.setState({success: successText});
-      window.location.href = "/?success=" + encodeURIComponent(successText);
+      window.location.href = "/admin/?success=" + encodeURIComponent(successText);
     }
     var onError = (errorText) => {
       this.setState({error: errorText});

@@ -17,7 +17,7 @@
 
 ### Feature requests
 
-[ ] Batch/Admin form data entering mode with minimal steps-- should be very hidden from normal users, only work in desktop mode, enable minimal data entry
+[x] Batch/Admin form data entering mode with minimal steps-- should be very hidden from normal users, only work in desktop mode, enable minimal data entry
 
 [ ] Workshop or special event checkin flow
 

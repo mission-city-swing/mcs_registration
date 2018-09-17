@@ -8,16 +8,13 @@ import queryString from 'query-string';
 import type { Profile } from "../../types.js";
 import { createOrUpdateProfile, getProfileByEmail, getAppDate } from "../../lib/api.js";
 import McsAlert from "../Utilities/alert.js";
-import { ConfirmButtonPopover } from "../Utilities/confirmButton.js";
-import { CodeOfConductModalLink } from "../Utilities/conductModal.js";
-import { LiabilityWaiverModalLink } from "../Utilities/waiverModal.js";
 
 
 type State = Profile;
 
 type Props = {};
 
-class StudentInfoForm extends PureComponent<Props, State> {
+class AdminStudentInfoForm extends PureComponent<Props, State> {
 
   defaultFields = {
     firstName: "",
@@ -33,8 +30,8 @@ class StudentInfoForm extends PureComponent<Props, State> {
     otherDancesOther: "",
     student: false,
     emailOptIn: true,
-    waiverAgree: false,
-    conductAgree: false
+    waiverAgree: true,
+    conductAgree: true
   };
 
   state: State = Object.assign({...this.defaultFields}, {
@@ -45,11 +42,25 @@ class StudentInfoForm extends PureComponent<Props, State> {
   componentDidMount() {
     // When updating student info, we use the same form
     this.getStudentFromQuery();
+    this.setErrorParamsFromQuery()
     // Set function for additional actions on submit, like a redirect
     if (this.props.addActionsOnSubmit) {
       this.addActionsOnSubmit = this.props.addActionsOnSubmit
     } else {
       this.addActionsOnSubmit = () => {}
+    }
+  };
+
+
+  setErrorParamsFromQuery = () => {
+    if (this.props.location) {
+      if (this.props.location.search) {
+        var parsedSearch = queryString.parse(this.props.location.search);
+        this.setState({
+          success: parsedSearch["success"] || "",
+          error: parsedSearch["error"] || "",
+        });
+      }
     }
   };
 
@@ -73,7 +84,7 @@ class StudentInfoForm extends PureComponent<Props, State> {
         this.setState(profile)
       }
     });
-  }
+  };
 
   onChange = (event: any) => {
     var name = event.target.name;
@@ -120,6 +131,10 @@ class StudentInfoForm extends PureComponent<Props, State> {
     this.setState({birthday: value});
   };
 
+  clearBirthday = () => {
+    this.onBirthdayChange(null)
+  };
+
   onMemberDateChange = (value) => {
     this.setState({memberDate: value});
   };
@@ -138,14 +153,6 @@ class StudentInfoForm extends PureComponent<Props, State> {
     });
   };
 
-  afterWaiverConfirm(args) {
-    this.setState({waiverAgree: args.agree});
-  }
-
-  afterConductConfirm(args) {
-    this.setState({conductAgree: args.agree});
-  }
-
   clearFormEvent = (event: any) => {
     this.clearForm();
   };
@@ -162,10 +169,13 @@ class StudentInfoForm extends PureComponent<Props, State> {
     });
   };
 
-  confirmCoc(options) {
-    this.setState({
-      conductAgree: options.agree
-    })
+  generateFakeEmail = () => {
+    // Sometimes with the paper forms, people didn't put an email address
+    // With this new system, we key eveything by email address, so we need
+    // to be able to enter _something_
+    var dateString = [this.state.memberDate.getFullYear(), this.state.memberDate.getMonth(), this.state.memberDate.getDate()].join('.')
+    var email = this.state.firstName.toLowerCase() + '+' + this.state.lastName.toLowerCase() + '+' + dateString + '@mcs-fake-generated.com'
+    this.setState({email: email})
   }
 
   onSubmit = (event: any) => {
@@ -176,11 +186,7 @@ class StudentInfoForm extends PureComponent<Props, State> {
     var onSuccess = () => {
       var successText = "Updated profile for " + this.state.email
       this.setState({success: successText});
-
-      this.addActionsOnSubmit({
-        email: this.state.email,
-        newDancer: !this.state.otherDances.includes("West Coast Swing")
-      });
+      window.location.href = "/admin/new-student?success=" + encodeURIComponent(successText);
     }
     var onError = (errorText) => {
       this.setState({error: errorText});
@@ -192,6 +198,7 @@ class StudentInfoForm extends PureComponent<Props, State> {
       Object.keys(this.defaultFields).map(function(key) {
         return toSubmit[key] = newState[key];
       })
+
       createOrUpdateProfile(toSubmit).then(function(success) {
         onSuccess();
       }).catch(function(error) {
@@ -209,22 +216,43 @@ class StudentInfoForm extends PureComponent<Props, State> {
         <McsAlert color="success" text={this.state.success} visible={this.state.success.length > 0} onToggle={this.toggleAlerts.bind(this)}></McsAlert>
         <McsAlert color="danger" text={this.state.error} visible={this.state.error.length > 0} onToggle={this.toggleAlerts.bind(this)}></McsAlert>
         <Form onSubmit={this.onSubmit}>
-          <h5>Basic Info</h5>
+          <h5>Minimum Info</h5>
           <FormGroup>
-            <Label for="firstName">First Name</Label><Input placeholder="First Name" value={this.state.firstName} onChange={this.onChange} name="firstName" />
+            <Label for="firstName">First Name (required)</Label><Input placeholder="First Name" value={this.state.firstName} onChange={this.onChange} name="firstName" />
           </FormGroup>
           <FormGroup>
-            <Label for="lastName">Last Name</Label><Input placeholder="Last Name" onChange={this.onChange} value={this.state.lastName} name="lastName" />
+            <Label for="lastName">Last Name (required)</Label><Input placeholder="Last Name" onChange={this.onChange} value={this.state.lastName} name="lastName" />
           </FormGroup>
           <FormGroup>
-            <Label form="email" type="email">Email</Label><Input placeholder="me@example.com" onChange={this.onChange} value={this.state.email} type="email" id="email" name="email" />
+            <Label form="email" type="email">Email</Label>
+            <Input placeholder="me@example.com" onChange={this.onChange} value={this.state.email} type="email" id="email" name="email" />
+            <Button outline onClick={this.generateFakeEmail}>Generate</Button>
           </FormGroup>
+          <FormGroup check>
+            <Label check>
+              <Input onChange={this.onChange} name="student" type="checkbox" checked={this.state.student} />
+              <strong>Full time student, must show valid student ID</strong>
+            </Label>
+          </FormGroup>
+          <br></br>
+          <FormGroup>
+            <Label for="memberDate">Member Since</Label>
+            <DateTimePicker 
+              time={false}
+              format={'dddd, MMMM Do YYYY'}
+              value={this.state.memberDate}
+              name="memberDate"
+              onChange={this.onMemberDateChange}
+            />
+          </FormGroup>
+          <br></br>
+          <h5>Additional Info</h5>
           <FormGroup>
             <Label>Phone Number</Label><Input placeholder="123-456-7890" onChange={this.onChange} value={this.state.phoneNumber} type="tel" id="phoneNumber" name="phoneNumber" />
           </FormGroup>
           <FormGroup>
-            <Label for="birthday">Birthday (so that we can invite you to birthday jams)</Label>
-            <DateTimePicker 
+            <Label for="birthday">Birthday</Label>
+            <DateTimePicker
               time={false}
               format={'MMMM D'}
               value={this.state.birthday}
@@ -234,13 +262,7 @@ class StudentInfoForm extends PureComponent<Props, State> {
               footer={false}
               headerFormat={'MMMM'}
             />
-          </FormGroup>
-          <br></br>
-          <FormGroup check>
-            <Label check>
-              <Input onChange={this.onChange} name="student" type="checkbox" checked={this.state.student} />
-              <strong>Full time student, must show valid student ID</strong>
-            </Label>
+            <Button outline onClick={this.clearBirthday}>Clear Date</Button>
           </FormGroup>
           <br></br>
           <FormGroup tag="fieldset">
@@ -343,38 +365,11 @@ class StudentInfoForm extends PureComponent<Props, State> {
               </Label>
             </FormGroup>
           </FormGroup>
-          <br></br>
-          <h5>Email Preferences</h5>
-          <FormGroup check>
-            <Label check>
-              <Input onChange={this.onChange} name="emailOptIn" type="checkbox" checked={this.state.emailOptIn} />
-              <strong>I would like to receive email from Mission City Swing</strong>
-            </Label>
-          </FormGroup>
-          <br></br>
-          <h5>Legal Stuff</h5>
-          <LiabilityWaiverModalLink checked={this.state.waiverAgree} afterConfirm={this.afterWaiverConfirm.bind(this)}  />
-          <br></br>
-          <CodeOfConductModalLink checked={this.state.conductAgree} afterConfirm={this.afterConductConfirm.bind(this)} />
-          <br></br>
-          <FormGroup>
-            <Label for="memberDate">Member Since</Label>
-            <DateTimePicker 
-              time={false}
-              format={'dddd, MMMM Do YYYY'}
-              value={this.state.memberDate}
-              name="memberDate"
-              onChange={this.onMemberDateChange}
-            />
-          </FormGroup>
-          <br></br>
-          <ConfirmButtonPopover buttonOptions={{color: "primary"}} popoverOptions={{placement: "top"}} afterConfirm={this.onSubmit} popoverHeader="Confirm Your Information" popoverBody="Please confirm that your name and email are correct and that you have signed our liability waiver and code of conduct.">Submit</ConfirmButtonPopover>
-          <span className="mr-1"></span>
-          <Button value="clear" onClick={this.clearFormEvent}>Clear Form</Button>
+          <Button value="submit" onClick={this.onSubmit}>Admin Submit</Button>
         </Form>
       </div>
     );
   }
 }
 
-export default withRouter(StudentInfoForm);
+export default withRouter(AdminStudentInfoForm);
