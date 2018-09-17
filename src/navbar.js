@@ -18,6 +18,9 @@ import AppDateForm from "./components/Utilities/appDateForm.js";
 import CurrentUserNavForm from "./components/Utilities/currentUserNavForm.js";
 
 
+const LOGO_URL = "https://firebasestorage.googleapis.com/v0/b/mcs-registration.appspot.com/o/mcs-blank-cropped.png?alt=media&token=fba40d73-8f64-451f-83c2-3a1611d3e2a9";
+
+
 export default class MyNavbar extends Component {
   constructor(props) {
     super(props);
@@ -49,7 +52,7 @@ export default class MyNavbar extends Component {
       <div>
         <Navbar color="faded" light expand="lg">
           <NavbarBrand href="/">
-            <img alt="Mission City Swing" style={{ height: 30 }} src="http://mcs-static.s3-website-us-east-1.amazonaws.com/mcs-blank-cropped.png" />
+            <img alt="Mission City Swing" style={{ height: 30 }} src={ LOGO_URL } />
           </NavbarBrand>
           <NavbarToggler onClick={this.toggle} />
           <Collapse isOpen={this.state.isOpen} navbar>
