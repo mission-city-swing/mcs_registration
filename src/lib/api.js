@@ -69,8 +69,28 @@ export const getProfileById = (profileId) => {
 };
 
 export const getProfileByEmail = (profileEmail) => {
+  console.log(profileEmail);
   const profileId = uuidv3(profileEmail, MCS_APP);
   return fireDB.database().ref("profiles/" + profileId);
+};
+
+export const getProfileByName = (firstName, lastName) => {
+  return new Promise(function(resolve, reject) {
+    fireDB.database().ref("profiles/").orderByChild("profile/lastName").equalTo(lastName).once("value").then(function(snapshot) {
+      for (var childSnapshot in snapshot.val()) {
+        // console.log(["Got here", firstName, lastName, childSnapshot]);
+        if (snapshot.val()[childSnapshot].profile.firstName === firstName) {
+          console.log(["Got here", firstName, lastName]);
+          resolve(snapshot.val()[childSnapshot].profile);
+        } else {
+          resolve({});
+        }
+      }
+    }, function(error) {
+      Error(error);
+    });
+
+  })
 };
 
 export const createOrUpdateProfile = (options: Profile) => {
@@ -81,7 +101,9 @@ export const createOrUpdateProfile = (options: Profile) => {
   if (!(options.email && options.firstName && options.lastName)) {
     throw MiscException("First name, last name, and email required", "FormException")
   }
-  options.birthday = getMonthString(options.birthday.getMonth()) + " " + options.birthday.getDate();
+  if (options.birthday) {
+    options.birthday = getMonthString(options.birthday.getMonth()) + " " + options.birthday.getDate();  
+  }
   options.memberDate = options.memberDate.toDateString()
   const profileId = uuidv3(options.email, MCS_APP);
   return fireDB.database().ref("profiles/" + profileId + "/profile").set(options);

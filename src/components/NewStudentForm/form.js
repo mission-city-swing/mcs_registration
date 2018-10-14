@@ -32,7 +32,7 @@ class StudentInfoForm extends PureComponent<Props, State> {
     otherDances: [],
     otherDancesOther: "",
     student: false,
-    emailOptIn: true,
+    emailOptOut: false,
     waiverAgree: false,
     conductAgree: false
   };
@@ -347,8 +347,8 @@ class StudentInfoForm extends PureComponent<Props, State> {
           <h5>Email Preferences</h5>
           <FormGroup check>
             <Label check>
-              <Input onChange={this.onChange} name="emailOptIn" type="checkbox" checked={this.state.emailOptIn} />
-              <strong>I would like to receive email from Mission City Swing</strong>
+              <Input onChange={this.onChange} name="emailOptOut" type="checkbox" checked={this.state.emailOptOut} />
+              <strong>Please check here if you do not wish to receive email from Mission City Swing</strong>
             </Label>
           </FormGroup>
           <br></br>

@@ -39,3 +39,7 @@ div.App form {
 .signin-form-info {
 	margin: 1em 0;
 }
+
+.required-text {
+	color: red;
+}
