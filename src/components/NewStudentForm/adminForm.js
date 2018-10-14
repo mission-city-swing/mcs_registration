@@ -6,7 +6,8 @@ import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { DateTimePicker } from 'react-widgets';
 import queryString from 'query-string';
 import type { Profile } from "../../types.js";
-import { createOrUpdateProfile, getProfileByEmail, getAppDate } from "../../lib/api.js";
+import { createOrUpdateProfile, getProfileByEmail, getAppDate, getProfileByName } from "../../lib/api.js";
+import { getSubstringIndex } from "../../lib/utils.js";
 import McsAlert from "../Utilities/alert.js";
 
 
@@ -29,9 +30,14 @@ class AdminStudentInfoForm extends PureComponent<Props, State> {
     otherDances: [],
     otherDancesOther: "",
     student: false,
-    emailOptIn: true,
+    emailOptOut: false,
     waiverAgree: true,
-    conductAgree: true
+    conductAgree: true,
+    paymentType: null,
+    amt: 0,
+    adminInitial: "",
+    newDancer: false,
+    classes: []
   };
 
   state: State = Object.assign({...this.defaultFields}, {
@@ -41,7 +47,6 @@ class AdminStudentInfoForm extends PureComponent<Props, State> {
 
   componentDidMount() {
     // When updating student info, we use the same form
-    this.getStudentFromQuery();
     this.setErrorParamsFromQuery()
     // Set function for additional actions on submit, like a redirect
     if (this.props.addActionsOnSubmit) {
@@ -64,16 +69,9 @@ class AdminStudentInfoForm extends PureComponent<Props, State> {
     }
   };
 
-
-  getStudentFromQuery = () => {
-    if (this.props.location) {
-      var parsedSearch = queryString.parse(this.props.location.search);
-      if (this.props.location.search) {
-        var studentEmail = parsedSearch["email"];
-        this.getStudentFromEmail(studentEmail);
-      }
-    }
-  };
+  getStudentFromEmailBlur = (event: any) => {
+    this.getStudentFromEmail(event.target.value);
+  }
 
   getStudentFromEmail = (studentEmail) => {
     getProfileByEmail(studentEmail).on("value", (snapshot) => {
@@ -81,7 +79,22 @@ class AdminStudentInfoForm extends PureComponent<Props, State> {
         var profile = snapshot.val().profile;
         profile.birthday = new Date(profile.birthday)
         profile.memberDate = new Date(profile.memberDate)
-        this.setState(profile)
+        this.setState(profile);
+      }
+    });
+  };
+
+  getStudentFromNameBlur = (event: any) => {
+    var lastName = event.target.value;
+    this.getStudentFromName(this.state.firstName, lastName);
+  };
+
+  getStudentFromName = (firstName, lastName) => {
+    getProfileByName(firstName, lastName).then( (profile) => {
+      if (profile) {
+        profile.birthday = new Date(profile.birthday)
+        profile.memberDate = new Date(profile.memberDate)
+        this.setState(profile);  
       }
     });
   };
@@ -153,6 +166,27 @@ class AdminStudentInfoForm extends PureComponent<Props, State> {
     });
   };
 
+  onMultiTypeChange = (event: any) => {
+    var [name, checked, value] = [event.target.name, event.target.checked, event.target.value];
+    var valueType = value.split(', ')[0];
+    var newArray = this.state[name].slice()
+    var typeIndex = getSubstringIndex(newArray, valueType);
+    var valueIndex = newArray.indexOf(value);
+    if (checked) {
+      if (typeIndex === -1) {
+        newArray.push(value);
+      } else {
+        newArray.splice(typeIndex, 1);
+        newArray.push(value);
+      }
+    } else {
+      newArray.splice(valueIndex, 1);
+    }
+    this.setState({
+      [name]: newArray
+    });
+  };
+
   clearFormEvent = (event: any) => {
     this.clearForm();
   };
@@ -174,17 +208,17 @@ class AdminStudentInfoForm extends PureComponent<Props, State> {
     // With this new system, we key eveything by email address, so we need
     // to be able to enter _something_
     var dateString = [this.state.memberDate.getFullYear(), this.state.memberDate.getMonth(), this.state.memberDate.getDate()].join('.')
-    var email = this.state.firstName.toLowerCase() + '+' + this.state.lastName.toLowerCase() + '+' + dateString + '@mcs-fake-generated.com'
-    this.setState({email: email})
+    var email = [this.state.firstName.toLowerCase(), this.state.lastName.toLowerCase(), dateString + '@mcs-fake-generated.com'].join('+')
+    return email
+    // this.setState({email: email})
   }
 
   onSubmit = (event: any) => {
     if (event) {
       event.preventDefault();
     }
-    // Validate form
     var onSuccess = () => {
-      var successText = "Updated profile for " + this.state.email
+      var successText = "Updated profile for " + this.state.firstName + " " + this.state.lastName;
       this.setState({success: successText});
       window.location.href = "/admin/new-student?success=" + encodeURIComponent(successText);
     }
@@ -198,7 +232,11 @@ class AdminStudentInfoForm extends PureComponent<Props, State> {
       Object.keys(this.defaultFields).map(function(key) {
         return toSubmit[key] = newState[key];
       })
+      if (!toSubmit.email) {
+        toSubmit["email"] = this.generateFakeEmail();
+      }
 
+      console.log(toSubmit);
       createOrUpdateProfile(toSubmit).then(function(success) {
         onSuccess();
       }).catch(function(error) {
@@ -216,37 +254,17 @@ class AdminStudentInfoForm extends PureComponent<Props, State> {
         <McsAlert color="success" text={this.state.success} visible={this.state.success.length > 0} onToggle={this.toggleAlerts.bind(this)}></McsAlert>
         <McsAlert color="danger" text={this.state.error} visible={this.state.error.length > 0} onToggle={this.toggleAlerts.bind(this)}></McsAlert>
         <Form onSubmit={this.onSubmit}>
-          <h5>Minimum Info</h5>
           <FormGroup>
-            <Label for="firstName">First Name (required)</Label><Input placeholder="First Name" value={this.state.firstName} onChange={this.onChange} name="firstName" />
+            <Label for="firstName">First Name <span className="required-text">*required</span></Label><Input placeholder="First Name" value={this.state.firstName} onChange={this.onChange} name="firstName" />
           </FormGroup>
           <FormGroup>
-            <Label for="lastName">Last Name (required)</Label><Input placeholder="Last Name" onChange={this.onChange} value={this.state.lastName} name="lastName" />
+            <Label for="lastName">Last Name <span className="required-text">*required</span></Label><Input placeholder="Last Name" onChange={this.onChange} onBlur={this.getStudentFromNameBlur} value={this.state.lastName} name="lastName" />
           </FormGroup>
           <FormGroup>
             <Label form="email" type="email">Email</Label>
-            <Input placeholder="me@example.com" onChange={this.onChange} value={this.state.email} type="email" id="email" name="email" />
-            <Button outline onClick={this.generateFakeEmail}>Generate</Button>
-          </FormGroup>
-          <FormGroup check>
-            <Label check>
-              <Input onChange={this.onChange} name="student" type="checkbox" checked={this.state.student} />
-              <strong>Full time student, must show valid student ID</strong>
-            </Label>
+            <Input placeholder="me@example.com" onChange={this.onChange} onBlur={this.getStudentFromEmailBlur} value={this.state.email} type="email" id="email" name="email" />
           </FormGroup>
           <br></br>
-          <FormGroup>
-            <Label for="memberDate">Member Since</Label>
-            <DateTimePicker 
-              time={false}
-              format={'dddd, MMMM Do YYYY'}
-              value={this.state.memberDate}
-              name="memberDate"
-              onChange={this.onMemberDateChange}
-            />
-          </FormGroup>
-          <br></br>
-          <h5>Additional Info</h5>
           <FormGroup>
             <Label>Phone Number</Label><Input placeholder="123-456-7890" onChange={this.onChange} value={this.state.phoneNumber} type="tel" id="phoneNumber" name="phoneNumber" />
           </FormGroup>
@@ -365,6 +383,93 @@ class AdminStudentInfoForm extends PureComponent<Props, State> {
               </Label>
             </FormGroup>
           </FormGroup>
+          <br></br>
+          <FormGroup tag="fieldset">
+            <legend>What classes would you like to register for? (Select all that apply.)</legend>
+            <FormGroup check>
+              <Label check>
+                <Input onChange={this.onMultiTypeChange} type="checkbox" name="classes" checked={this.state.classes.indexOf('WCS Fundamentals, Drop-in') !== -1} value="WCS Fundamentals, Drop-in" /> {' '} WCS Fundamentals, Drop-in
+              </Label>
+            </FormGroup>
+            <FormGroup check>
+              <Label check>
+                <Input onChange={this.onMultiTypeChange} type="checkbox" name="classes" checked={this.state.classes.indexOf('WCS Fundamentals, Monthly Series') !== -1} value="WCS Fundamentals, Monthly Series" /> {' '} WCS Fundamentals, Monthly Series
+              </Label>
+            </FormGroup>
+            <FormGroup check>
+              <Label check>
+                <Input onChange={this.onMultiTypeChange} type="checkbox" name="classes" checked={this.state.classes.indexOf('Intermediate WCS, Drop-in') !== -1} value="Intermediate WCS, Drop-in" /> {' '} Intermediate WCS, Drop-in
+              </Label>
+            </FormGroup>
+            <FormGroup check>
+              <Label check>
+                <Input onChange={this.onMultiTypeChange} type="checkbox" name="classes" checked={this.state.classes.indexOf('Intermediate WCS, Monthly Series') !== -1} value="Intermediate WCS, Monthly Series" /> {' '} Intermediate WCS, Monthly Series
+              </Label>
+            </FormGroup>
+          </FormGroup>
+          <br></br>
+          <FormGroup tag="fieldset">
+            <FormGroup check>
+              <Label check>
+                <Input onChange={this.onChange} name="emailOptOut" type="checkbox" checked={this.state.emailOptOut} />
+                <strong>"Please check here if you do not wish to recieve email updates from Mission City Swing"</strong>
+              </Label>
+            </FormGroup>
+          </FormGroup>
+          <br></br>
+          <h5>"For Office Use Only"</h5>
+          <FormGroup>
+            <Label for="amt">Amt</Label><Input type="number" value={this.state.amt} onChange={this.onChange} name="amt" />
+          </FormGroup>
+          <FormGroup tag="fieldset">
+            <legend className="h6">Payment Type</legend>
+            <FormGroup check>
+              <Label check>
+                <Input onChange={this.onChange} type="radio" name="paymentType" checked={this.state.paymentType === "Ca"} value="Ca" /> Ca
+              </Label>
+            </FormGroup>
+            <FormGroup check>
+              <Label check>
+                <Input onChange={this.onChange} type="radio" name="paymentType" checked={this.state.paymentType === "Ch"} value="Ch" /> Ch
+              </Label>
+            </FormGroup>
+            <FormGroup check>
+              <Label check>
+                <Input onChange={this.onChange} type="radio" name="paymentType" checked={this.state.paymentType === "Cr"} value="Cr" /> Cr
+              </Label>
+            </FormGroup>
+          </FormGroup>
+          <FormGroup tag="fieldset">
+            <FormGroup check>
+              <Label check>
+                <Input onChange={this.onChange} name="student" type="checkbox" checked={this.state.student} />
+                <strong>Full time student, must show valid student ID ("St")</strong>
+              </Label>
+            </FormGroup>
+          </FormGroup>
+          <FormGroup tag="fieldset">
+            <FormGroup check>
+              <Label check>
+                <Input onChange={this.onChange} name="newDancer" type="checkbox" checked={this.state.newDancer} />
+                <strong>New dancer ("ND")</strong>
+              </Label>
+            </FormGroup>
+          </FormGroup>
+          <FormGroup>
+            <Label for="adminInitial">Admin Initial</Label><Input value={this.state.adminInitial} onChange={this.onChange} name="adminInitial" />
+          </FormGroup>
+          <br></br>
+          <FormGroup>
+            <Label for="memberDate">Member Since (date on form)</Label>
+            <DateTimePicker 
+              time={false}
+              format={'dddd, MMMM Do YYYY'}
+              value={this.state.memberDate}
+              name="memberDate"
+              onChange={this.onMemberDateChange}
+            />
+          </FormGroup>
+          <br></br>
           <Button value="submit" onClick={this.onSubmit}>Admin Submit</Button>
         </Form>
       </div>

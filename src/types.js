@@ -14,10 +14,13 @@ export type Profile = {
   otherDancesOther: string,
   classes: [],
   student: boolean,
-  emailOptIn: boolean,
+  emailOptOut: boolean,
   waiverAgree: boolean,
   conductAgree: boolean,
-  author: string
+  author: string,
+  paymentType: string,
+  amt: int,
+  adminInitial: string
 };
 
 export type ProfileAdminInfo = {

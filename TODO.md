@@ -8,11 +8,13 @@
 
 [x] Set default date across the app, save in a cookie that expires in 24 hours
 
-[ ] Typeahead for checking into dance
-
 [x] Adjust form size when on desktop
 
 [x] Admin checkin in navbar
+
+[x] A place for everything in the form, including the "for office use only" box
+
+[ ] Typeahead for checking into dance
 
 
 ### Feature requests
