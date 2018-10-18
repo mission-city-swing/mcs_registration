@@ -425,17 +425,17 @@ class AdminStudentInfoForm extends PureComponent<Props, State> {
             <legend className="h6">Payment Type</legend>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onChange} type="radio" name="paymentType" checked={this.state.paymentType === "Ca"} value="Ca" /> Ca
+                <Input onChange={this.onChange} type="radio" name="paymentType" checked={this.state.paymentType === "cash"} value="cash" /> Ca
               </Label>
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onChange} type="radio" name="paymentType" checked={this.state.paymentType === "Ch"} value="Ch" /> Ch
+                <Input onChange={this.onChange} type="radio" name="paymentType" checked={this.state.paymentType === "check"} value="check" /> Ch
               </Label>
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onChange} type="radio" name="paymentType" checked={this.state.paymentType === "Cr"} value="Cr" /> Cr
+                <Input onChange={this.onChange} type="radio" name="paymentType" checked={this.state.paymentType === "credit"} value="credit" /> Cr
               </Label>
             </FormGroup>
           </FormGroup>
