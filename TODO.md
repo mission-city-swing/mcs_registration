@@ -1,5 +1,19 @@
 # TODO
 
+### Reqs before launch
+
+[ ] Safety around adding data-- should not overwrite fields not included in form, specifically thinking about new student form
+
+[ ] Typeahead for checking into dance
+
+[ ] Square integration
+
+
+### Reqs for Task Rabbit
+
+[x] A place for everything in the form, including the "for office use only" box
+
+
 ### From 2018-08-29 form filling notes
 
 [x] When you enter the name of the referral, the box should get checked automatically
@@ -11,10 +25,6 @@
 [x] Adjust form size when on desktop
 
 [x] Admin checkin in navbar
-
-[x] A place for everything in the form, including the "for office use only" box
-
-[ ] Typeahead for checking into dance
 
 
 ### Feature requests
