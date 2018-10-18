@@ -78,9 +78,7 @@ export const getProfileByName = (firstName, lastName) => {
   return new Promise(function(resolve, reject) {
     fireDB.database().ref("profiles/").orderByChild("profile/lastName").equalTo(lastName).once("value").then(function(snapshot) {
       for (var childSnapshot in snapshot.val()) {
-        // console.log(["Got here", firstName, lastName, childSnapshot]);
         if (snapshot.val()[childSnapshot].profile.firstName === firstName) {
-          console.log(["Got here", firstName, lastName]);
           resolve(snapshot.val()[childSnapshot].profile);
         } else {
           resolve({});
@@ -89,8 +87,7 @@ export const getProfileByName = (firstName, lastName) => {
     }, function(error) {
       Error(error);
     });
-
-  })
+  });
 };
 
 export const createOrUpdateProfile = (options: Profile) => {
@@ -106,7 +103,14 @@ export const createOrUpdateProfile = (options: Profile) => {
   }
   options.memberDate = options.memberDate.toDateString()
   const profileId = uuidv3(options.email, MCS_APP);
-  return fireDB.database().ref("profiles/" + profileId + "/profile").set(options);
+  return fireDB.database().ref("profiles/" + profileId).once("value").then(function(snapshot){
+    var profileToWrite = {...options};
+    if (snapshot.val()["profile"]) {
+      var oldProfile = snapshot.val()["profile"];
+      profileToWrite = Object.assign(oldProfile, profileToWrite);
+    }
+    return fireDB.database().ref("profiles/" + profileId + "/profile").set(profileToWrite);
+  });
 };
 
 export const getProfiles = fireDB.database().ref("profiles/");
@@ -197,7 +201,7 @@ export const addNewDanceCheckin = (options: DanceCheckin) => {
   return fireDB.database().ref("profiles/" + profileId).once("value").then(function(snapshot){
     if (snapshot.val() == null) {
       var profile = {...options};
-      profile.memberDate = (new Date()).toDateString();
+      profile.memberDate = (getAppDate()).toDateString();
       return fireDB.database().ref("profiles/" + profileId + "/profile").set(profile);
     } else {
       return fireDB.database().ref("profiles/" + profileId).once("value")
@@ -236,7 +240,7 @@ export const addNewClassCheckin = (options: ClassCheckin) => {
     fireDB.database().ref("profiles/" + profileId).once("value").then(function(snapshot){
       if (snapshot.val() == null) {
         var profile = {...options};
-        profile.memberDate = (new Date()).toDateString();
+        profile.memberDate = (getAppDate()).toDateString();
         delete profile.classes;
         return fireDB.database().ref("profiles/" + profileId + "/profile").set(profile);
       } else {

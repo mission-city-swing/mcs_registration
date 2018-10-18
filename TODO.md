@@ -2,7 +2,7 @@
 
 ### Reqs before launch
 
-[ ] Safety around adding data-- should not overwrite fields not included in form, specifically thinking about new student form
+[~] Safety around adding data-- should not overwrite fields not included in form, specifically thinking about [x] new student form
 
 [ ] Typeahead for checking into dance
 
