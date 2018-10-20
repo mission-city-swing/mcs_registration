@@ -7,6 +7,7 @@ import { DateTimePicker } from 'react-widgets';
 import queryString from 'query-string';
 import type { Profile } from "../../types.js";
 import { createOrUpdateProfile, getProfileByEmail, getAppDate } from "../../lib/api.js";
+import { getDateFromStringSafe } from "../../lib/utils.js";
 import McsAlert from "../Utilities/alert.js";
 import { ConfirmButtonPopover } from "../Utilities/confirmButton.js";
 import { CodeOfConductModalLink } from "../Utilities/conductModal.js";
@@ -227,7 +228,7 @@ class StudentInfoForm extends PureComponent<Props, State> {
             <DateTimePicker 
               time={false}
               format={'MMMM D'}
-              value={this.state.birthday}
+              value={getDateFromStringSafe(this.state.birthday)}
               name="birthday"
               onChange={this.onBirthdayChange}
               views={['month']}
@@ -362,7 +363,7 @@ class StudentInfoForm extends PureComponent<Props, State> {
             <DateTimePicker 
               time={false}
               format={'dddd, MMMM Do YYYY'}
-              value={this.state.memberDate}
+              value={getDateFromStringSafe(this.state.memberDate)}
               name="memberDate"
               onChange={this.onMemberDateChange}
             />

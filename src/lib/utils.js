@@ -41,7 +41,6 @@ function sortDateStrings(a, b) {
   }
 };
 
-
 function sortByNameAndEmail(profileA, profileB) {
   var nameA = (profileA.firstName + " " + profileA.lastName + " " + profileA.email).toLowerCase();
   var nameB = (profileB.firstName + " " + profileB.lastName + " " + profileB.email).toLowerCase();
@@ -77,4 +76,18 @@ function reactTableFuzzyMatchFilter(filter, row) {
   return String(row[filter.id]).toLowerCase().includes(String(filter.value).toLowerCase())
 };
 
-export { getSubstringIndex, MiscException, sortByDate, sortDateStrings, sortByNameAndEmail, currentMonthIndex, currentMonthString, getMonthString, reactTableFuzzyMatchFilter, currentYear }
+function getDateFromStringSafe(dateString) {
+  console.log(dateString);
+  var date = null;
+  if (dateString) {
+    date = new Date(dateString);
+    console.log(date);
+    if (isNaN(date)) {
+      console.log([date, date instanceof Date, isNaN(date)]);
+      date = null;
+    }
+  }
+  return date
+};
+
+export { getSubstringIndex, MiscException, sortByDate, sortDateStrings, sortByNameAndEmail, currentMonthIndex, currentMonthString, getMonthString, reactTableFuzzyMatchFilter, currentYear, getDateFromStringSafe }
