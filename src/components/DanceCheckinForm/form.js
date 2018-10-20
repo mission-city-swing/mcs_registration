@@ -3,6 +3,8 @@
 import React, { PureComponent } from "react";
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { DateTimePicker } from 'react-widgets';
+import { Typeahead } from 'react-bootstrap-typeahead';
+
 import { addNewDanceCheckin, getProfiles, getAppDate } from "../../lib/api.js";
 import { sortByNameAndEmail, getDateFromStringSafe } from "../../lib/utils.js";
 import McsAlert from "../Utilities/alert.js";
@@ -98,13 +100,12 @@ class DanceCheckinForm extends PureComponent<Props, State> {
     this.setState({checkin: newStateCheckin});
   };
 
-  onCheckinSelectChange = (event: any) => {
-    var value = event.target.value;
+  onCheckinTypeaheadChange = (value) => {
     var newStateCheckin = {...this.defaultCheckin};
-    if (value) {
-      newStateCheckin = Object.assign(newStateCheckin, this.state.profileMap[value])
+    if (value && value.length) {
+      newStateCheckin = Object.assign(newStateCheckin, this.state.profileMap[value[0].id]);
     } else {
-      newStateCheckin = {...this.defaultCheckin}
+      newStateCheckin = {...this.defaultCheckin};
     }
     this.setState({checkin: newStateCheckin});
   };
@@ -184,16 +185,15 @@ class DanceCheckinForm extends PureComponent<Props, State> {
               onChange={this.onCheckinDateChange}
             />
           </FormGroup>
-          <FormGroup>
-            <select onChange={this.onCheckinSelectChange} value={this.state.checkin.email}>
-              <option value="">New Dancer</option>
-              {this.state.profileList.map((profile) => {
-                return(
-                  <option key={profile.email} value={profile.email}>{profile.firstName} {profile.lastName}</option>
-                )
-              })}
-            </select>
-          </FormGroup>
+          <Label>Returning Student</Label>
+          <Typeahead
+            placeholder="Returning students find your name here"
+            onChange={this.onCheckinTypeaheadChange}
+            options={this.state.profileList.map((profile) => { return {"id": profile.email, "label": profile.firstName + " " + profile.lastName} })}
+          />
+          <br></br>
+          <hr></hr>
+          <br></br>
           <FormGroup>
             <Label for="firstName">First Name</Label><Input placeholder="First Name" value={this.state.checkin.firstName} onChange={this.onCheckinChange} name="firstName" />
           </FormGroup>

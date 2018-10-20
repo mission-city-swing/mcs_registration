@@ -3,7 +3,9 @@
 import React, { PureComponent } from "react";
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { DateTimePicker } from 'react-widgets';
+import { Typeahead } from 'react-bootstrap-typeahead';
 import queryString from 'query-string';
+
 import type { ClassCheckin } from "../../types.js";
 import { addNewClassCheckin, getProfiles, getProfileByEmail, setLatestMonthlyPass, getAppDate } from "../../lib/api.js";
 import { getSubstringIndex, currentMonthIndex, currentMonthString, currentYear, sortByNameAndEmail, getDateFromStringSafe } from "../../lib/utils.js";
@@ -150,6 +152,16 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     this.setState({checkin: newStateCheckin});
   };
 
+  onCheckinTypeaheadChange = (value) => {
+    var newStateCheckin = {...this.defaultCheckin};
+    if (value && value.length) {
+      newStateCheckin = Object.assign(newStateCheckin, this.state.profileMap[value[0].id]);
+    } else {
+      newStateCheckin = {...this.defaultCheckin};
+    }
+    this.setState({checkin: newStateCheckin});
+  };
+
   onCheckinDateChange = (value) => {
     this.setState({date: value});
   };
@@ -290,16 +302,15 @@ class ReturningStudentForm extends PureComponent<Props, State> {
               onChange={this.onCheckinDateChange}
             />
           </FormGroup>
-          <FormGroup>
-            <select onChange={this.onCheckinSelectChange} value={this.state.checkin.email}>
-              <option value="">Select A Student</option>
-              {this.state.profileList.map((profile) => {
-                return(
-                  <option key={profile.email} value={profile.email}>{profile.firstName} {profile.lastName}</option>
-                )
-              })}
-            </select>
-          </FormGroup>
+          <Label>Returning Student</Label>
+          <Typeahead
+            placeholder="Returning students find your name here"
+            onChange={this.onCheckinTypeaheadChange}
+            options={this.state.profileList.map((profile) => { return {"id": profile.email, "label": profile.firstName + " " + profile.lastName} })}
+          />
+          <br></br>
+          <hr></hr>
+          <br></br>
           {this.state.checkin.completedFundamentals && 
             <p><strong>{this.state.checkin.firstName} {this.state.checkin.lastName} has completed the MCS fundamentals course.</strong></p>
           }
