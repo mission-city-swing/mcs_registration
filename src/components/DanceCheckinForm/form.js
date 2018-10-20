@@ -4,7 +4,7 @@ import React, { PureComponent } from "react";
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { DateTimePicker } from 'react-widgets';
 import { addNewDanceCheckin, getProfiles, getAppDate } from "../../lib/api.js";
-import { sortByNameAndEmail } from "../../lib/utils.js";
+import { sortByNameAndEmail, getDateFromStringSafe } from "../../lib/utils.js";
 import McsAlert from "../Utilities/alert.js";
 import { AdminConfirmButtonModal } from "../Utilities/confirmCheckinModal.js";
 import { CodeOfConductModalLink } from "../Utilities/conductModal.js";
@@ -179,7 +179,7 @@ class DanceCheckinForm extends PureComponent<Props, State> {
             <DateTimePicker 
               time={false}
               format={'dddd, MMMM Do YYYY'}
-              value={this.state.date}
+              value={getDateFromStringSafe(this.state.date)}
               name="date"
               onChange={this.onCheckinDateChange}
             />

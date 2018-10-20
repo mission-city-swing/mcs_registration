@@ -40,10 +40,10 @@ export function setAppDate(date: dateString) {
 
 export function getAppDate() {
   var date = cookies.get('appDate');
-  if (date === undefined) {
-    date = new Date();
-  } else {
+  if (date) {
     date = new Date(date);
+  } else {
+    date = new Date();
   }
   return date
 };
@@ -69,7 +69,6 @@ export const getProfileById = (profileId) => {
 };
 
 export const getProfileByEmail = (profileEmail) => {
-  console.log(profileEmail);
   const profileId = uuidv3(profileEmail, MCS_APP);
   return fireDB.database().ref("profiles/" + profileId);
 };
@@ -105,7 +104,7 @@ export const createOrUpdateProfile = (options: Profile) => {
   const profileId = uuidv3(options.email, MCS_APP);
   return fireDB.database().ref("profiles/" + profileId).once("value").then(function(snapshot){
     var profileToWrite = {...options};
-    if (snapshot.val()["profile"]) {
+    if (snapshot.val() && snapshot.val()["profile"]) {
       var oldProfile = snapshot.val()["profile"];
       profileToWrite = Object.assign(oldProfile, profileToWrite);
     }

@@ -9,6 +9,7 @@ import React, { PureComponent } from "react";
 import { Form, FormGroup, Button } from 'reactstrap';
 import { DateTimePicker } from 'react-widgets';
 import { getAppDate, setAppDate } from "../../lib/api.js";
+import { getDateFromStringSafe } from "../../lib/utils.js";
 
 
 type State = {};
@@ -37,7 +38,7 @@ class AppDateForm extends PureComponent<Props, State> {
             <DateTimePicker
               time={false}
               format={'dddd, MMMM Do YYYY'}
-              value={this.state.date}
+              value={getDateFromStringSafe(this.state.date)}
               name="date"
               onChange={this.onDateChange}
             />

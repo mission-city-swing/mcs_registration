@@ -6,7 +6,7 @@ import { DateTimePicker } from 'react-widgets';
 import queryString from 'query-string';
 import type { ClassCheckin } from "../../types.js";
 import { addNewClassCheckin, getProfiles, getProfileByEmail, setLatestMonthlyPass, getAppDate } from "../../lib/api.js";
-import { getSubstringIndex, currentMonthIndex, currentMonthString, currentYear, sortByNameAndEmail } from "../../lib/utils.js";
+import { getSubstringIndex, currentMonthIndex, currentMonthString, currentYear, sortByNameAndEmail, getDateFromStringSafe } from "../../lib/utils.js";
 import McsAlert from "../Utilities/alert.js";
 import { AdminConfirmButtonModal } from "../Utilities/confirmCheckinModal.js";
 import { CodeOfConductModalLink } from "../Utilities/conductModal.js";
@@ -285,7 +285,7 @@ class ReturningStudentForm extends PureComponent<Props, State> {
             <DateTimePicker 
               time={false}
               format={'dddd, MMMM Do YYYY'}
-              value={this.state.date}
+              value={getDateFromStringSafe(this.state.date)}
               name="date"
               onChange={this.onCheckinDateChange}
             />

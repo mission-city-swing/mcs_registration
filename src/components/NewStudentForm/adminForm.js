@@ -7,7 +7,7 @@ import { DateTimePicker } from 'react-widgets';
 import queryString from 'query-string';
 import type { Profile } from "../../types.js";
 import { createOrUpdateProfile, getProfileByEmail, getAppDate, getProfileByName } from "../../lib/api.js";
-import { getSubstringIndex } from "../../lib/utils.js";
+import { getSubstringIndex, getDateFromStringSafe } from "../../lib/utils.js";
 import McsAlert from "../Utilities/alert.js";
 
 
@@ -22,7 +22,6 @@ class AdminStudentInfoForm extends PureComponent<Props, State> {
     lastName: "",
     email: "",
     phoneNumber: "",
-    birthday: null,
     memberDate: getAppDate(),
     discoveryMethod: "",
     discoveryMethodFriend: "",
@@ -56,7 +55,6 @@ class AdminStudentInfoForm extends PureComponent<Props, State> {
     }
   };
 
-
   setErrorParamsFromQuery = () => {
     if (this.props.location) {
       if (this.props.location.search) {
@@ -77,8 +75,7 @@ class AdminStudentInfoForm extends PureComponent<Props, State> {
     getProfileByEmail(studentEmail).on("value", (snapshot) => {
       if (snapshot.val()) {
         var profile = snapshot.val().profile;
-        profile.birthday = new Date(profile.birthday)
-        profile.memberDate = new Date(profile.memberDate)
+        profile.memberDate = profile.memberDate ? new Date(profile.memberDate) : null;
         this.setState(profile);
       }
     });
@@ -92,9 +89,8 @@ class AdminStudentInfoForm extends PureComponent<Props, State> {
   getStudentFromName = (firstName, lastName) => {
     getProfileByName(firstName, lastName).then( (profile) => {
       if (profile) {
-        profile.birthday = new Date(profile.birthday)
-        profile.memberDate = new Date(profile.memberDate)
-        this.setState(profile);  
+        profile.memberDate = profile.memberDate ? new Date(profile.memberDate) : null;
+        this.setState(profile);
       }
     });
   };
@@ -138,14 +134,6 @@ class AdminStudentInfoForm extends PureComponent<Props, State> {
     this.setState({
       [name]: value
     });
-  };
-
-  onBirthdayChange = (value) => {
-    this.setState({birthday: value});
-  };
-
-  clearBirthday = () => {
-    this.onBirthdayChange(null)
   };
 
   onMemberDateChange = (value) => {
@@ -196,7 +184,6 @@ class AdminStudentInfoForm extends PureComponent<Props, State> {
   };
 
   toggleAlerts(event: any) {
-    console.log(event)
     this.setState({
       success: "",
       error: ""
@@ -235,8 +222,6 @@ class AdminStudentInfoForm extends PureComponent<Props, State> {
       if (!toSubmit.email) {
         toSubmit["email"] = this.generateFakeEmail();
       }
-
-      console.log(toSubmit);
       createOrUpdateProfile(toSubmit).then(function(success) {
         onSuccess();
       }).catch(function(error) {
@@ -267,20 +252,6 @@ class AdminStudentInfoForm extends PureComponent<Props, State> {
           <br></br>
           <FormGroup>
             <Label>Phone Number</Label><Input placeholder="123-456-7890" onChange={this.onChange} value={this.state.phoneNumber} type="tel" id="phoneNumber" name="phoneNumber" />
-          </FormGroup>
-          <FormGroup>
-            <Label for="birthday">Birthday</Label>
-            <DateTimePicker
-              time={false}
-              format={'MMMM D'}
-              value={this.state.birthday}
-              name="birthday"
-              onChange={this.onBirthdayChange}
-              views={['month']}
-              footer={false}
-              headerFormat={'MMMM'}
-            />
-            <Button outline onClick={this.clearBirthday}>Clear Date</Button>
           </FormGroup>
           <br></br>
           <FormGroup tag="fieldset">
@@ -464,7 +435,7 @@ class AdminStudentInfoForm extends PureComponent<Props, State> {
             <DateTimePicker 
               time={false}
               format={'dddd, MMMM Do YYYY'}
-              value={this.state.memberDate}
+              value={getDateFromStringSafe(this.state.memberDate)}
               name="memberDate"
               onChange={this.onMemberDateChange}
             />

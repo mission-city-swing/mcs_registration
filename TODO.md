@@ -1,5 +1,12 @@
 # TODO
 
+
+### Bugs found with Task Rabbit
+
+[x] Date dropdown doesn't work after information is auto-filled-- discovered this was an issue with the date not being parsed correctly
+
+
+
 ### Reqs before launch
 
 [~] Safety around adding data-- should not overwrite fields not included in form, specifically thinking about [x] new student form

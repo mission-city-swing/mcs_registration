@@ -6,6 +6,7 @@ import { DateTimePicker } from 'react-widgets';
 import queryString from 'query-string';
 import type { Dance } from "../../types.js";
 import { addNewDance, getDance, deleteDance, getAppDate } from "../../lib/api.js";
+import { getDateFromStringSafe } from "../../lib/utils.js";
 import McsAlert from "../Utilities/alert.js";
 
 type State = Dance;
@@ -56,7 +57,6 @@ class DanceForm extends PureComponent<Props, State> {
 
   onDanceClickDelete = (event: any)  => {
     const value = event.target.value;
-    console.log("would have deleted " + value);
     deleteDance(value);
   }
 
@@ -132,7 +132,7 @@ class DanceForm extends PureComponent<Props, State> {
             <DateTimePicker 
               time={false}
               format={'dddd, MMMM Do YYYY'}
-              value={this.state.date}
+              value={getDateFromStringSafe(this.state.date)}
               name="date"
               onChange={this.onDateChange}
             />
