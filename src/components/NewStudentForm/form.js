@@ -121,6 +121,10 @@ class StudentInfoForm extends PureComponent<Props, State> {
     this.setState({birthday: value});
   };
 
+  clearBirthday = () => {
+    this.onBirthdayChange(null)
+  };
+
   onMemberDateChange = (value) => {
     this.setState({memberDate: value});
   };
@@ -235,6 +239,7 @@ class StudentInfoForm extends PureComponent<Props, State> {
               footer={false}
               headerFormat={'MMMM'}
             />
+            <Button outline onClick={this.clearBirthday}>Clear Date</Button>
           </FormGroup>
           <br></br>
           <FormGroup check>

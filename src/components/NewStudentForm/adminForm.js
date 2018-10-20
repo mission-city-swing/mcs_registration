@@ -22,7 +22,6 @@ class AdminStudentInfoForm extends PureComponent<Props, State> {
     lastName: "",
     email: "",
     phoneNumber: "",
-    birthday: null,
     memberDate: getAppDate(),
     discoveryMethod: "",
     discoveryMethodFriend: "",
@@ -76,7 +75,6 @@ class AdminStudentInfoForm extends PureComponent<Props, State> {
     getProfileByEmail(studentEmail).on("value", (snapshot) => {
       if (snapshot.val()) {
         var profile = snapshot.val().profile;
-        profile.birthday = profile.birthday ? new Date(profile.birthday) : null;
         profile.memberDate = profile.memberDate ? new Date(profile.memberDate) : null;
         this.setState(profile);
       }
@@ -91,7 +89,6 @@ class AdminStudentInfoForm extends PureComponent<Props, State> {
   getStudentFromName = (firstName, lastName) => {
     getProfileByName(firstName, lastName).then( (profile) => {
       if (profile) {
-        profile.birthday = profile.birthday ? new Date(profile.birthday) : null;
         profile.memberDate = profile.memberDate ? new Date(profile.memberDate) : null;
         this.setState(profile);
       }
@@ -137,14 +134,6 @@ class AdminStudentInfoForm extends PureComponent<Props, State> {
     this.setState({
       [name]: value
     });
-  };
-
-  onBirthdayChange = (value) => {
-    this.setState({birthday: value});
-  };
-
-  clearBirthday = () => {
-    this.onBirthdayChange(null)
   };
 
   onMemberDateChange = (value) => {
@@ -263,20 +252,6 @@ class AdminStudentInfoForm extends PureComponent<Props, State> {
           <br></br>
           <FormGroup>
             <Label>Phone Number</Label><Input placeholder="123-456-7890" onChange={this.onChange} value={this.state.phoneNumber} type="tel" id="phoneNumber" name="phoneNumber" />
-          </FormGroup>
-          <FormGroup>
-            <Label for="birthday">Birthday</Label>
-            <DateTimePicker
-              time={false}
-              format={'MMMM D'}
-              value={getDateFromStringSafe(this.state.birthday)}
-              name="birthday"
-              onChange={this.onBirthdayChange}
-              views={['month']}
-              footer={false}
-              headerFormat={'MMMM'}
-            />
-            <Button outline onClick={this.clearBirthday}>Clear Date</Button>
           </FormGroup>
           <br></br>
           <FormGroup tag="fieldset">
