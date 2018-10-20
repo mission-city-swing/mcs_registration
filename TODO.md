@@ -10,7 +10,7 @@
 
 [~] Safety around adding data-- should not overwrite fields not included in form, specifically thinking about [x] new student form
 
-[~] Typeahead for checking into dance
+[x] Typeahead for checking into dance
 
 [ ] Square integration
 
