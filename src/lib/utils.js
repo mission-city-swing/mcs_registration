@@ -77,13 +77,10 @@ function reactTableFuzzyMatchFilter(filter, row) {
 };
 
 function getDateFromStringSafe(dateString) {
-  console.log(dateString);
   var date = null;
   if (dateString) {
     date = new Date(dateString);
-    console.log(date);
     if (isNaN(date)) {
-      console.log([date, date instanceof Date, isNaN(date)]);
       date = null;
     }
   }

@@ -69,7 +69,6 @@ export const getProfileById = (profileId) => {
 };
 
 export const getProfileByEmail = (profileEmail) => {
-  console.log(profileEmail);
   const profileId = uuidv3(profileEmail, MCS_APP);
   return fireDB.database().ref("profiles/" + profileId);
 };

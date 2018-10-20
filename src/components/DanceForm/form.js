@@ -57,7 +57,6 @@ class DanceForm extends PureComponent<Props, State> {
 
   onDanceClickDelete = (event: any)  => {
     const value = event.target.value;
-    console.log("would have deleted " + value);
     deleteDance(value);
   }
 

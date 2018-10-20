@@ -6,7 +6,7 @@ import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { DateTimePicker } from 'react-widgets';
 import queryString from 'query-string';
 import type { Profile } from "../../types.js";
-import { createOrUpdateProfile, getProfileByEmail, getAppDate } from "../../lib/api.js";
+import { createOrUpdateProfile, getProfileByEmail, getAppDate, getProfileByName } from "../../lib/api.js";
 import { getDateFromStringSafe } from "../../lib/utils.js";
 import McsAlert from "../Utilities/alert.js";
 import { ConfirmButtonPopover } from "../Utilities/confirmButton.js";
@@ -68,13 +68,33 @@ class StudentInfoForm extends PureComponent<Props, State> {
   getStudentFromEmail = (studentEmail) => {
     getProfileByEmail(studentEmail).on("value", (snapshot) => {
       if (snapshot.val()) {
-        var profile = snapshot.val().profile;
-        profile.birthday = new Date(profile.birthday)
-        profile.memberDate = new Date(profile.memberDate)
-        this.setState(profile)
+        this.setProfileStateFromSnaphshot(snapshot.val().profile);
       }
     });
-  }
+  };
+
+  getStudentFromEmailBlur = (event: any) => {
+    this.getStudentFromEmail(event.target.value);
+  };
+
+  getStudentFromNameBlur = (event: any) => {
+    var lastName = event.target.value;
+    this.getStudentFromName(this.state.firstName, lastName);
+  };
+
+  getStudentFromName = (firstName, lastName) => {
+    getProfileByName(firstName, lastName).then( (profile) => {
+      if (profile) {
+        this.setProfileStateFromSnaphshot(profile);
+      }
+    });
+  };
+
+  setProfileStateFromSnaphshot = (profileSnap) => {
+    profileSnap.birthday = profileSnap.birthday ? new Date(profileSnap.birthday) : null
+    profileSnap.memberDate = profileSnap.memberDate ? new Date(profileSnap.memberDate) : null
+    this.setState(profileSnap);
+  };
 
   onChange = (event: any) => {
     var name = event.target.name;
@@ -160,7 +180,6 @@ class StudentInfoForm extends PureComponent<Props, State> {
   };
 
   toggleAlerts(event: any) {
-    console.log(event)
     this.setState({
       success: "",
       error: ""
@@ -219,10 +238,10 @@ class StudentInfoForm extends PureComponent<Props, State> {
             <Label for="firstName">First Name</Label><Input placeholder="First Name" value={this.state.firstName} onChange={this.onChange} name="firstName" />
           </FormGroup>
           <FormGroup>
-            <Label for="lastName">Last Name</Label><Input placeholder="Last Name" onChange={this.onChange} value={this.state.lastName} name="lastName" />
+            <Label for="lastName">Last Name</Label><Input placeholder="Last Name" onChange={this.onChange} onBlur={this.getStudentFromNameBlur} value={this.state.lastName} name="lastName" />
           </FormGroup>
           <FormGroup>
-            <Label form="email" type="email">Email</Label><Input placeholder="me@example.com" onChange={this.onChange} value={this.state.email} type="email" id="email" name="email" />
+            <Label form="email" type="email">Email</Label><Input placeholder="me@example.com" onChange={this.onChange} onBlur={this.getStudentFromEmailBlur} value={this.state.email} type="email" id="email" name="email" />
           </FormGroup>
           <FormGroup>
             <Label>Phone Number</Label><Input placeholder="123-456-7890" onChange={this.onChange} value={this.state.phoneNumber} type="tel" id="phoneNumber" name="phoneNumber" />
