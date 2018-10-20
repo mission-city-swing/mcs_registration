@@ -2,8 +2,9 @@
 // src/components/Students/index.js
 
 import React, { PureComponent } from "react";
-import { Form, FormGroup, } from 'reactstrap';
+import { Typeahead } from 'react-bootstrap-typeahead';
 import queryString from 'query-string';
+
 import StudentInfoForm from "../NewStudentForm/form.js";
 import StudentCheckinList from "./checkins.js";
 import ProfileAdminInfoForm from "./infoForm.js";
@@ -19,7 +20,7 @@ class StudentPage extends PureComponent<Props, State> {
   state: State = {
   	selected: "",
     profileList: [],
-    selectedProfile: {}
+    selectedProfile: null
   };
 
   componentDidMount() {
@@ -53,17 +54,20 @@ class StudentPage extends PureComponent<Props, State> {
   getStudentFromEmail = (studentEmail) => {
     getProfileByEmail(studentEmail).on("value", (snapshot) => {
       if (snapshot.val()) {
-        this.setState({selectedProfile: snapshot.val()})
+        var selected = snapshot.val()
+        selected["label"] = selected.profile.firstName + " " + selected.profile.lastName;
+        this.setState({selectedProfile: selected})
       }
     });
   };
 
-  onCheckinSelectChange = (event: any) => {
-    var value = event.target.value;
-    this.setState({
-      selected: value
-    });
-    window.location.href = "/admin/student?email=" + encodeURIComponent(value);
+  onStudentTypeaheadChange = (value) => {
+    if (value && value.length) {
+      this.setState({
+        selected: value[0].id
+      });
+      window.location.href = "/admin/student?email=" + encodeURIComponent(value[0].id);
+    }
   };
 
   render() {
@@ -73,18 +77,15 @@ class StudentPage extends PureComponent<Props, State> {
         <h1>Students</h1>
         <div>
           <p>Select a student to view or update.</p>
-          <Form>
-            <FormGroup>
-              <select onChange={this.onCheckinSelectChange} value={this.state.selected}>
-                <option value="">Please Select a Student</option>
-                {this.state.profileList.map((profile) => {
-                  return(
-                    <option key={profile.email} value={profile.email}>{profile.firstName} {profile.lastName}</option>
-                  )
-                })}
-              </select>
-            </FormGroup>
-          </Form>
+          <Typeahead
+            placeholder="Please select a student"
+            onChange={this.onStudentTypeaheadChange}
+            options={this.state.profileList.map((profile) => { return {"id": profile.email, "label": profile.firstName + " " + profile.lastName} })}
+            selected={this.state.selectedProfile ? [this.state.selectedProfile] : null}
+          />
+          <br></br>
+          <hr></hr>
+          <br></br>
         </div>
         {this.state.selected && 
         <div>
