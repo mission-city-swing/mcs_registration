@@ -1,6 +1,7 @@
 // @flow
 // src/components/Utilities/alert.js
 import React from 'react';
+import ReactTimeout from 'react-timeout';
 import { Alert } from 'reactstrap';
 
 class McsAlert extends React.Component {
@@ -23,7 +24,10 @@ class McsAlert extends React.Component {
         behavior: "smooth"
       });
     }
-  }
+    if (this.state.visible && this.props.timeout) {
+      this.props.setTimeout(this.state.onToggle, this.props.timeout * 1000);
+    }
+  };
 
   render() {
     return (
@@ -34,4 +38,4 @@ class McsAlert extends React.Component {
   }
 }
 
-export default McsAlert;
+export default ReactTimeout(McsAlert);
