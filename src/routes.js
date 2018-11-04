@@ -11,6 +11,7 @@ import ReturningStudentPage from './components/ReturningStudentForm';
 import Dance from './components/DanceForm';
 import DanceCheckinPage from './components/DanceCheckinForm';
 import StudentPage from './components/Students';
+import SquareCallback from './components/Square';
 
 const Routes = (props) => (
   <Switch {...props}>
@@ -25,6 +26,7 @@ const Routes = (props) => (
     <Route path="/admin/reset-password" component={ResetPasswordForm} />
     <Route path="/admin/student" component={StudentPage} />
     <Route path="/admin/" component={AdminHome} />
+    <Route path="/square/" component={SquareCallback} />
     <Redirect to="/" />
   </Switch>
 );
