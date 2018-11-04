@@ -383,7 +383,7 @@ class AdminStudentInfoForm extends PureComponent<Props, State> {
             <FormGroup check>
               <Label check>
                 <Input onChange={this.onChange} name="emailOptOut" type="checkbox" checked={this.state.emailOptOut} />
-                <strong>"Please check here if you do not wish to recieve email updates from Mission City Swing"</strong>
+                <strong>"Please check here if you do not wish to receive email updates from Mission City Swing"</strong>
               </Label>
             </FormGroup>
           </FormGroup>
