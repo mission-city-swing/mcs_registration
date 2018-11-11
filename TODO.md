@@ -12,7 +12,7 @@
 
 [x] Typeahead for checking into dance
 
-[ ] Square integration
+[~] Square integration-- need to open the web app using Chrome, make an endpoint with firebase functions to handle callbacks
 
 
 ### Reqs for Task Rabbit
