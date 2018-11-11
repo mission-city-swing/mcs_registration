@@ -6,6 +6,13 @@ build/*
 # external packages
 node_modules/
 node_modules/*
+# functions files
+functions/node_modules/
+functions/node_modules/*
+functions/lib/
+functions/lib/*
+functions/etc/
+functions/etc/*
 # non-project files
 *.DS_Store
 *.sublime-project

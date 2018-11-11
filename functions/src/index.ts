@@ -1,3 +1,13 @@
+// import * as functions from 'firebase-functions';
+
+// // Start writing Firebase Functions
+// // https://firebase.google.com/docs/functions/typescript
+//
+// export const helloWorld = functions.https.onRequest((request, response) => {
+//  response.send("Hello from Firebase!");
+// });
+
+
 // Step 1: Receive Square callback
 // Step 2: Make request to Square API for token
 // Step 3: Receive Square callback with token?
@@ -36,7 +46,17 @@ const authenticate = async (req, res, next) => {
   }
 };
 
-app.use(authenticate);
+// Helper function to categorize a sentiment score as positive, negative, or neutral
+const categorizeScore = (score) => {
+  if (score > 0.25) {
+    return 'positive';
+  } else if (score < -0.25) {
+    return 'negative';
+  }
+  return 'neutral';
+};
+
+// app.use(authenticate);
 
 // POST /api/messages
 // Create a new message, get its sentiment using Google Cloud NLP,
@@ -71,7 +91,7 @@ app.get('/messages', async (req, res) => {
   }
   try {
     const snapshot = await query.once('value');
-    let messages = [];
+    const messages = [];
     snapshot.forEach((childSnapshot) => {
       messages.push({key: childSnapshot.key, message: childSnapshot.val().message});
     });
@@ -101,13 +121,3 @@ app.get('/message/:messageId', async (req, res) => {
 
 // Expose the API as a function
 exports.api = functions.https.onRequest(app);
-
-// Helper function to categorize a sentiment score as positive, negative, or neutral
-const categorizeScore = (score) => {
-  if (score > 0.25) {
-    return 'positive';
-  } else if (score < -0.25) {
-    return 'negative';
-  }
-  return 'neutral';
-};
