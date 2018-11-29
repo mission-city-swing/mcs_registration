@@ -26,7 +26,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "deploy": "firebase deploy"
+    "deploy": "rm -rf build/ && react-scripts build && firebase deploy"
   },
   "proxy": "http://localhost:3001",
   "devDependencies": {

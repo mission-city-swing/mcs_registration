@@ -12,9 +12,9 @@ type Props = {};
 class NewStudentPage extends PureComponent<Props, State> {
 
   addActionsOnSubmit = (options = null) => {
-    var newDancer = options.newDancer ? "&new-dancer=true" : "";
-    var toUrl = "/class-checkin?email=" + encodeURIComponent(options.email) + newDancer;
-    this.props.history.push(toUrl);
+    // var newDancer = options.newDancer ? "&new-dancer=true" : "";
+    // var toUrl = "/class-checkin?email=" + encodeURIComponent(options.email) + newDancer;
+    // this.props.history.push(toUrl);
     window.scrollTo(0, 0);
   }
 
