@@ -200,6 +200,7 @@ class StudentInfoForm extends PureComponent<Props, State> {
     var onSuccess = () => {
       var successText = "Created or updated profile for " + this.state.email
       this.setState({success: successText});
+      this.clearForm();
 
       this.addActionsOnSubmit({
         email: this.state.email,
