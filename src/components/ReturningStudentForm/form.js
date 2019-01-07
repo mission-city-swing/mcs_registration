@@ -13,6 +13,7 @@ import McsAlert from "../Utilities/alert.js";
 import { ConfirmButtonPopover } from "../Utilities/confirmButton.js";
 import { CodeOfConductModalLink } from "../Utilities/conductModal.js";
 import { LiabilityWaiverModalLink } from "../Utilities/waiverModal.js";
+import { Link } from 'react-router-dom';
 
 
 type State = ClassCheckin;
@@ -308,6 +309,12 @@ class ReturningStudentForm extends PureComponent<Props, State> {
             onChange={this.onCheckinTypeaheadChange}
             options={this.state.profileList.map((profile) => { return {"id": profile.email, "label": profile.firstName + " " + profile.lastName} })}
           />
+          { !this.state.checkin.email &&
+            <div>
+              <br></br>
+              <Link to="/new-student?redirect=true"><Button color="primary" size="md">New Students Fill Out Form Here</Button></Link>
+            </div>
+          }
           <br></br>
           <hr></hr>
           <br></br>

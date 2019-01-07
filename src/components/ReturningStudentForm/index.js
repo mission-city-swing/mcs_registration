@@ -1,8 +1,8 @@
 // @flow
 // src/components/ReturningStudentForm/index.js
 import React, { PureComponent } from "react";
-import ReturningStudentForm from "./form.js"
-import ErrorBoundary from "../Utilities/catch.js"
+import ReturningStudentForm from "./form.js";
+import ErrorBoundary from "../Utilities/catch.js";
 
 type Props = {};
 
