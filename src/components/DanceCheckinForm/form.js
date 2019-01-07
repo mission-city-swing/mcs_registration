@@ -194,13 +194,13 @@ class DanceCheckinForm extends PureComponent<Props, State> {
           <hr></hr>
           <br></br>
           <FormGroup>
-            <Label for="firstName">First Name</Label><Input placeholder="First Name" value={this.state.checkin.firstName} onChange={this.onCheckinChange} name="firstName" />
+            <Label for="firstName">First Name <span className="required-text">*</span></Label><Input placeholder="First Name" value={this.state.checkin.firstName} onChange={this.onCheckinChange} name="firstName" />
           </FormGroup>
           <FormGroup>
-            <Label for="lastName">Last Name</Label><Input placeholder="Last Name" value={this.state.checkin.lastName} onChange={this.onCheckinChange} name="lastName" />
+            <Label for="lastName">Last Name <span className="required-text">*</span></Label><Input placeholder="Last Name" value={this.state.checkin.lastName} onChange={this.onCheckinChange} name="lastName" />
           </FormGroup>
           <FormGroup>
-            <Label for="email">Email</Label><Input placeholder="Email" value={this.state.checkin.email} onChange={this.onCheckinChange} name="email" />
+            <Label for="email">Email <span className="required-text">*</span></Label><Input placeholder="Email" value={this.state.checkin.email} onChange={this.onCheckinChange} name="email" />
           </FormGroup>
           <br></br>
           <FormGroup check>

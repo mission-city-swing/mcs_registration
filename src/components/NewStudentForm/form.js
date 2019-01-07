@@ -247,13 +247,13 @@ class StudentInfoForm extends PureComponent<Props, State> {
         <Form onSubmit={this.onSubmit}>
           <h5>Basic Info</h5>
           <FormGroup>
-            <Label for="firstName">First Name</Label><Input placeholder="First Name" value={this.state.firstName} onChange={this.onChange} name="firstName" />
+            <Label for="firstName">First Name <span className="required-text">*</span></Label><Input placeholder="First Name" value={this.state.firstName} onChange={this.onChange} name="firstName" />
           </FormGroup>
           <FormGroup>
-            <Label for="lastName">Last Name</Label><Input placeholder="Last Name" onChange={this.onChange} onBlur={this.getStudentFromNameBlur} value={this.state.lastName} name="lastName" />
+            <Label for="lastName">Last Name <span className="required-text">*</span></Label><Input placeholder="Last Name" onChange={this.onChange} onBlur={this.getStudentFromNameBlur} value={this.state.lastName} name="lastName" />
           </FormGroup>
           <FormGroup>
-            <Label form="email" type="email">Email</Label><Input placeholder="me@example.com" onChange={this.onChange} onBlur={this.getStudentFromEmailBlur} value={this.state.email} type="email" id="email" name="email" />
+            <Label form="email" type="email">Email <span className="required-text">*</span></Label><Input placeholder="me@example.com" onChange={this.onChange} onBlur={this.getStudentFromEmailBlur} value={this.state.email} type="email" id="email" name="email" />
           </FormGroup>
           <FormGroup>
             <Label>Phone Number</Label><Input placeholder="123-456-7890" onChange={this.onChange} value={this.state.phoneNumber} type="tel" id="phoneNumber" name="phoneNumber" />

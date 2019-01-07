@@ -12,3 +12,4 @@ node_modules/*
 *.sublime-workspace
 # firebase debug logs
 *.log
+*.firebase/

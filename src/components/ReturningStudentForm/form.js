@@ -325,13 +325,13 @@ class ReturningStudentForm extends PureComponent<Props, State> {
             <p><strong>Student has a monthly pass for {this.state.checkin.latestMonthlyPass.numClasses} classes for {this.state.checkin.latestMonthlyPass.monthName} {this.state.checkin.latestMonthlyPass.year}</strong></p>
           }
           <FormGroup>
-            <Label for="firstName">First Name</Label><Input placeholder="First Name" value={this.state.checkin.firstName} onChange={this.onCheckinChange} name="firstName" />
+            <Label for="firstName">First Name <span className="required-text">*</span></Label><Input placeholder="First Name" value={this.state.checkin.firstName} onChange={this.onCheckinChange} name="firstName" />
           </FormGroup>
           <FormGroup>
-            <Label for="lastName">Last Name</Label><Input placeholder="Last Name" onChange={this.onCheckinChange} value={this.state.checkin.lastName} name="lastName" />
+            <Label for="lastName">Last Name <span className="required-text">*</span></Label><Input placeholder="Last Name" onChange={this.onCheckinChange} value={this.state.checkin.lastName} name="lastName" />
           </FormGroup>
           <FormGroup>
-            <Label form="email" type="email">Email</Label><Input placeholder="me@example.com" onChange={this.onCheckinChange} value={this.state.checkin.email} type="email" id="email" name="email" />
+            <Label form="email" type="email">Email <span className="required-text">*</span></Label><Input placeholder="me@example.com" onChange={this.onCheckinChange} value={this.state.checkin.email} type="email" id="email" name="email" />
           </FormGroup>
           <FormGroup check>
             <Label check>
