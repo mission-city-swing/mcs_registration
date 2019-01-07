@@ -40,12 +40,15 @@ class StudentInfoForm extends PureComponent<Props, State> {
 
   state: State = Object.assign({...this.defaultFields}, {
     success: "",
-    error: ""
+    error: "",
+    redirect: false
   });
 
   componentDidMount() {
+    var queryArgs = this.getQueryArgs();
+    this.setState({redirect: queryArgs["redirect"]})
     // When updating student info, we use the same form
-    this.getStudentFromQuery();
+    this.getStudentFromQuery(queryArgs);
     // Set function for additional actions on submit, like a redirect
     if (this.props.addActionsOnSubmit) {
       this.addActionsOnSubmit = this.props.addActionsOnSubmit
@@ -54,14 +57,19 @@ class StudentInfoForm extends PureComponent<Props, State> {
     }
   };
 
-
-  getStudentFromQuery = () => {
+  getQueryArgs = () => {
     if (this.props.location) {
       var parsedSearch = queryString.parse(this.props.location.search);
       if (this.props.location.search) {
-        var studentEmail = parsedSearch["email"];
-        this.getStudentFromEmail(studentEmail);
+        return parsedSearch;
       }
+    }
+    return {};
+  };
+
+  getStudentFromQuery = (queryArgs) => {
+    if (queryArgs["email"]) {
+      this.getStudentFromEmail(queryArgs["email"]);
     }
   };
 
@@ -201,10 +209,14 @@ class StudentInfoForm extends PureComponent<Props, State> {
       var successText = "Updated profile for " + this.state.email
       this.setState({success: successText});
 
-      this.addActionsOnSubmit({
-        email: this.state.email,
-        newDancer: !this.state.otherDances.includes("West Coast Swing")
-      });
+      if (this.state.redirect) {
+        this.addActionsOnSubmit({
+          email: this.state.email,
+          newDancer: !this.state.otherDances.includes("West Coast Swing")
+        });
+      } else {
+        this.clearForm();
+      }
     }
     var onError = (errorText) => {
       this.setState({error: errorText});

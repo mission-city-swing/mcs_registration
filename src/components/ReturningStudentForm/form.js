@@ -10,9 +10,10 @@ import type { ClassCheckin } from "../../types.js";
 import { addNewClassCheckin, getProfiles, getProfileByEmail, setLatestMonthlyPass, getAppDate } from "../../lib/api.js";
 import { getSubstringIndex, currentMonthIndex, currentMonthString, currentYear, sortByNameAndEmail, getDateFromStringSafe } from "../../lib/utils.js";
 import McsAlert from "../Utilities/alert.js";
-import { AdminConfirmButtonModal } from "../Utilities/confirmCheckinModal.js";
+import { ConfirmButtonPopover } from "../Utilities/confirmButton.js";
 import { CodeOfConductModalLink } from "../Utilities/conductModal.js";
 import { LiabilityWaiverModalLink } from "../Utilities/waiverModal.js";
+import { Link } from 'react-router-dom';
 
 
 type State = ClassCheckin;
@@ -263,8 +264,8 @@ class ReturningStudentForm extends PureComponent<Props, State> {
       this.setState({error: errorText});
       window.scrollTo(0, 0);
     }
-    var thisCheckin = Object.assign({...this.state.checkin}, options)
-    // Remove helper data not necessary for checkin object
+    var thisCheckin = Object.assign({...this.state.checkin}, {date: this.state.date});
+    // // Remove helper data not necessary for checkin object
     delete thisCheckin.latestMonthlyPass;
     delete thisCheckin.alreadySigned;
     delete thisCheckin.completedFundamentals;
@@ -308,6 +309,12 @@ class ReturningStudentForm extends PureComponent<Props, State> {
             onChange={this.onCheckinTypeaheadChange}
             options={this.state.profileList.map((profile) => { return {"id": profile.email, "label": profile.firstName + " " + profile.lastName} })}
           />
+          { !this.state.checkin.email &&
+            <div>
+              <br></br>
+              <Link to="/new-student?redirect=true"><Button color="primary" size="md">New Students Fill Out Form Here</Button></Link>
+            </div>
+          }
           <br></br>
           <hr></hr>
           <br></br>
@@ -367,7 +374,7 @@ class ReturningStudentForm extends PureComponent<Props, State> {
           <br></br>
           {this.state.checkin.email.length > 0 &&
             <div>
-              <AdminConfirmButtonModal buttonOptions={{color: "primary"}} afterConfirm={this.onSubmit} modalHeader="Confirm" modalBody="Please hand the tablet to the desk attendant for confirmation and payment. Thank you!" modalData={Object.assign({date: this.state.date}, this.state.checkin)}>Submit</AdminConfirmButtonModal>
+              <ConfirmButtonPopover buttonOptions={{color: "primary"}} popoverOptions={{placement: "right"}} afterConfirm={this.onSubmit} popoverHeader="Confirm Your Class" popoverBody="Please confirm that the class you are checking in for is correct.">Submit</ConfirmButtonPopover>
               <span className="mr-1"></span>
               <Button outline value="clear" onClick={this.clearFormEvent}>Clear Form</Button>
             </div>
