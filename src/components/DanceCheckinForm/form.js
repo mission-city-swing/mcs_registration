@@ -186,7 +186,7 @@ class DanceCheckinForm extends PureComponent<Props, State> {
           </FormGroup>
           <Label>Returning Student</Label>
           <Typeahead
-            placeholder="Returning students find your name here"
+            placeholder="Returning dancers find your name here"
             onChange={this.onCheckinTypeaheadChange}
             options={this.state.profileList.map((profile) => { return {"id": profile.email, "label": profile.firstName + " " + profile.lastName} })}
           />
