@@ -8,7 +8,6 @@ import { Typeahead } from 'react-bootstrap-typeahead';
 import { addNewDanceCheckin, getProfiles, getAppDate } from "../../lib/api.js";
 import { sortByNameAndEmail, getDateFromStringSafe } from "../../lib/utils.js";
 import McsAlert from "../Utilities/alert.js";
-import { AdminConfirmButtonModal } from "../Utilities/confirmCheckinModal.js";
 import { CodeOfConductModalLink } from "../Utilities/conductModal.js";
 import { LiabilityWaiverModalLink } from "../Utilities/waiverModal.js";
 
@@ -143,7 +142,7 @@ class DanceCheckinForm extends PureComponent<Props, State> {
     this.setState({checkin: newStateCheckin});
   }
 
-  onSubmit = (options) => {
+  onSubmit = (options={}) => {
     var onSuccess = () => {
       var successText = "Added dance checkin for " + this.state.checkin.email
       this.setState({success: successText});
@@ -153,13 +152,13 @@ class DanceCheckinForm extends PureComponent<Props, State> {
       this.setState({error: errorText});
       window.scrollTo(0, 0);
     }
-    var thisDanceCheckin = Object.assign({...this.state.checkin}, options)
+    var thisDanceCheckin = Object.assign({...this.state.checkin}, {date: this.state.date});
     // delete convenience attrs
     delete thisDanceCheckin.alreadySigned;
     delete thisDanceCheckin.guest;
     // DB request
     try {
-      addNewDanceCheckin(Object.assign({...this.state.checkin}, options)).then(function(){
+      addNewDanceCheckin(thisDanceCheckin).then(function(){
         onSuccess();
       }).catch(function(error){
         onError(error.toString());
@@ -221,7 +220,7 @@ class DanceCheckinForm extends PureComponent<Props, State> {
           }
           {this.state.checkin.email.length > 0 &&
             <div>
-              <AdminConfirmButtonModal buttonOptions={{color: "primary"}} afterConfirm={this.onSubmit} modalHeader="Confirm" modalBody="Please hand the tablet to the desk attendant for confirmation and payment. Thank you!" modalData={Object.assign({date: this.state.date}, this.state.checkin)}>Submit</AdminConfirmButtonModal>
+              <Button color="primary" onClick={this.onSubmit}>Submit</Button>
               <span className="mr-1"></span>
               <Button outline value="clear" onClick={this.clearFormEvent}>Clear Form</Button>
             </div>
