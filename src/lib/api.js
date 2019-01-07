@@ -80,7 +80,7 @@ export const getProfileByName = (firstName, lastName) => {
         if (snapshot.val()[childSnapshot].profile.firstName === firstName) {
           resolve(snapshot.val()[childSnapshot].profile);
         } else {
-          resolve({});
+          resolve(null);
         }
       }
     }, function(error) {
