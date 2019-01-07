@@ -184,7 +184,7 @@ class DanceCheckinForm extends PureComponent<Props, State> {
               onChange={this.onCheckinDateChange}
             />
           </FormGroup>
-          <Label>Returning Student</Label>
+          <Label>Returning Dancer</Label>
           <Typeahead
             placeholder="Returning dancers find your name here"
             onChange={this.onCheckinTypeaheadChange}
