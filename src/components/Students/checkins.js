@@ -111,8 +111,8 @@ class StudentCheckinList extends PureComponent<Props, State> {
             <thead>
               <tr>
                 <th>Total Checkins</th>
-                <th>Class Checkins</th>
-                <th>Dance Checkins</th>
+                <th>Class Check-ins</th>
+                <th>Dance Check-ins</th>
               </tr>
             </thead>
             <tbody>
@@ -123,7 +123,7 @@ class StudentCheckinList extends PureComponent<Props, State> {
               </tr>
             </tbody>
           </Table>
-          <h5>Class Checkins</h5>
+          <h5>Class Check-ins</h5>
           <ReactTable
             data={this.state.classCheckinList}
             columns={[{
@@ -145,7 +145,7 @@ class StudentCheckinList extends PureComponent<Props, State> {
             defaultFilterMethod={reactTableFuzzyMatchFilter}
           />
           <br></br>
-          <h5>Dance Checkins</h5>
+          <h5>Dance Check-ins</h5>
           <ReactTable
             data={this.state.danceCheckinList}
             columns={[{

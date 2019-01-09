@@ -65,16 +65,16 @@ class Home extends Component {
               </Col>
               <Col>
                 <Card className="card-body text-center mb-2">
-                  <CardTitle className="front-page-card">Returning Student Class Checkin</CardTitle>
+                  <CardTitle className="front-page-card">Returning Student Class Check-in</CardTitle>
                   <CardText className="front-page-card">Returning students check in here.</CardText>
-                  <Link to="/class-checkin"><Button size="lg">Class Checkin</Button></Link>
+                  <Link to="/class-checkin"><Button size="lg">Class Check-in</Button></Link>
                 </Card>
               </Col>
               <Col>
                 <Card className="card-body text-center mb-2">
-                  <CardTitle className="front-page-card">Dance Checkin</CardTitle>
+                  <CardTitle className="front-page-card">Dance Check-in</CardTitle>
                   <CardText className="front-page-card">Check into the dance.</CardText>
-                  <Link to="/dance-checkin"><Button size="lg">Dance Checkin</Button></Link>
+                  <Link to="/dance-checkin"><Button size="lg">Dance Check-in</Button></Link>
                 </Card>
 
               </Col>

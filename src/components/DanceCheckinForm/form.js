@@ -67,7 +67,7 @@ class DanceCheckinForm extends PureComponent<Props, State> {
 
   getCheckinStateForProfile = (profile) => {
     // Helper method for getting the appropriate info from a profile
-    // for the class checkin
+    // for the class check-in
     var newCheckinState = {...this.defaultCheckin};
     Object.keys(newCheckinState).forEach((key) => {
       newCheckinState[key] = profile[key] ? profile[key] : newCheckinState[key]
@@ -144,7 +144,7 @@ class DanceCheckinForm extends PureComponent<Props, State> {
 
   onSubmit = (options={}) => {
     var onSuccess = () => {
-      var successText = "Added dance checkin for " + this.state.checkin.email
+      var successText = "Added dance check-in for " + this.state.checkin.email
       this.setState({success: successText});
       this.addActionsOnSubmit({success: successText});
     }
