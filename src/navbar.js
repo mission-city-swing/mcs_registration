@@ -64,7 +64,7 @@ export default class MyNavbar extends Component {
                 </DropdownToggle>
                 <DropdownMenu right>
                   <DropdownItem>
-                    <NavLink href="/dance-checkin">Dance Checkin</NavLink>
+                    <NavLink href="/dance-checkin">Dance Check-in</NavLink>
                   </DropdownItem>
                 </DropdownMenu>
               </UncontrolledDropdown>
@@ -77,7 +77,7 @@ export default class MyNavbar extends Component {
                     <NavLink href="/new-student">New Student Form</NavLink>
                   </DropdownItem>
                   <DropdownItem>
-                    <NavLink href="/class-checkin">Class Checkin</NavLink>
+                    <NavLink href="/class-checkin">Class Check-in</NavLink>
                   </DropdownItem>
                 </DropdownMenu>
               </UncontrolledDropdown>

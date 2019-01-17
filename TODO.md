@@ -30,14 +30,14 @@
 
 [x] Adjust form size when on desktop
 
-[x] Admin checkin in navbar
+[x] Admin check-in in navbar
 
 
 ### Feature requests
 
 [x] Batch/Admin form data entering mode with minimal steps-- should be very hidden from normal users, only work in desktop mode, enable minimal data entry
 
-[ ] Workshop or special event checkin flow
+[ ] Workshop or special event check-in flow
 
 [ ] Have to manually approve new admin accounts
 
