@@ -1,45 +1,54 @@
 // @flow
-// src/components/DanceForm/form.js
+// src/components/EventForm/form.js
 import React, { PureComponent } from "react";
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { DateTimePicker } from 'react-widgets';
 import queryString from 'query-string';
-import type { Dance } from "../../types.js";
-import { addNewDance, getDance, deleteDance, getAppDate } from "../../lib/api.js";
+import type { Event } from "../../types.js";
+import { addNewEvent, getEvent, deleteEvent, getAppDate } from "../../lib/api.js";
 import { getDateFromStringSafe } from "../../lib/utils.js";
 import McsAlert from "../Utilities/alert.js";
 
-type State = Dance;
+type State = Event;
 
 type Props = {};
 
-class DanceForm extends PureComponent<Props, State> {
-  state: State = {
+class EventForm extends PureComponent<Props, State> {
+
+  defaultFields = {
     date: getAppDate(),
     title: "",
     fbLink: "",
-    info: "",
-    success: "",
-    error: ""
+    checkinItems: [],
+    checkinItemsDisplay: "",
+    info: ""
   };
 
-  getDanceFromQuery = () => {
+  state: State = Object.assign({...this.defaultFields}, {
+    success: "",
+    error: ""
+  });
+
+  getEventFromQuery = () => {
     if (this.props.location.search) {
       var parsedSearch = queryString.parse(this.props.location.search);
-      var danceId = parsedSearch["uid"];
-      if (danceId) {
-        this.getDanceFromUid(danceId);
+      var eventId = parsedSearch["uid"];
+      if (eventId) {
+        this.getEventFromUid(eventId);
       }
     }
   };
 
-  getDanceFromUid = (danceId) => {
-    getDance(danceId).on("value", (snapshot) => {
+  getEventFromUid = (eventId) => {
+    getEvent(eventId).on("value", (snapshot) => {
       if (snapshot.val()) {
+        console.log(snapshot.val())
         this.setState({
           date: new Date(snapshot.val().date),
           title: snapshot.val().title,
           fbLink: snapshot.val().fbLink,
+          checkinItems: snapshot.val().checkinItems,
+          checkinItemsDisplay: snapshot.val().checkinItems.join(', '),
           info: snapshot.val().info
         });
       }
@@ -47,23 +56,37 @@ class DanceForm extends PureComponent<Props, State> {
   }
 
   componentDidMount() {
-    this.getDanceFromQuery();
+    this.getEventFromQuery();
   };
 
-  onDanceClick = (event: any) => {
+  onEventClick = (event: any) => {
     const value = event.target.value;
-    this.getDanceFromUid(value);
+    this.getEventFromUid(value);
   }
 
-  onDanceClickDelete = (event: any)  => {
+  onEventClickDelete = (event: any)  => {
     const value = event.target.value;
-    deleteDance(value);
+    deleteEvent(value);
   }
 
   onChange = (event: any) => {
     const { target: { name, value } } = event;
     this.setState({
       [name]: value
+    });
+  };
+
+  onCheckinItemsChange = (event: any) => {
+    const value = event.target.value;
+    var items = value.split(',').map(function (item, i) {
+      return item.replace(/(^\s*)|(\s*$)/g, '')
+    }).filter( function (item, i) {
+      return item
+    });
+
+    this.setState({
+      checkinItems: items,
+      checkinItemsDisplay: value
     });
   };
 
@@ -81,23 +104,18 @@ class DanceForm extends PureComponent<Props, State> {
   };
 
   clearForm() {
-    this.setState({
-      date: new Date(),
-      title: "",
-      fbLink: "",
-      info: ""
-    });
+    this.setState(...this.defaultFields);
   };
 
   clearFormEvent = (event: any) => {
     this.clearForm();
-    this.props.history.push({ pathname: '/admin/dance', query: {} })
+    this.props.history.push({ pathname: '/admin/event', query: {} })
   };
 
   onSubmit = (event: any) => {
     event.preventDefault();
     var onSuccess = () => {
-      var successText = "Updated dance for " + this.state.date.toDateString()
+      var successText = "Updated event for " + this.state.date.toDateString()
       this.setState({success: successText});
       this.clearForm();
     }
@@ -105,10 +123,11 @@ class DanceForm extends PureComponent<Props, State> {
       this.setState({error: errorText});
     }
     try {
-      addNewDance({
+      addNewEvent({
         date: this.state.date,
         title: this.state.title,
         fbLink: this.state.fbLink,
+        checkinItems: this.state.checkinItems,
         info: this.state.info
       }).then((success) => {
         onSuccess()
@@ -128,7 +147,7 @@ class DanceForm extends PureComponent<Props, State> {
         <McsAlert color="danger" text={this.state.error} visible={this.state.error.length > 0} onToggle={this.toggleAlerts.bind(this)}></McsAlert>
         <Form onSubmit={this.onSubmit}>
           <FormGroup>
-            <Label for="date">Dance Date</Label>
+            <Label for="date">Event Date</Label>
             <DateTimePicker 
               time={false}
               format={'dddd, MMMM Do YYYY'}
@@ -144,8 +163,12 @@ class DanceForm extends PureComponent<Props, State> {
             <Label for="fbLink">FB Link</Label><Input placeholder="FB Link" value={this.state.fbLink} onChange={this.onChange} name="fbLink" />
           </FormGroup>
           <FormGroup>
-            <Label for="info">Dance Info</Label><Input type="textarea" placeholder="Whatever dance info you want, maybe a FB link" onChange={this.onChange} value={this.state.info} name="info" />
+            <Label for="checkinItems">Check-in Items <span className="required-text">*Will be displayed on event check-in form</span></Label><Input placeholder="Items, separated by commas, like this" value={this.state.checkinItemsDisplay} onChange={this.onCheckinItemsChange} name="checkinItems" />
           </FormGroup>
+          <FormGroup>
+            <Label for="info">Event Info</Label><Input type="textarea" placeholder="Whatever event info you want, maybe a FB link" onChange={this.onChange} value={this.state.info} name="info" />
+          </FormGroup>
+
           <Button color="primary" type="submit" value="Submit">Submit</Button>
           <span className="mr-1"></span>
           <Button outline value="clear" onClick={this.clearFormEvent}>Clear Form</Button>
@@ -155,4 +178,4 @@ class DanceForm extends PureComponent<Props, State> {
   }
 }
 
-export default DanceForm;
+export default EventForm;

@@ -76,7 +76,13 @@ class Home extends Component {
                   <CardText className="front-page-card">Check into the dance.</CardText>
                   <Link to="/dance-checkin"><Button size="lg">Dance Check-in</Button></Link>
                 </Card>
-
+              </Col>
+              <Col>
+                <Card className="card-body text-center mb-2">
+                  <CardTitle className="front-page-card">Event Check-in</CardTitle>
+                  <CardText className="front-page-card">Check into a special event.</CardText>
+                  <Link to="/event-checkin"><Button size="lg">Event Check-in</Button></Link>
+                </Card>
               </Col>
             </Row>
           </Container>
