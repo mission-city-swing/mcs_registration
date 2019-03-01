@@ -9,7 +9,9 @@ import NewStudentPage from './components/NewStudentForm/index.js';
 import AdminNewStudentPage from './components/NewStudentForm/adminIndex.js';
 import ReturningStudentPage from './components/ReturningStudentForm';
 import Dance from './components/DanceForm';
+import Event from './components/EventForm';
 import DanceCheckinPage from './components/DanceCheckinForm';
+import EventCheckinPage from './components/EventCheckinForm';
 import StudentPage from './components/Students';
 
 const Routes = (props) => (
@@ -18,8 +20,10 @@ const Routes = (props) => (
     <Route path="/new-student" component={NewStudentPage} />
     <Route path="/class-checkin" component={ReturningStudentPage} />
     <Route path="/dance-checkin" component={DanceCheckinPage} />
+    <Route path="/event-checkin" component={EventCheckinPage} />
     <Route path="/admin/new-student" component={AdminNewStudentPage} />
     <Route path="/admin/dance" component={Dance} />
+    <Route path="/admin/event" component={Event} />
     <Route path="/admin/signin" component={SignInUserForm} />
     <Route path="/admin/new-user" component={NewUserForm} />
     <Route path="/admin/reset-password" component={ResetPasswordForm} />

@@ -47,6 +47,15 @@ export type Dance = {
   author: string
 };
 
+export type Event = {
+  date: Date,
+  title: string,
+  fbLink: string,
+  checkinItems: [],
+  info: string,
+  author: string
+};
+
 export type DanceCheckin = {
   date: Date,
   firstName: string,
@@ -65,6 +74,19 @@ export type ClassCheckin = {
   lastName: string,
   email: string,
   student: boolean,
+  info: string,
+  waiverAgree: boolean,
+  conductAgree: boolean,
+  author: string
+};
+
+export type EventCheckin = {
+  date: Date,
+  firstName: string,
+  lastName: string,
+  email: string,
+  student: boolean,
+  checkinItems: [],
   info: string,
   waiverAgree: boolean,
   conductAgree: boolean,

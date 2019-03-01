@@ -182,6 +182,31 @@ export const addNewDance = (options: Dance) => {
   return fireDB.database().ref("dances/" + danceId).set(options);
 };
 
+// Event API
+export const getEvents = fireDB.database().ref("events/").orderByChild('date');
+
+export const getEvent = (eventId) => {
+  return fireDB.database().ref("events/" + eventId);
+};
+
+export const getEventByDate = (dateString) => {
+  return fireDB.database().ref("events/").orderByChild('date').equalTo(dateString);
+};
+
+export const deleteEvent = (eventId) => {
+  return fireDB.database().ref("events/" + eventId).remove();
+};
+
+export const addNewEvent = (options: Event) => {
+  options.author = getCurrentUserId();
+  if (!options.date) {
+    throw MiscException("Date required", "FormException")
+  }
+  options.date = options.date.toDateString();
+  const eventId = uuidv3(options.date, MCS_APP);
+  return fireDB.database().ref("events/" + eventId).set(options);
+};
+
 // Checkins
 export const addNewDanceCheckin = (options: DanceCheckin) => {
   options.author = getCurrentUserId();
@@ -258,6 +283,42 @@ export const getClassCheckinByDate = (classDate) => {
   // get checkins for a specific date
   return fireDB.database().ref("class-checkins").orderByChild("date").equalTo(classDate)
 };
+
+export const addNewEventCheckin = (options: EventCheckin) => {
+  options.author = getCurrentUserId();
+  // check for name, email, and date
+  if (!(options.date && options.email && options.firstName && options.lastName)) {
+    throw MiscException("First name, last name, email, and date required", "FormException")
+  }
+  if (!(options.waiverAgree && options.conductAgree)) {
+    throw MiscException("Must agree to liability waiver and code of conduct", "FormException")
+  }
+  // we just care about the day
+  options.date = options.date.toDateString();
+  const checkin = uuidv3(options.date + options.email, MCS_APP);
+  fireDB.database().ref("event-checkins/" + checkin).set(options);
+  const profileId = uuidv3(options.email, MCS_APP);
+  return fireDB.database().ref("profiles/" + profileId).once("value").then(function(snapshot){
+    if (snapshot.val() == null) {
+      var profile = {...options};
+      profile.memberDate = (getAppDate()).toDateString();
+      return fireDB.database().ref("profiles/" + profileId + "/profile").set(profile);
+    } else {
+      return fireDB.database().ref("profiles/" + profileId).once("value")
+    }
+  });
+};
+
+export const getEventCheckinByEmail = (studentEmail) => {
+  // get checkins for a student
+  return fireDB.database().ref("event-checkins/").orderByChild("email").equalTo(studentEmail)
+};
+
+export const getEventCheckinByDate = (eventDate) => {
+  // get checkins for a specific date
+  return fireDB.database().ref("event-checkins").orderByChild("date").equalTo(eventDate)
+};
+
 
 // User API for _Auth_
 // Question: What is the difference between exporting function and exporting const?
