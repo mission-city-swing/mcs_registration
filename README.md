@@ -1,9 +1,20 @@
+# Mission City Swing Registration App
+
+Primary Owner: [Maggie Moreno](https://github.com/missmaggiemo)
+
+- See the live production app here https://mcs-registration.firebaseapp.com/
+
+- See the test/development app https://mcs-reg-test.firebaseapp.com/
+
+
+## Developer's Guide
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>
 You can find the most recent version of this guide [here](https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md).
 
-## Table of Contents
+### Table of Contents
 
 - [Updating to New Releases](#updating-to-new-releases)
 - [Sending Feedback](#sending-feedback)
@@ -95,7 +106,7 @@ You can find the most recent version of this guide [here](https://github.com/fac
   - [Moment.js locales are missing](#momentjs-locales-are-missing)
 - [Something Missing?](#something-missing)
 
-## Updating to New Releases
+### Updating to New Releases
 
 Create React App is divided into two packages:
 
@@ -112,11 +123,11 @@ In most cases bumping the `react-scripts` version in `package.json` and running 
 
 We commit to keeping the breaking changes minimal so you can upgrade `react-scripts` painlessly.
 
-## Sending Feedback
+### Sending Feedback
 
 We are always open to [your feedback](https://github.com/facebookincubator/create-react-app/issues).
 
-## Folder Structure
+### Folder Structure
 
 After creation, your project should look like this:
 
@@ -153,11 +164,11 @@ Read instructions below for using assets from JavaScript and HTML.
 You can, however, create more top-level directories.<br>
 They will not be included in the production build so you can use them for things like documentation.
 
-## Available Scripts
+### Available Scripts
 
 In the project directory, you can run:
 
-### `npm start`
+#### `npm start`
 
 Runs the app in the development mode.<br>
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
@@ -165,12 +176,12 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.<br>
 You will also see any lint errors in the console.
 
-### `npm test`
+#### `npm test`
 
 Launches the test runner in the interactive watch mode.<br>
 See the section about [running tests](#running-tests) for more information.
 
-### `npm run build`
+#### `npm run build`
 
 Builds the app for production to the `build` folder.<br>
 It correctly bundles React in production mode and optimizes the build for the best performance.
@@ -180,7 +191,7 @@ Your app is ready to be deployed!
 
 See the section about [deployment](#deployment) for more information.
 
-### `npm run eject`
+#### `npm run eject`
 
 **Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
@@ -247,7 +258,7 @@ If you want to enforce a coding style for your project, consider using [Prettier
 
 Visual Studio Code and WebStorm support debugging out of the box with Create React App. This enables you as a developer to write and debug your React code without leaving the editor, and most importantly it enables you to have a continuous development workflow, where context switching is minimal, as you don’t have to switch between tools.
 
-### Visual Studio Code
+#### Visual Studio Code
 
 You would need to have the latest version of [VS Code](https://code.visualstudio.com) and VS Code [Chrome Debugger Extension](https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome) installed.
 
@@ -273,7 +284,7 @@ Then add the block below to your `launch.json` file and put it inside the `.vsco
 
 Start your app by running `npm start`, and start debugging in VS Code by pressing `F5` or by clicking the green debug icon. You can now write code, set breakpoints, make changes to the code, and debug your newly modified code—all from your editor.
 
-### WebStorm
+#### WebStorm
 
 You would need to have [WebStorm](https://www.jetbrains.com/webstorm/) and [JetBrains IDE Support](https://chrome.google.com/webstore/detail/jetbrains-ide-support/hmhgeddbohgjknpmjagkdomcpobmllji) Chrome extension installed.
 
@@ -368,7 +379,7 @@ While you can still use `require()` and `module.exports`, we encourage you to us
 
 For example:
 
-### `Button.js`
+#### `Button.js`
 
 ```js
 import React, { Component } from 'react';
@@ -382,7 +393,7 @@ class Button extends Component {
 export default Button; // Don’t forget to use export default!
 ```
 
-### `DangerButton.js`
+#### `DangerButton.js`
 
 
 ```js
@@ -418,14 +429,14 @@ This project setup supports code splitting via [dynamic `import()`](http://2alit
 
 Here is an example:
 
-### `moduleA.js`
+#### `moduleA.js`
 
 ```js
 const moduleA = 'Hello';
 
 export { moduleA };
 ```
-### `App.js`
+#### `App.js`
 
 ```js
 import React, { Component } from 'react';
@@ -457,7 +468,7 @@ This will make `moduleA.js` and all its unique dependencies as a separate chunk 
 
 You can also use it with `async` / `await` syntax if you prefer it.
 
-### With React Router
+#### With React Router
 
 If you are using React Router check out [this tutorial](http://serverless-stack.com/chapters/code-splitting-in-create-react-app.html) on how to use code splitting with it. You can find the companion GitHub repository [here](https://github.com/AnomalyInnovations/serverless-stack-demo-client/tree/code-splitting-in-create-react-app).
 
@@ -465,7 +476,7 @@ If you are using React Router check out [this tutorial](http://serverless-stack.
 
 This project setup uses [Webpack](https://webpack.js.org/) for handling all assets. Webpack offers a custom way of “extending” the concept of `import` beyond JavaScript. To express that a JavaScript file depends on a CSS file, you need to **import the CSS from the JavaScript file**:
 
-### `Button.css`
+#### `Button.css`
 
 ```css
 .Button {
@@ -473,7 +484,7 @@ This project setup uses [Webpack](https://webpack.js.org/) for handling all asse
 }
 ```
 
-### `Button.js`
+#### `Button.js`
 
 ```js
 import React, { Component } from 'react';
@@ -664,12 +675,12 @@ An alternative way of handling static assets is described in the next section.
 
 >Note: this feature is available with `react-scripts@0.5.0` and higher.
 
-### Changing the HTML
+#### Changing the HTML
 
 The `public` folder contains the HTML file so you can tweak it, for example, to [set the page title](#changing-the-page-title).
 The `<script>` tag with the compiled code will be added to it automatically during the build process.
 
-### Adding Assets Outside of the Module System
+#### Adding Assets Outside of the Module System
 
 You can also add other assets to the `public` folder.
 
@@ -712,7 +723,7 @@ Keep in mind the downsides of this approach:
 * Missing files will not be called at compilation time, and will cause 404 errors for your users.
 * Result filenames won’t include content hashes so you’ll need to add query arguments or rename them every time they change.
 
-### When to Use the `public` Folder
+#### When to Use the `public` Folder
 
 Normally we recommend importing [stylesheets](#adding-a-stylesheet), [images, and fonts](#adding-images-fonts-and-files) from JavaScript.
 The `public` folder is useful as a workaround for a number of less common cases:
@@ -771,7 +782,7 @@ import { Navbar, Jumbotron, Button } from 'react-bootstrap';
 
 Now you are ready to use the imported React Bootstrap components within your component hierarchy defined in the render method. Here is an example [`App.js`](https://gist.githubusercontent.com/gaearon/85d8c067f6af1e56277c82d19fd4da7b/raw/6158dd991b67284e9fc8d70b9d973efe87659d72/App.js) redone using React Bootstrap.
 
-### Using a Custom Theme
+#### Using a Custom Theme
 
 Sometimes you might need to tweak the visual styles of Bootstrap (or equivalent package).<br>
 We suggest the following approach:
@@ -864,7 +875,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 When you compile the app with `npm run build`, the minification step will strip out this condition, and the resulting bundle will be smaller.
 
-### Referencing Environment Variables in the HTML
+#### Referencing Environment Variables in the HTML
 
 >Note: this feature is available with `react-scripts@0.9.0` and higher.
 
@@ -879,12 +890,12 @@ Note that the caveats from the above section apply:
 * Apart from a few built-in variables (`NODE_ENV` and `PUBLIC_URL`), variable names must start with `REACT_APP_` to work.
 * The environment variables are injected at build time. If you need to inject them at runtime, [follow this approach instead](#generating-dynamic-meta-tags-on-the-server).
 
-### Adding Temporary Environment Variables In Your Shell
+#### Adding Temporary Environment Variables In Your Shell
 
 Defining environment variables can vary between OSes. It’s also important to know that this manner is temporary for the
 life of the shell session.
 
-#### Windows (cmd.exe)
+##### Windows (cmd.exe)
 
 ```cmd
 set REACT_APP_SECRET_CODE=abcdef&&npm start
@@ -892,7 +903,7 @@ set REACT_APP_SECRET_CODE=abcdef&&npm start
 
 (Note: the lack of whitespace is intentional.)
 
-#### Linux, macOS (Bash)
+##### Linux, macOS (Bash)
 
 ```bash
 REACT_APP_SECRET_CODE=abcdef npm start
@@ -910,7 +921,7 @@ REACT_APP_SECRET_CODE=abcdef
 
 `.env` files **should be** checked into source control (with the exclusion of `.env*.local`).
 
-#### What other `.env` files are can be used?
+##### What other `.env` files are can be used?
 
 >Note: this feature is **available with `react-scripts@1.0.0` and higher**.
 
@@ -1122,7 +1133,7 @@ You may require the dev server to serve pages over HTTPS. One particular case wh
 
 To do this, set the `HTTPS` environment variable to `true`, then start the dev server as usual with `npm start`:
 
-#### Windows (cmd.exe)
+##### Windows (cmd.exe)
 
 ```cmd
 set HTTPS=true&&npm start
@@ -1130,7 +1141,7 @@ set HTTPS=true&&npm start
 
 (Note: the lack of whitespace is intentional.)
 
-#### Linux, macOS (Bash)
+##### Linux, macOS (Bash)
 
 ```bash
 HTTPS=true npm start
@@ -1350,7 +1361,7 @@ If your app uses a browser API that you need to mock in your tests or if you jus
 
 For example:
 
-#### `src/setupTests.js`
+##### `src/setupTests.js`
 ```js
 const localStorageMock = {
   getItem: jest.fn(),
@@ -1383,7 +1394,7 @@ When creating a build of your application with `npm run build` linter warnings a
 Popular CI servers already set the environment variable `CI` by default but you can do this yourself too:
 
 ### On CI servers
-#### Travis CI
+##### Travis CI
 
 1. Following the [Travis Getting started](https://docs.travis-ci.com/user/getting-started/) guide for syncing your GitHub repository with Travis.  You may need to initialize some settings manually in your [profile](https://travis-ci.org/profile) page.
 1. Add a `.travis.yml` file to your git repository.
@@ -1401,12 +1412,12 @@ script:
 1. Trigger your first build with a git push.
 1. [Customize your Travis CI Build](https://docs.travis-ci.com/user/customizing-the-build/) if needed.
 
-#### CircleCI
+##### CircleCI
 
 Follow [this article](https://medium.com/@knowbody/circleci-and-zeits-now-sh-c9b7eebcd3c1) to set up CircleCI with a Create React App project.
 
 ### On your own environment
-##### Windows (cmd.exe)
+###### Windows (cmd.exe)
 
 ```cmd
 set CI=true&&npm test
@@ -1418,7 +1429,7 @@ set CI=true&&npm run build
 
 (Note: the lack of whitespace is intentional.)
 
-##### Linux, macOS (Bash)
+###### Linux, macOS (Bash)
 
 ```bash
 CI=true npm test
@@ -1960,7 +1971,7 @@ You can find instructions in [Deploying React with Zero Configuration](https://b
 
 Sometimes `npm run build` works locally but fails during deploy via Heroku. Following are the most common cases.
 
-##### "Module not found: Error: Cannot resolve 'file' or 'directory'"
+###### "Module not found: Error: Cannot resolve 'file' or 'directory'"
 
 If you get something like this:
 
@@ -1974,7 +1985,7 @@ It means you need to ensure that the lettercase of the file or directory you `im
 
 This is important because Linux (the operating system used by Heroku) is case sensitive. So `MyDirectory` and `mydirectory` are two distinct directories and thus, even though the project builds locally, the difference in case breaks the `import` statements on Heroku remotes.
 
-##### "Could not find a required file."
+###### "Could not find a required file."
 
 If you exclude or ignore necessary files from the package you will see a error similar this one:
 
