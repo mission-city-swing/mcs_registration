@@ -6,8 +6,23 @@ Primary Owner: [Maggie Moreno](https://github.com/missmaggiemo)
 
 - See the test/development app https://mcs-reg-test.firebaseapp.com/
 
-
 ## Developer's Guide
+
+### TL;DR
+
+First of all, this is a [ReactJS](https://reactjs.org/) app built on top of [Firebase](https://firebase.google.com/). That means that all of the middleware/backend is taken care of by Firebase, and when you clone this repo, all you will see is the ReactJS codebase. Don't be alarmed.
+
+Second, the codebase as-is has the backend-for-frontend API calls but doesn't have the database(s) set up. So if you want to contribute more than just a typo fix, you'll have to reach out to me, [Maggie Moreno](https://github.com/missmaggiemo), and I'll help you get set up.
+
+And lastly, if you are taking the time to read this, I already adore you and am so looking forward to your help.
+
+Thank you!
+
+<3 Maggie Moreno
+
+<hr>
+
+### Long-form
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
