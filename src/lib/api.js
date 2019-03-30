@@ -189,7 +189,11 @@ export const getDanceByDate = (dateString) => {
 };
 
 export const deleteDance = (danceId) => {
-  return fireDB.database().ref("dances/" + danceId).remove();
+  if (danceId) {
+    return fireDB.database().ref("dances/" + danceId).remove();
+  } else {
+    throw MiscException("No Dance ID given", "DataException")
+  }
 };
 
 export const addNewDance = (options: Dance) => {
@@ -214,7 +218,11 @@ export const getEventByDate = (dateString) => {
 };
 
 export const deleteEvent = (eventId) => {
-  return fireDB.database().ref("events/" + eventId).remove();
+  if (eventId) {
+    return fireDB.database().ref("events/" + eventId).remove();
+  } else {
+    throw MiscException("No Event ID given", "DataException")
+  }
 };
 
 export const addNewEvent = (options: Event) => {

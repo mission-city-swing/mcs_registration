@@ -176,7 +176,7 @@ class EventForm extends PureComponent<Props, State> {
           <span className="mr-1"></span>
           <Button outline value="clear" onClick={this.clearFormEvent}>Clear Form</Button>
           <span className="mr-1"></span>
-          <ConfirmButtonPopover buttonOptions={{color: "danger"}} popoverOptions={{placement: "right"}} afterConfirm={this.onEventClickDelete} popoverHeader="Delete This Event" popoverBody="Are you sure you want to delete this event? This cannot be undone.">Delete</ConfirmButtonPopover>
+          <ConfirmButtonPopover buttonOptions={this.state.eventId ? {color: "danger"} : {disabled: true}} popoverOptions={{placement: "right"}} afterConfirm={this.onEventClickDelete} popoverHeader="Delete This Event" popoverBody="Are you sure you want to delete this event? This cannot be undone.">Delete</ConfirmButtonPopover>
         </Form>
       </div>
     );
