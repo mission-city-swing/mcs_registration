@@ -4,7 +4,7 @@ import React, { PureComponent } from "react";
 import { Table } from 'reactstrap';
 import ReactTable from 'react-table';
 import queryString from 'query-string';
-import { getEvent, getEventCheckinByDate } from "../../lib/api.js";
+import { getEvent, getEventCheckinByDate, getEventCheckinByEventId } from "../../lib/api.js";
 import { reactTableFuzzyMatchFilter } from '../../lib/utils.js'
 
 type State = {};
@@ -14,7 +14,7 @@ type Props = {};
 class EventCheckinList extends PureComponent<Props, State> {
   state: State = {
     eventCheckinList: [],
-  };
+  }
 
   getEventCheckinsFromQuery = () => {
     var parsedSearch = queryString.parse(this.props.location.search);
@@ -22,14 +22,18 @@ class EventCheckinList extends PureComponent<Props, State> {
       var eventId = parsedSearch["uid"];
       if (eventId) {
         getEvent(eventId).on("value", (snapshot) => {
-          this.getCheckinsFromDate(snapshot.val().date);
+          if (snapshot.val()) {
+            this.getCheckinsFromEvent(eventId, snapshot.val().date);
+          } else {
+            window.location.href = "/admin/event?error=No event with ID " + eventId;
+          }
         });
       }
     }
   };
 
-  getCheckinsFromDate = (eventDate) => {
-    getEventCheckinByDate(eventDate).on("value", (snapshot) => {
+  getCheckinsFromEvent = (eventId, eventDate) => {
+    getEventCheckinByEventId(eventId).on("value", (snapshot) => {
       var eventCheckinList = [];
       if (snapshot.val()) {
         console.log(snapshot.val());
@@ -37,8 +41,20 @@ class EventCheckinList extends PureComponent<Props, State> {
         Object.keys(checkinListObj).map(function(uid) {
           return eventCheckinList.push(Object.assign({uid: uid}, checkinListObj[uid]))
         })
+        this.setState({eventCheckinList: eventCheckinList});
+      } else {
+        getEventCheckinByDate(eventDate).on("value", (snapshot) => {
+          var eventCheckinList = [];
+          if (snapshot.val()) {
+            console.log(snapshot.val());
+            var checkinListObj = snapshot.val();
+            Object.keys(checkinListObj).map(function(uid) {
+              return eventCheckinList.push(Object.assign({uid: uid}, checkinListObj[uid]))
+            })
+            this.setState({eventCheckinList: eventCheckinList});
+          }
+        });
       }
-      this.setState({eventCheckinList: eventCheckinList});
     });
   };
 
