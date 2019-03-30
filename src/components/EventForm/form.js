@@ -51,7 +51,7 @@ class EventForm extends PureComponent<Props, State> {
           title: snapshot.val().title,
           fbLink: snapshot.val().fbLink,
           checkinItems: snapshot.val().checkinItems,
-          checkinItemsDisplay: snapshot.val().checkinItems.join(', '),
+          checkinItemsDisplay: (snapshot.val().checkinItems || []).join(', '),
           info: snapshot.val().info
         });
       }
@@ -88,7 +88,7 @@ class EventForm extends PureComponent<Props, State> {
     });
 
     this.setState({
-      checkinItems: items,
+      checkinItems: items || [],
       checkinItemsDisplay: value
     });
   };
