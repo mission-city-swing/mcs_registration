@@ -4,8 +4,8 @@ import React, { PureComponent } from "react";
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { Typeahead } from 'react-bootstrap-typeahead';
 
-import { addNewEventCheckin, getProfiles, getEvents, getEvent, setAppEventId, getAppEventId, getAppDate } from "../../lib/api.js";
-import { sortByNameAndEmail, sortByDate } from "../../lib/utils.js";
+import { addNewEventCheckin, getProfiles, getEvents, getEvent, setAppEventId, getAppEventId, getAppDate, setAppDate } from "../../lib/api.js";
+import { sortByNameAndEmail, sortByDate, getDateFromStringSafe } from "../../lib/utils.js";
 import McsAlert from "../Utilities/alert.js";
 import { CodeOfConductModalLink } from "../Utilities/conductModal.js";
 import { LiabilityWaiverModalLink } from "../Utilities/waiverModal.js";
@@ -28,12 +28,12 @@ class EventCheckinForm extends PureComponent<Props, State> {
     waiverAgree: false,
     conductAgree: false,
     alreadySigned: false,
-    date: getAppDate(),
   }
 
   state: State = {
     eventList: [],
     eventId: getAppEventId(),
+    eventDate: getAppDate(),
     checkin: {...this.defaultCheckin},
     profileMap: {},
     profileList: [],
@@ -87,7 +87,12 @@ class EventCheckinForm extends PureComponent<Props, State> {
   getAndSetEventItems = (eventId) => {
     getEvent(eventId).on("value", (snapshot) => {
       if (snapshot.val()) {
-        this.setState({eventItemsToDisplay: snapshot.val().checkinItems || []});  
+        var eventDate = getDateFromStringSafe(snapshot.val().date);
+        setAppDate(eventDate);
+        this.setState({
+          eventDate: eventDate,
+          eventItemsToDisplay: snapshot.val().checkinItems || []
+        });
       }
     });
   };
@@ -206,7 +211,10 @@ class EventCheckinForm extends PureComponent<Props, State> {
       this.setState({error: errorText});
       window.scrollTo(0, 0);
     }
-    var thisEventCheckin = Object.assign({...this.state.checkin}, {eventId: this.state.eventId});
+    var thisEventCheckin = Object.assign({...this.state.checkin}, {
+      eventId: this.state.eventId,
+      date: this.state.eventDate,
+    });
     // delete convenience attrs
     delete thisEventCheckin.alreadySigned;
     delete thisEventCheckin.guest;

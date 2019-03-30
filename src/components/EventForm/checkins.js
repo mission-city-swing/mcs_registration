@@ -39,10 +39,11 @@ class EventCheckinList extends PureComponent<Props, State> {
 
   makeCsvData = (eventCheckinList) => {
     var csvRows = [];
-    var headers = ['Event ID', 'Check-in ID', 'Name', 'Email', 'Checkin Items', 'Checkin Info']
+    var headers = ['Event ID', 'Date', 'Check-in ID', 'Name', 'Email', 'Checkin Items', 'Checkin Info']
     eventCheckinList.map( (checkin) => {
       return csvRows.push([
-        this.state.eventId,
+        checkin.eventId || this.state.eventId,
+        checkin.date,
         checkin.uid,
         [checkin.firstName, checkin.lastName].join(' '),
         checkin.email,
