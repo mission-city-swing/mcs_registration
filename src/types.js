@@ -82,6 +82,7 @@ export type ClassCheckin = {
 
 export type EventCheckin = {
   date: Date,
+  eventId: string,
   firstName: string,
   lastName: string,
   email: string,

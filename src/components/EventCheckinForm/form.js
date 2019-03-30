@@ -2,11 +2,10 @@
 // src/components/EventCheckinForm/form.js
 import React, { PureComponent } from "react";
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
-import { DateTimePicker } from 'react-widgets';
 import { Typeahead } from 'react-bootstrap-typeahead';
 
-import { addNewEventCheckin, getEventByDate, getProfiles, getAppDate } from "../../lib/api.js";
-import { sortByNameAndEmail, getDateFromStringSafe } from "../../lib/utils.js";
+import { addNewEventCheckin, getProfiles, getEvents, getEvent, setAppEventId, getAppEventId, getAppDate, setAppDate } from "../../lib/api.js";
+import { sortByNameAndEmail, sortByDate, getDateFromStringSafe } from "../../lib/utils.js";
 import McsAlert from "../Utilities/alert.js";
 import { CodeOfConductModalLink } from "../Utilities/conductModal.js";
 import { LiabilityWaiverModalLink } from "../Utilities/waiverModal.js";
@@ -28,28 +27,19 @@ class EventCheckinForm extends PureComponent<Props, State> {
     checkinItems: [],
     waiverAgree: false,
     conductAgree: false,
-    alreadySigned: false
+    alreadySigned: false,
   }
 
   state: State = {
-    date: getAppDate(),
+    eventList: [],
+    eventId: getAppEventId(),
+    eventDate: getAppDate(),
     checkin: {...this.defaultCheckin},
     profileMap: {},
     profileList: [],
     eventItemsToDisplay: [],
     success: "",
     error: ""
-  };
-
-  getAndSetEventItems = (eventDate) => {
-    getEventByDate(eventDate.toDateString()).on("value", (snapshot) => {
-      if (snapshot.val()) {
-        const eventObj = Object.values(snapshot.val())[0];
-        if (eventObj) {
-          this.setState({eventItemsToDisplay: eventObj.checkinItems || []});  
-        }
-      }
-    });
   };
 
   componentDidMount() {
@@ -71,8 +61,20 @@ class EventCheckinForm extends PureComponent<Props, State> {
       });
     });
 
+    getEvents.on("value", (snapshot) => {
+      var eventList = [];
+      var eventsSnap = snapshot.val();
+      if (eventsSnap) {
+        Object.keys(eventsSnap).forEach((uid => {
+          eventList.push(Object.assign({uid: uid}, eventsSnap[uid]))
+        }))
+        eventList.sort(sortByDate)
+      }
+      this.setState({eventList: eventList});
+    });
+
     // Get event
-    this.getAndSetEventItems(this.state.date);
+    this.getAndSetEventItems(this.state.eventId);
 
     // Set function for additional actions on submit, like a redirect
     if (this.props.addActionsOnSubmit) {
@@ -80,6 +82,28 @@ class EventCheckinForm extends PureComponent<Props, State> {
     } else {
       this.addActionsOnSubmit = () => {}
     }
+  };
+
+  getAndSetEventItems = (eventId) => {
+    getEvent(eventId).on("value", (snapshot) => {
+      if (snapshot.val()) {
+        var eventDate = getDateFromStringSafe(snapshot.val().date);
+        setAppDate(eventDate);
+        this.setState({
+          eventDate: eventDate,
+          eventItemsToDisplay: snapshot.val().checkinItems || []
+        });
+      }
+    });
+  };
+
+  onEventSelectChange = (event: any) => {
+    var value = event.target.value;
+    this.setState({
+      eventId: value
+    });
+    setAppEventId(value);
+    this.getAndSetEventItems(value);
   };
 
   getCheckinStateForProfile = (profile) => {
@@ -187,7 +211,10 @@ class EventCheckinForm extends PureComponent<Props, State> {
       this.setState({error: errorText});
       window.scrollTo(0, 0);
     }
-    var thisEventCheckin = Object.assign({...this.state.checkin}, {date: this.state.date});
+    var thisEventCheckin = Object.assign({...this.state.checkin}, {
+      eventId: this.state.eventId,
+      date: this.state.eventDate,
+    });
     // delete convenience attrs
     delete thisEventCheckin.alreadySigned;
     delete thisEventCheckin.guest;
@@ -208,17 +235,22 @@ class EventCheckinForm extends PureComponent<Props, State> {
       <div>
         <McsAlert color="success" text={this.state.success} visible={this.state.success.length > 0} onToggle={this.toggleAlerts.bind(this)}></McsAlert>
         <McsAlert color="danger" text={this.state.error} visible={this.state.error.length > 0} onToggle={this.toggleAlerts.bind(this)}></McsAlert>
+        <div>
+          <Form>
+            <FormGroup>
+              <select onChange={this.onEventSelectChange} value={this.state.eventId}>
+                <option value="">Select an Event</option>
+                {this.state.eventList.map((event) => {
+                  return(
+                    <option key={event.uid} value={event.uid}>{event.date}, {event.title}</option>
+                  )
+                })}
+              </select>
+            </FormGroup>
+          </Form>
+        </div>
+
         <Form onSubmit={this.onSubmit}>
-          <FormGroup>
-            <Label for="date">Event Date</Label>
-            <DateTimePicker 
-              time={false}
-              format={'dddd, MMMM Do YYYY'}
-              value={getDateFromStringSafe(this.state.date)}
-              name="date"
-              onChange={this.onCheckinDateChange}
-            />
-          </FormGroup>
           <Label>Returning Dancer</Label>
           <Typeahead
             placeholder="Returning dancers find your name here"

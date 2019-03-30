@@ -6,7 +6,8 @@ import queryString from 'query-string';
 import { getEvents } from "../../lib/api.js";
 import EventForm from "./form.js"
 import EventCheckinList from "./checkins.js"
-import { sortByDate } from '../../lib/utils.js'
+import { sortByDate } from '../../lib/utils.js';
+import McsAlert from '../Utilities/alert.js';
 
 type State = {};
 
@@ -15,10 +16,38 @@ type Props = {};
 class EventPage extends PureComponent<Props, State> {
   state: State = {
     selected: "",
-    eventList: []
+    eventList: [],
+    success: "",
+    error: "",
   };
 
+  getAlertFromQuery = () => {
+    if (this.props.location) {
+      if (this.props.location.search) {
+        var parsedSearch = queryString.parse(this.props.location.search);
+        if (parsedSearch["success"]) {
+          this.setState({success: parsedSearch["success"]})
+        }
+        if (parsedSearch["error"]) {
+          this.setState({error: parsedSearch["error"]})
+        }
+      }
+    }
+  };
+
+  onToggleSuccess = () => {
+    this.setState({success: ""});
+    window.history.replaceState("", "", "/");
+  }
+
+  onToggleError = () => {
+    this.setState({error: ""});
+    window.history.replaceState("", "", "/");
+  }
+
   componentDidMount() {
+    this.getAlertFromQuery()
+
     var parsedSearch = queryString.parse(this.props.location.search);
     if (this.props.location.search) {
       var eventId = parsedSearch["uid"];
@@ -53,6 +82,8 @@ class EventPage extends PureComponent<Props, State> {
     return (
       <div className="App">
         <h1>Event</h1>
+        <McsAlert color="success" text={this.state.success} visible={this.state.success.length > 0} onToggle={this.onToggleSuccess.bind(this)}></McsAlert>
+        <McsAlert color="danger" text={this.state.error} visible={this.state.error.length > 0} onToggle={this.onToggleError.bind(this)}></McsAlert>
         <div>
           <p>Select a event to view or update, or create a new event.</p>
           <Form>

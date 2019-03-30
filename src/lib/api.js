@@ -52,6 +52,26 @@ export function removeAppDate() {
   cookies.remove('appDate');
 };
 
+// Event Cookie API
+export function setAppEventId(eventId) {
+  let d = new Date();
+  d.setDate(d.getDate() + 1);
+  cookies.set('appEventId', eventId, { path: '/', expires: d});
+};
+
+export function getAppEventId() {
+  var eventId = cookies.get('appEventId');
+  if (eventId) {
+    return eventId;
+  } else {
+    return "";
+  }
+};
+
+export function removeAppEventId() {
+  cookies.remove('appEventId');
+};
+
 // Utility Functions
 function getCurrentUserId() {
   var currentUser = getCurrentUser();
@@ -203,7 +223,7 @@ export const addNewEvent = (options: Event) => {
     throw MiscException("Date required", "FormException")
   }
   options.date = options.date.toDateString();
-  const eventId = uuidv3(options.date, MCS_APP);
+  const eventId = uuidv3(options.date + options.title, MCS_APP);
   return fireDB.database().ref("events/" + eventId).set(options);
 };
 
@@ -286,16 +306,17 @@ export const getClassCheckinByDate = (classDate) => {
 
 export const addNewEventCheckin = (options: EventCheckin) => {
   options.author = getCurrentUserId();
-  // check for name, email, and date
-  if (!(options.date && options.email && options.firstName && options.lastName)) {
-    throw MiscException("First name, last name, email, and date required", "FormException")
+  // check for name, email, and event ID
+  if (!(options.eventId && options.email && options.firstName && options.lastName)) {
+    throw MiscException("First name, last name, email, and event ID required", "FormException")
   }
   if (!(options.waiverAgree && options.conductAgree)) {
     throw MiscException("Must agree to liability waiver and code of conduct", "FormException")
   }
   // we just care about the day
   options.date = options.date.toDateString();
-  const checkin = uuidv3(options.date + options.email, MCS_APP);
+  // key event checkin on event ID
+  const checkin = uuidv3(options.eventId + options.email, MCS_APP);
   fireDB.database().ref("event-checkins/" + checkin).set(options);
   const profileId = uuidv3(options.email, MCS_APP);
   return fireDB.database().ref("profiles/" + profileId).once("value").then(function(snapshot){
@@ -317,6 +338,11 @@ export const getEventCheckinByEmail = (studentEmail) => {
 export const getEventCheckinByDate = (eventDate) => {
   // get checkins for a specific date
   return fireDB.database().ref("event-checkins").orderByChild("date").equalTo(eventDate)
+};
+
+export const getEventCheckinByEventId = (eventId) => {
+  // get checkins for a specific event ID
+  return fireDB.database().ref("event-checkins").orderByChild("eventId").equalTo(eventId)
 };
 
 

@@ -8,6 +8,7 @@ import type { Event } from "../../types.js";
 import { addNewEvent, getEvent, deleteEvent, getAppDate } from "../../lib/api.js";
 import { getDateFromStringSafe } from "../../lib/utils.js";
 import McsAlert from "../Utilities/alert.js";
+import { ConfirmButtonPopover } from "../Utilities/confirmButton.js";
 
 type State = Event;
 
@@ -16,6 +17,7 @@ type Props = {};
 class EventForm extends PureComponent<Props, State> {
 
   defaultFields = {
+    eventId: "",
     date: getAppDate(),
     title: "",
     fbLink: "",
@@ -44,11 +46,12 @@ class EventForm extends PureComponent<Props, State> {
       if (snapshot.val()) {
         console.log(snapshot.val())
         this.setState({
+          eventId: eventId,
           date: new Date(snapshot.val().date),
           title: snapshot.val().title,
           fbLink: snapshot.val().fbLink,
           checkinItems: snapshot.val().checkinItems,
-          checkinItemsDisplay: snapshot.val().checkinItems.join(', '),
+          checkinItemsDisplay: (snapshot.val().checkinItems || []).join(', '),
           info: snapshot.val().info
         });
       }
@@ -64,9 +67,9 @@ class EventForm extends PureComponent<Props, State> {
     this.getEventFromUid(value);
   }
 
-  onEventClickDelete = (event: any)  => {
-    const value = event.target.value;
-    deleteEvent(value);
+  onEventClickDelete = () => {
+    deleteEvent(this.state.eventId);
+    window.location.href = "/admin/event";
   }
 
   onChange = (event: any) => {
@@ -85,7 +88,7 @@ class EventForm extends PureComponent<Props, State> {
     });
 
     this.setState({
-      checkinItems: items,
+      checkinItems: items || [],
       checkinItemsDisplay: value
     });
   };
@@ -103,13 +106,13 @@ class EventForm extends PureComponent<Props, State> {
     });
   };
 
-  clearForm() {
-    this.setState(...this.defaultFields);
+  clearForm = () => {
+    this.setState({...this.defaultFields});
   };
 
   clearFormEvent = (event: any) => {
     this.clearForm();
-    this.props.history.push({ pathname: '/admin/event', query: {} })
+    window.location.href = "/admin/event?";
   };
 
   onSubmit = (event: any) => {
@@ -172,6 +175,8 @@ class EventForm extends PureComponent<Props, State> {
           <Button color="primary" type="submit" value="Submit">Submit</Button>
           <span className="mr-1"></span>
           <Button outline value="clear" onClick={this.clearFormEvent}>Clear Form</Button>
+          <span className="mr-1"></span>
+          <ConfirmButtonPopover buttonOptions={{color: "danger"}} popoverOptions={{placement: "right"}} afterConfirm={this.onEventClickDelete} popoverHeader="Delete This Event" popoverBody="Are you sure you want to delete this event? This cannot be undone.">Delete</ConfirmButtonPopover>
         </Form>
       </div>
     );

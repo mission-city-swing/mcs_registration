@@ -2,9 +2,10 @@
 // src/components/EventForm/form.js
 import React, { PureComponent } from "react";
 import { Table } from 'reactstrap';
+import {CSVLink} from 'react-csv';
 import ReactTable from 'react-table';
 import queryString from 'query-string';
-import { getEvent, getEventCheckinByDate } from "../../lib/api.js";
+import { getEvent, getEventCheckinByDate, getEventCheckinByEventId } from "../../lib/api.js";
 import { reactTableFuzzyMatchFilter } from '../../lib/utils.js'
 
 type State = {};
@@ -13,8 +14,11 @@ type Props = {};
 
 class EventCheckinList extends PureComponent<Props, State> {
   state: State = {
+    eventId: "",
     eventCheckinList: [],
-  };
+    csvData: [],
+    csvHeaders: [],
+  }
 
   getEventCheckinsFromQuery = () => {
     var parsedSearch = queryString.parse(this.props.location.search);
@@ -22,23 +26,56 @@ class EventCheckinList extends PureComponent<Props, State> {
       var eventId = parsedSearch["uid"];
       if (eventId) {
         getEvent(eventId).on("value", (snapshot) => {
-          this.getCheckinsFromDate(snapshot.val().date);
+          if (snapshot.val()) {
+            this.setState({eventId: eventId});
+            this.getCheckinsFromEvent(eventId, snapshot.val().date);
+          } else {
+            window.location.href = "/admin/event?error=No event with ID " + eventId;
+          }
         });
       }
     }
   };
 
-  getCheckinsFromDate = (eventDate) => {
-    getEventCheckinByDate(eventDate).on("value", (snapshot) => {
-      var eventCheckinList = [];
+  makeCsvData = (eventCheckinList) => {
+    var csvRows = [];
+    var headers = ['Event ID', 'Date', 'Check-in ID', 'Name', 'Email', 'Checkin Items', 'Checkin Info']
+    eventCheckinList.map( (checkin) => {
+      return csvRows.push([
+        checkin.eventId || this.state.eventId,
+        checkin.date,
+        checkin.uid,
+        [checkin.firstName, checkin.lastName].join(' '),
+        checkin.email,
+        (checkin.checkinItems || []).join('; '),
+        checkin.info,
+      ]);
+    });
+    this.setState({csvData: csvRows, csvHeaders: headers})
+  };
+
+  setCheckinDataFromSnapshot = (snapshotVal) => {
+    var eventCheckinList = [];
+    var checkinListObj = snapshotVal;
+    Object.keys(checkinListObj).map(function(uid) {
+      return eventCheckinList.push(Object.assign({uid: uid}, checkinListObj[uid]))
+    })
+    this.setState({eventCheckinList: eventCheckinList});
+    console.log(eventCheckinList)
+    this.makeCsvData(eventCheckinList);
+  };
+
+  getCheckinsFromEvent = (eventId, eventDate) => {
+    getEventCheckinByEventId(eventId).on("value", (snapshot) => {
       if (snapshot.val()) {
-        console.log(snapshot.val());
-        var checkinListObj = snapshot.val();
-        Object.keys(checkinListObj).map(function(uid) {
-          return eventCheckinList.push(Object.assign({uid: uid}, checkinListObj[uid]))
-        })
+        this.setCheckinDataFromSnapshot(snapshot.val());
+      } else {
+        getEventCheckinByDate(eventDate).on("value", (snapshot) => {
+          if (snapshot.val()) {
+            this.setCheckinDataFromSnapshot(snapshot.val());
+          }
+        });
       }
-      this.setState({eventCheckinList: eventCheckinList});
     });
   };
 
@@ -68,7 +105,7 @@ class EventCheckinList extends PureComponent<Props, State> {
           </tbody>
         </Table>
         <div>
-          <h5>Event Check-ins</h5>
+          <h5>Event Check-ins <CSVLink filename={"event-data.csv"} data={this.state.csvData} headers={this.state.csvHeaders} className="btn btn-success">Download CSV</CSVLink></h5>
           <ReactTable
             data={this.state.eventCheckinList}
             columns={[{
@@ -83,7 +120,7 @@ class EventCheckinList extends PureComponent<Props, State> {
             }, {
               Header: "Checkin Items",
               id: "checkinItems",
-              accessor: (d) => d.checkinItems.join('; ')
+              accessor: (d) => (d.checkinItems || []).join('; ')
             }, {
               Header: "Notes",
               accessor: "info"
