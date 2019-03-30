@@ -2,6 +2,7 @@
 // src/components/EventForm/form.js
 import React, { PureComponent } from "react";
 import { Table } from 'reactstrap';
+import {CSVLink} from 'react-csv';
 import ReactTable from 'react-table';
 import queryString from 'query-string';
 import { getEvent, getEventCheckinByDate, getEventCheckinByEventId } from "../../lib/api.js";
@@ -14,6 +15,8 @@ type Props = {};
 class EventCheckinList extends PureComponent<Props, State> {
   state: State = {
     eventCheckinList: [],
+    csvData: [],
+    csvHeaders: [],
   }
 
   getEventCheckinsFromQuery = () => {
@@ -32,26 +35,40 @@ class EventCheckinList extends PureComponent<Props, State> {
     }
   };
 
+  makeCsvData = (eventCheckinList) => {
+    var csvRows = [];
+    var headers = ['UID', 'Name', 'Email', 'Checkin Items', 'Checkin Info']
+    eventCheckinList.map(function(checkin) {
+      return csvRows.push([
+        checkin.uid,
+        [checkin.firstName, checkin.lastName].join(' '),
+        checkin.email,
+        (checkin.checkinItems || []).join('; '),
+        checkin.info,
+      ]);
+    });
+    this.setState({csvData: csvRows, csvHeaders: headers})
+  };
+
+  setCheckinDataFromSnapshot = (snapshotVal) => {
+    var eventCheckinList = [];
+    var checkinListObj = snapshotVal;
+    Object.keys(checkinListObj).map(function(uid) {
+      return eventCheckinList.push(Object.assign({uid: uid}, checkinListObj[uid]))
+    })
+    this.setState({eventCheckinList: eventCheckinList});
+    console.log(eventCheckinList)
+    this.makeCsvData(eventCheckinList);
+  };
+
   getCheckinsFromEvent = (eventId, eventDate) => {
     getEventCheckinByEventId(eventId).on("value", (snapshot) => {
-      var eventCheckinList = [];
       if (snapshot.val()) {
-        console.log(snapshot.val());
-        var checkinListObj = snapshot.val();
-        Object.keys(checkinListObj).map(function(uid) {
-          return eventCheckinList.push(Object.assign({uid: uid}, checkinListObj[uid]))
-        })
-        this.setState({eventCheckinList: eventCheckinList});
+        this.setCheckinDataFromSnapshot(snapshot.val());
       } else {
         getEventCheckinByDate(eventDate).on("value", (snapshot) => {
-          var eventCheckinList = [];
           if (snapshot.val()) {
-            console.log(snapshot.val());
-            var checkinListObj = snapshot.val();
-            Object.keys(checkinListObj).map(function(uid) {
-              return eventCheckinList.push(Object.assign({uid: uid}, checkinListObj[uid]))
-            })
-            this.setState({eventCheckinList: eventCheckinList});
+            this.setCheckinDataFromSnapshot(snapshot.val());
           }
         });
       }
@@ -84,7 +101,7 @@ class EventCheckinList extends PureComponent<Props, State> {
           </tbody>
         </Table>
         <div>
-          <h5>Event Check-ins</h5>
+          <h5>Event Check-ins <CSVLink filename={"event-data.csv"} data={this.state.csvData} headers={this.state.csvHeaders} className="btn btn-success">Download CSV</CSVLink></h5>
           <ReactTable
             data={this.state.eventCheckinList}
             columns={[{
@@ -99,7 +116,7 @@ class EventCheckinList extends PureComponent<Props, State> {
             }, {
               Header: "Checkin Items",
               id: "checkinItems",
-              accessor: (d) => d.checkinItems.join('; ')
+              accessor: (d) => (d.checkinItems || []).join('; ')
             }, {
               Header: "Notes",
               accessor: "info"
