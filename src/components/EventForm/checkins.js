@@ -14,6 +14,7 @@ type Props = {};
 
 class EventCheckinList extends PureComponent<Props, State> {
   state: State = {
+    eventId: "",
     eventCheckinList: [],
     csvData: [],
     csvHeaders: [],
@@ -26,6 +27,7 @@ class EventCheckinList extends PureComponent<Props, State> {
       if (eventId) {
         getEvent(eventId).on("value", (snapshot) => {
           if (snapshot.val()) {
+            this.setState({eventId: eventId});
             this.getCheckinsFromEvent(eventId, snapshot.val().date);
           } else {
             window.location.href = "/admin/event?error=No event with ID " + eventId;
@@ -37,9 +39,10 @@ class EventCheckinList extends PureComponent<Props, State> {
 
   makeCsvData = (eventCheckinList) => {
     var csvRows = [];
-    var headers = ['UID', 'Name', 'Email', 'Checkin Items', 'Checkin Info']
-    eventCheckinList.map(function(checkin) {
+    var headers = ['Event ID', 'Check-in ID', 'Name', 'Email', 'Checkin Items', 'Checkin Info']
+    eventCheckinList.map( (checkin) => {
       return csvRows.push([
+        this.state.eventId,
         checkin.uid,
         [checkin.firstName, checkin.lastName].join(' '),
         checkin.email,
