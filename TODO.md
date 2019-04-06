@@ -15,7 +15,7 @@ _No bugs today!_
 
 - [ ] Privacy policy that says we won’t share any emails we get, and a note where we ask for dancer's email addresses
 
-- [ ] Change it so that the name is displayed on confirmation alert, not email
+- [x] Change it so that the name is displayed on confirmation alert, not email - https://github.com/missmaggiemo/mcs_registration/issues/69
 
 - [ ] Show guest status when a dancer/student checks in
 
