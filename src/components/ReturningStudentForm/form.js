@@ -253,7 +253,7 @@ class ReturningStudentForm extends PureComponent<Props, State> {
   onSubmit = (options) => {
     // Error handling
     var onSuccess = () => {
-      var successText = "Added class check-in for " + this.state.checkin.email
+      var successText = `Added class check-in for ${this.state.checkin.firstName} ${this.state.checkin.lastName}`
       this.setState({
         success: successText,
         error: ""
@@ -295,7 +295,7 @@ class ReturningStudentForm extends PureComponent<Props, State> {
         <Form onSubmit={this.onSubmit}>
           <FormGroup>
             <Label for="date">Dance Date</Label>
-            <DateTimePicker 
+            <DateTimePicker
               time={false}
               format={'dddd, MMMM Do YYYY'}
               value={getDateFromStringSafe(this.state.date)}
@@ -318,7 +318,7 @@ class ReturningStudentForm extends PureComponent<Props, State> {
           <br></br>
           <hr></hr>
           <br></br>
-          {this.state.checkin.completedFundamentals && 
+          {this.state.checkin.completedFundamentals &&
             <p><strong>{this.state.checkin.firstName} {this.state.checkin.lastName} has completed the MCS fundamentals course.</strong></p>
           }
           {this.state.checkin.latestMonthlyPass.monthName === currentMonthString() && this.state.checkin.latestMonthlyPass.year === currentYear() &&
