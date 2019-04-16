@@ -256,11 +256,11 @@ class StudentInfoForm extends PureComponent<Props, State> {
             <Label form="email" type="email">Email <span className="required-text">*</span></Label><Input placeholder="me@example.com" onChange={this.onChange} onBlur={this.getStudentFromEmailBlur} value={this.state.email} type="email" id="email" name="email" />
           </FormGroup>
           <FormGroup>
-            <Label>Phone Number</Label><Input placeholder="123-456-7890" onChange={this.onChange} value={this.state.phoneNumber} type="tel" id="phoneNumber" name="phoneNumber" />
+            <Label>Phone Number (Optional)</Label><Input placeholder="123-456-7890" onChange={this.onChange} value={this.state.phoneNumber} type="tel" id="phoneNumber" name="phoneNumber" />
           </FormGroup>
           <FormGroup>
-            <Label for="birthday">Birthday (so that we can invite you to birthday jams)</Label>
-            <DateTimePicker 
+            <Label for="birthday">Birthday (Optional, so that we can invite you to birthday jams)</Label>
+            <DateTimePicker
               time={false}
               format={'MMMM D'}
               value={getDateFromStringSafe(this.state.birthday)}
@@ -276,7 +276,7 @@ class StudentInfoForm extends PureComponent<Props, State> {
           <FormGroup check>
             <Label check>
               <Input onChange={this.onChange} name="student" type="checkbox" checked={this.state.student} />
-              <strong>Full time student, must show valid student ID</strong>
+              <strong>Full time student (must show valid student ID)</strong>
             </Label>
           </FormGroup>
           <br></br>
@@ -327,7 +327,7 @@ class StudentInfoForm extends PureComponent<Props, State> {
           </FormGroup>
           <br></br>
           <FormGroup tag="fieldset">
-            <legend className="h5">Do you already know any of these partner dances? (Select all that apply.)</legend>
+            <legend className="h5">Do you already know any of these partner dances? (Select all that apply)</legend>
             <FormGroup check>
               <Label check>
                 <Input onChange={this.onMultiChange} type="checkbox" name="otherDances" checked={this.state.otherDances.indexOf('West Coast Swing') !== -1} value="West Coast Swing" /> West Coast Swing
@@ -396,7 +396,7 @@ class StudentInfoForm extends PureComponent<Props, State> {
           <br></br>
           <FormGroup>
             <Label for="memberDate">Member Since</Label>
-            <DateTimePicker 
+            <DateTimePicker
               time={false}
               format={'dddd, MMMM Do YYYY'}
               value={getDateFromStringSafe(this.state.memberDate)}
