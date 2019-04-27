@@ -10,7 +10,7 @@ import { sortByNameAndEmail, getDateFromStringSafe } from "../../lib/utils.js";
 import McsAlert from "../Utilities/alert.js";
 import { CodeOfConductModalLink } from "../Utilities/conductModal.js";
 import { LiabilityWaiverModalLink } from "../Utilities/waiverModal.js";
-
+import { PAYMENT_TYPES } from '../../lib/payment.js';
 
 
 type State = {};
@@ -146,7 +146,11 @@ class DanceCheckinForm extends PureComponent<Props, State> {
     var onSuccess = () => {
       var successText = "Added dance check-in for " + this.state.checkin.email
       this.setState({success: successText});
-      this.addActionsOnSubmit({success: successText});
+      this.addActionsOnSubmit({
+        success: successText,
+        paymentUserId: this.state.checkin.email,
+        paymentTypes: PAYMENT_TYPES.DANCE_DROPIN
+      });
     }
     var onError = (errorText) => {
       this.setState({error: errorText});
