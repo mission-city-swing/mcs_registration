@@ -13,6 +13,7 @@ import Event from './components/EventForm';
 import DanceCheckinPage from './components/DanceCheckinForm';
 import EventCheckinPage from './components/EventCheckinForm';
 import StudentPage from './components/Students';
+import PaymentForm from './components/PaymentForm';
 
 const Routes = (props) => (
   <Switch {...props}>
@@ -21,6 +22,7 @@ const Routes = (props) => (
     <Route path="/class-checkin" component={ReturningStudentPage} />
     <Route path="/dance-checkin" component={DanceCheckinPage} />
     <Route path="/event-checkin" component={EventCheckinPage} />
+    <Route path="/take-payment" component={PaymentForm} />
     <Route path="/admin/new-student" component={AdminNewStudentPage} />
     <Route path="/admin/dance" component={Dance} />
     <Route path="/admin/event" component={Event} />
