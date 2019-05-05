@@ -253,7 +253,8 @@ class ReturningStudentForm extends PureComponent<Props, State> {
   onSubmit = (options) => {
     // Error handling
     var onSuccess = () => {
-      var successText = `Added class check-in for ${this.state.checkin.firstName} ${this.state.checkin.lastName}`
+      var classesStr = this.state.checkin.classes.join("; ")
+      var successText = `Added class check-in for ${this.state.checkin.firstName} ${this.state.checkin.lastName}: ${classesStr}`
       this.setState({
         success: successText,
         error: ""
