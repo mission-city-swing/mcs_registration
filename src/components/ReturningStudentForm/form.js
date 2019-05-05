@@ -10,7 +10,6 @@ import type { ClassCheckin } from "../../types.js";
 import { addNewClassCheckin, getProfiles, getProfileByEmail, setLatestMonthlyPass, getAppDate } from "../../lib/api.js";
 import { getSubstringIndex, currentMonthIndex, currentMonthString, currentYear, sortByNameAndEmail, getDateFromStringSafe } from "../../lib/utils.js";
 import McsAlert from "../Utilities/alert.js";
-import { ConfirmButtonPopover } from "../Utilities/confirmButton.js";
 import { CodeOfConductModalLink } from "../Utilities/conductModal.js";
 import { LiabilityWaiverModalLink } from "../Utilities/waiverModal.js";
 import { Link } from 'react-router-dom';
@@ -374,7 +373,7 @@ class ReturningStudentForm extends PureComponent<Props, State> {
           <br></br>
           {this.state.checkin.email.length > 0 &&
             <div>
-              <ConfirmButtonPopover buttonOptions={{color: "primary"}} popoverOptions={{placement: "right"}} afterConfirm={this.onSubmit} popoverHeader="Confirm Your Class" popoverBody="Please confirm that the class you are checking in for is correct.">Submit</ConfirmButtonPopover>
+              <Button color="primary" onClick={this.onSubmit}>Submit</Button>
               <span className="mr-1"></span>
               <Button outline value="clear" onClick={this.clearFormEvent}>Clear Form</Button>
             </div>
