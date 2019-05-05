@@ -39,6 +39,7 @@ class StudentInfoForm extends PureComponent<Props, State> {
   };
 
   state: State = Object.assign({...this.defaultFields}, {
+    emailOptIn: true,
     success: "",
     error: "",
     redirect: false
@@ -228,6 +229,7 @@ class StudentInfoForm extends PureComponent<Props, State> {
       Object.keys(this.defaultFields).map(function(key) {
         return toSubmit[key] = newState[key];
       })
+      toSubmit.emailOptOut = !this.state.emailOptIn;
       createOrUpdateProfile(toSubmit).then(function(success) {
         onSuccess();
       }).catch(function(error) {
@@ -384,8 +386,8 @@ class StudentInfoForm extends PureComponent<Props, State> {
           <h5>Email Preferences</h5>
           <FormGroup check>
             <Label check>
-              <Input onChange={this.onChange} name="emailOptOut" type="checkbox" checked={this.state.emailOptOut} />
-              <strong>Please check here if you do not wish to receive email from Mission City Swing</strong>
+              <Input onChange={this.onChange} name="emailOptIn" type="checkbox" checked={this.state.emailOptIn} />
+              <strong>Receive email updates from Mission City Swing</strong>
             </Label>
           </FormGroup>
           <br></br>
