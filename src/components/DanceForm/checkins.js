@@ -2,6 +2,7 @@
 // src/components/NewStudentForm/form.js
 import React, { PureComponent } from "react";
 import { Table } from 'reactstrap';
+import { CSVLink } from 'react-csv';
 import ReactTable from 'react-table';
 import queryString from 'query-string';
 import { getDance, getDanceCheckinByDate, getClassCheckinByDate } from "../../lib/api.js";
@@ -14,7 +15,10 @@ type Props = {};
 class DanceCheckinList extends PureComponent<Props, State> {
   state: State = {
     danceCheckinList: [],
-    classCheckinList: []
+    classCheckinList: [],
+    danceId: '',
+    danceDate: null,
+    csvHeaders: ['Date', 'Check-in ID', 'Name', 'Email', 'Checkin Items', 'Checkin Info']
   };
 
   getDanceCheckinsFromQuery = () => {
@@ -22,8 +26,11 @@ class DanceCheckinList extends PureComponent<Props, State> {
     if (this.props.location.search) {
       var danceId = parsedSearch["uid"];
       if (danceId) {
+        this.setState({ danceId: danceId });
         getDance(danceId).on("value", (snapshot) => {
-          this.getCheckinsFromDate(snapshot.val().date);
+          const date = snapshot.val().date;
+          this.setState({ danceDate: date });
+          this.getCheckinsFromDate(date);
         });
       }
     }
@@ -39,6 +46,7 @@ class DanceCheckinList extends PureComponent<Props, State> {
         })
       }
       this.setState({classCheckinList: classCheckinList});
+      this.makeCsvDataWithName(classCheckinList, "csvDataClass");
     });
 
     getDanceCheckinByDate(danceDate).on("value", (snapshot) => {
@@ -50,7 +58,24 @@ class DanceCheckinList extends PureComponent<Props, State> {
         })
       }
       this.setState({danceCheckinList: danceCheckinList});
+      this.makeCsvDataWithName(danceCheckinList, "csvDataDance");
     });
+  };
+
+  makeCsvDataWithName = (checkinList, csvName) => {
+    var csvRows = [];
+    // All dance CSVs use headers stored in this.state.csvHeaders
+    checkinList.map( (checkin) => {
+      return csvRows.push([
+        checkin.date,
+        checkin.uid,
+        [checkin.firstName, checkin.lastName].join(' '),
+        checkin.email,
+        (checkin.classes || ['dance']).join('; '),
+        checkin.info,
+      ]);
+    });
+    this.setState({ [csvName]: csvRows })
   };
 
   componentDidMount() {
@@ -62,7 +87,9 @@ class DanceCheckinList extends PureComponent<Props, State> {
     return (
       <div>
         <h4>Activity</h4>
-        <h5>Stats</h5>
+        {this.state.csvDataDance && this.state.csvDataClass &&
+          <h5>Stats <CSVLink filename={"dance-data-" + this.state.danceDate + ".csv"} data={this.state.csvDataClass.concat(this.state.csvDataDance)} headers={this.state.csvHeaders} className="btn btn-success">Download Dance Data CSV</CSVLink></h5>
+        }
         {/* Used a regular react-strap table here just to display this info nicely */}
         <Table bordered>
           <thead>
@@ -81,53 +108,61 @@ class DanceCheckinList extends PureComponent<Props, State> {
           </tbody>
         </Table>
         <div>
-          <h5>Class Check-ins</h5>
-          <ReactTable
-            data={this.state.classCheckinList}
-            columns={[{
-              Header: "Name",
-              accessor: (d) => [d.firstName, d.lastName].join(' '),
-              id: "name",
-              maxWidth: 300
-            }, {
-              Header: "Email",
-              accessor: "email",
-              maxWidth: 300
-            }, {
-              Header: "Classes",
-              id: "classes",
-              accessor: (d) => d.classes.join('; ')
-            }, {
-              Header: "Notes",
-              accessor: "info"
-            }]}
-            defaultPageSize={5}
-            className="-striped"
-            filterable
-            defaultFilterMethod={reactTableFuzzyMatchFilter}
-          />
+          {this.state.classCheckinList &&
+            <div>
+              <h5>Class Check-ins</h5>
+              <ReactTable
+                data={this.state.classCheckinList}
+                columns={[{
+                  Header: "Name",
+                  accessor: (d) => [d.firstName, d.lastName].join(' '),
+                  id: "name",
+                  maxWidth: 300
+                }, {
+                  Header: "Email",
+                  accessor: "email",
+                  maxWidth: 300
+                }, {
+                  Header: "Classes",
+                  id: "classes",
+                  accessor: (d) => d.classes.join('; ')
+                }, {
+                  Header: "Notes",
+                  accessor: "info"
+                }]}
+                defaultPageSize={5}
+                className="-striped"
+                filterable
+                defaultFilterMethod={reactTableFuzzyMatchFilter}
+              />
+            </div>
+          }
           <br></br>
-          <h5>Dance Check-ins</h5>
-          <ReactTable
-            data={this.state.danceCheckinList}
-            columns={[{
-              Header: "Name",
-              accessor: (d) => [d.firstName, d.lastName].join(' '),
-              id: "name",
-              maxWidth: 300
-            }, {
-              Header: "Email",
-              accessor: "email",
-              maxWidth: 300
-            }, {
-              Header: "Notes",
-              accessor: "info"
-            }]}
-            defaultPageSize={5}
-            className="-striped"
-            filterable
-            defaultFilterMethod={reactTableFuzzyMatchFilter}
-          />
+          {this.state.danceCheckinList &&
+            <div>
+              <h5>Dance Check-ins</h5>
+              <ReactTable
+                data={this.state.danceCheckinList}
+                columns={[{
+                  Header: "Name",
+                  accessor: (d) => [d.firstName, d.lastName].join(' '),
+                  id: "name",
+                  maxWidth: 300
+                }, {
+                  Header: "Email",
+                  accessor: "email",
+                  maxWidth: 300
+                }, {
+                  Header: "Notes",
+                  accessor: "info"
+                }]}
+                defaultPageSize={5}
+                className="-striped"
+                filterable
+                defaultFilterMethod={reactTableFuzzyMatchFilter}
+              />
+            </div>
+          }
         </div>
       </div>
     );
