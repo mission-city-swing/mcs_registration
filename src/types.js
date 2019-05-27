@@ -77,6 +77,7 @@ export type ClassCheckin = {
   info: string,
   waiverAgree: boolean,
   conductAgree: boolean,
+  classes: [],
   author: string
 };
 

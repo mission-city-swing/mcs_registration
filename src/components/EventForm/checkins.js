@@ -2,7 +2,7 @@
 // src/components/EventForm/form.js
 import React, { PureComponent } from "react";
 import { Table } from 'reactstrap';
-import {CSVLink} from 'react-csv';
+import { CSVLink } from 'react-csv';
 import ReactTable from 'react-table';
 import queryString from 'query-string';
 import { getEvent, getEventCheckinByDate, getEventCheckinByEventId } from "../../lib/api.js";
@@ -61,7 +61,6 @@ class EventCheckinList extends PureComponent<Props, State> {
       return eventCheckinList.push(Object.assign({uid: uid}, checkinListObj[uid]))
     })
     this.setState({eventCheckinList: eventCheckinList});
-    console.log(eventCheckinList)
     this.makeCsvData(eventCheckinList);
   };
 
@@ -105,7 +104,7 @@ class EventCheckinList extends PureComponent<Props, State> {
           </tbody>
         </Table>
         <div>
-          <h5>Event Check-ins <CSVLink filename={"event-data.csv"} data={this.state.csvData} headers={this.state.csvHeaders} className="btn btn-success">Download CSV</CSVLink></h5>
+          <h5>Event Check-ins <CSVLink filename={"event-data-" + this.state.eventId + ".csv"} data={this.state.csvData} headers={this.state.csvHeaders} className="btn btn-success">Download CSV</CSVLink></h5>
           <ReactTable
             data={this.state.eventCheckinList}
             columns={[{
