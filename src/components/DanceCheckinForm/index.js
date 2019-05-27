@@ -14,8 +14,8 @@ class DanceCheckinPage extends PureComponent<Props, State> {
     const toUrlQuery = queryString.stringify({
       success: options.success,
       error: options.error,
-      payment_user_id: options.paymentUserId,
-      payment_types: options.paymentTypes
+      payment_types: options.paymentTypes,
+      checkin_id: options.checkinId
     }, { arrayFormat: 'bracket' });
 
     if (toUrlQuery != null) {

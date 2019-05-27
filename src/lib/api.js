@@ -250,16 +250,29 @@ export const addNewDanceCheckin = (options: DanceCheckin) => {
   const checkin = uuidv3(options.date + options.email, MCS_APP);
   fireDB.database().ref("dance-checkins/" + checkin).set(options);
   const profileId = uuidv3(options.email, MCS_APP);
-  return fireDB.database().ref("profiles/" + profileId).once("value").then(function(snapshot){
+  return fireDB.database().ref("profiles/" + profileId).once("value").then(snapshot => {
     if (snapshot.val() == null) {
       var profile = {...options};
       profile.memberDate = (getAppDate()).toDateString();
-      return fireDB.database().ref("profiles/" + profileId + "/profile").set(profile);
+      return fireDB.database().ref("profiles/" + profileId + "/profile").set(profile).then(() => checkin);
     } else {
-      return fireDB.database().ref("profiles/" + profileId).once("value")
+      return checkin; // fireDB.database().ref("profiles/" + profileId).once("value")
     }
   });
 };
+
+export function updateDanceCheckinWithPayment(checkinId, paidAmount) {
+  const checkinRef = `dance-checkins/${checkinId}`;
+  return fireDB.database().ref(checkinRef).once("value").then(snapshot => {
+    const checkinAttrs = snapshot.val();
+    const updatedCheckin = {
+      ...checkinAttrs,
+      didPay: true,
+      didPayAmount: paidAmount
+    };
+    return fireDB.database().ref(checkinRef).set(updatedCheckin);
+  });
+}
 
 export const getDanceCheckinByEmail = (studentEmail) => {
   // get checkins for a student

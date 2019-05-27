@@ -142,14 +142,14 @@ class DanceCheckinForm extends PureComponent<Props, State> {
     this.setState({checkin: newStateCheckin});
   }
 
-  onSubmit = (options={}) => {
-    var onSuccess = () => {
+  onSubmit = (options = {}) => {
+    var onSuccess = (checkin) => {
       var successText = "Added dance check-in for " + this.state.checkin.email
       this.setState({success: successText});
       this.addActionsOnSubmit({
         success: successText,
-        paymentUserId: this.state.checkin.email,
-        paymentTypes: PAYMENT_TYPES.DANCE_DROPIN
+        paymentTypes: PAYMENT_TYPES.DANCE_DROPIN,
+        checkinId: checkin
       });
     }
     var onError = (errorText) => {
@@ -162,8 +162,8 @@ class DanceCheckinForm extends PureComponent<Props, State> {
     delete thisDanceCheckin.guest;
     // DB request
     try {
-      addNewDanceCheckin(thisDanceCheckin).then(function(){
-        onSuccess();
+      addNewDanceCheckin(thisDanceCheckin).then(checkin => {
+        onSuccess(checkin);
       }).catch(function(error){
         onError(error.toString());
       });

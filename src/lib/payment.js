@@ -1,3 +1,5 @@
+import { updateDanceCheckinWithPayment } from './api';
+
 export const PAYMENT_TYPES = Object.freeze({
   NEW_STUDENT: 'NEW_STUDENT',
   FUNDAMENTALS_DROPIN: 'FUNDAMENTALS_DROPIN',
@@ -31,7 +33,7 @@ function calculateAmount(types) {
   return amount;
 }
 
-export function takeIosPayment(userId, types) {
+export function takeIosPayment(checkinId, types) {
   const amount = calculateAmount(types);
 
   const options = {
@@ -46,7 +48,10 @@ export function takeIosPayment(userId, types) {
     },
     version: '1.3',
     // State will be returned to us in the transaction response
-    state: `{"userId":"${userId}"}`
+    state: JSON.stringify({
+      checkinId,
+      paidAmount: amount
+    })
   };
 
   window.location =
@@ -54,7 +59,7 @@ export function takeIosPayment(userId, types) {
     encodeURIComponent(JSON.stringify(options));
 }
 
-export function takeAndroidPayment(userId, types) {
+export function takeAndroidPayment(checkinId, types) {
   const transactionTotal = calculateAmount(types);
   const currencyCode = "USD";
 
@@ -79,7 +84,10 @@ export function takeAndroidPayment(userId, types) {
     "S.com.squareup.pos.CURRENCY_CODE=" + currencyCode + ";" +
     "S.com.squareup.pos.TENDER_TYPES=" + tenderTypes + ";" +
     // REQUEST_METADATA will be returned to us in the transaction response
-    "S.com.squareup.pos.REQUEST_METADATA=" + `{"userId":"${userId}"}` + ";" +
+    "S.com.squareup.pos.REQUEST_METADATA=" + JSON.stringify({
+      checkinId,
+      paidAmount: transactionTotal
+    }) + ";" +
     "end";
 
   window.open(posUrl);
@@ -95,8 +103,9 @@ export function processIosPayment() {
 
   const data = decodeURI(URL.searchParams.get("data"));
 
-  console.log("data: " + data);
+  console.log('data: ' + data);
   const transactionInfo = JSON.parse(data);
+
   // TODO: https://docs.connect.squareup.com/payments/pos/setup-web#step-4-c-do-something-with-the-transaction-details
   return transactionInfo;
 }
@@ -113,8 +122,9 @@ export function processAndroidPayment() {
   const parts = URL.replace(/[?&]+([^=&]+)=([^&]*)/gi,
   function(m,key,value) {
     vars[key] = value;
-
   });
+
+  console.log('data: ' + vars);
   // TODO: https://docs.connect.squareup.com/payments/pos/setup-web#step-4-c-do-something-with-the-transaction-details
   return vars;
 }

@@ -31,11 +31,11 @@ class PaymentForm extends PureComponent<Props, State> {
       if (parsedSearch["error"]) {
         this.setState({error: parsedSearch["error"]})
       }
-      if (parsedSearch['payment_user_id'] != null && parsedSearch['payment_types'] != null) {
+      if (parsedSearch['payment_types'] != null && parsedSearch['checkin_id'] != null) {
         this.setState({
           paymentParams: {
-            userId: parsedSearch['payment_user_id'],
-            types: parsedSearch['payment_types']
+            types: parsedSearch['payment_types'],
+            checkinId: parsedSearch['checkin_id']
           }
         })
       }
@@ -53,7 +53,7 @@ class PaymentForm extends PureComponent<Props, State> {
   }
 
   handleTakePayment() {
-    takeIosPayment(this.state.paymentParams.userId, this.state.paymentParams.types);
+    takeIosPayment(this.state.paymentParams.checkinId, this.state.paymentParams.types);
   }
 
   render() {
