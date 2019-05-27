@@ -46,17 +46,17 @@ div.App form {
 
 
 .form-check {
-  margin-top: 10px;
-  padding-left: 30px;
+  margin-top: 1em;
+  padding-left: 2em;
 }
 
 .form-check-label {
   margin-top: 0;
-  line-height: 25px;
+  line-height: 1.5em;
 }
 .form-check-input {
   margin-top: 0;
-  width: 25px;
-  height: 25px;
-  margin-left: -30px;
+  width: 1.5em;
+  height: 1.5em;
+  margin-left: -2em;
 }
