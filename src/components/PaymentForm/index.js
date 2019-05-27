@@ -2,7 +2,7 @@
 import React, { PureComponent } from "react";
 import McsAlert from "../Utilities/alert.js";
 import queryString from 'query-string';
-import { takeIosPayment } from '../../lib/payment.js';
+import { takeIosPayment, processIosPayment } from '../../lib/payment.js';
 
 type State = {
   success: string,
@@ -25,11 +25,11 @@ class PaymentForm extends PureComponent<Props, State> {
   processQuery = () => {
     if (this.props.location) {
       const parsedSearch = queryString.parse(this.props.location.search, {arrayFormat: 'bracket'});
-      if (parsedSearch["success"]) {
-        this.setState({success: parsedSearch["success"]})
+      if (parsedSearch['success']) {
+        this.setState({success: parsedSearch['success']})
       }
-      if (parsedSearch["error"]) {
-        this.setState({error: parsedSearch["error"]})
+      if (parsedSearch['error']) {
+        this.setState({error: parsedSearch['error']})
       }
       if (parsedSearch['payment_types'] != null && parsedSearch['checkin_id'] != null) {
         this.setState({
@@ -38,6 +38,9 @@ class PaymentForm extends PureComponent<Props, State> {
             checkinId: parsedSearch['checkin_id']
           }
         })
+      }
+      if (parsedSearch['data']) {
+        processIosPayment();
       }
     }
   }
