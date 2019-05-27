@@ -27,7 +27,9 @@ class DanceCheckinForm extends PureComponent<Props, State> {
     student: false,
     waiverAgree: false,
     conductAgree: false,
-    alreadySigned: false
+    alreadySigned: false,
+    didPay: false,
+    didPayAmount: 0
   }
 
   state: State = {
