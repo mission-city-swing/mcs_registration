@@ -13,6 +13,8 @@ import Event from './components/EventForm';
 import DanceCheckinPage from './components/DanceCheckinForm';
 import EventCheckinPage from './components/EventCheckinForm';
 import StudentPage from './components/Students';
+import SelfServe from './components/SelfServe';
+
 
 const Routes = (props) => (
   <Switch {...props}>
@@ -29,6 +31,7 @@ const Routes = (props) => (
     <Route path="/admin/reset-password" component={ResetPasswordForm} />
     <Route path="/admin/student" component={StudentPage} />
     <Route path="/admin/" component={AdminHome} />
+    <Route path="/self-serve" component={SelfServe} />
     <Redirect to="/" />
   </Switch>
 );

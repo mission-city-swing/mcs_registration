@@ -4,18 +4,23 @@ import React, { PureComponent } from "react";
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { DateTimePicker } from 'react-widgets';
 import { Typeahead } from 'react-bootstrap-typeahead';
+import queryString from 'query-string';
 
 import { addNewDanceCheckin, getProfiles, getAppDate } from "../../lib/api.js";
 import { sortByNameAndEmail, getDateFromStringSafe } from "../../lib/utils.js";
 import McsAlert from "../Utilities/alert.js";
 import { CodeOfConductModalLink } from "../Utilities/conductModal.js";
 import { LiabilityWaiverModalLink } from "../Utilities/waiverModal.js";
+import PaymentForm from "../PaymentForm/index.js";
 
+type State = {
+  showPaymentForm: boolean,
+  showPaymentConfirmation: boolean
+};
 
-
-type State = {};
-
-type Props = {};
+type Props = {
+  includePaymentForm: boolean
+};
 
 class DanceCheckinForm extends PureComponent<Props, State> {
   defaultCheckin = {
@@ -36,7 +41,9 @@ class DanceCheckinForm extends PureComponent<Props, State> {
     profileMap: {},
     profileList: [],
     success: "",
-    error: ""
+    error: "",
+    showPaymentForm: false,
+    showPaymentConfirmation: false
   };
 
   componentDidMount() {
@@ -142,17 +149,22 @@ class DanceCheckinForm extends PureComponent<Props, State> {
     this.setState({checkin: newStateCheckin});
   }
 
-  onSubmit = (options={}) => {
-    var onSuccess = () => {
-      var successText = "Added dance check-in for " + this.state.checkin.email
-      this.setState({success: successText});
-      this.addActionsOnSubmit({success: successText});
+  onSubmit = (options = {}) => {
+    const { includePaymentForm } = this.props;
+    const onSuccess = () => {
+      if (includePaymentForm) {
+        this.setState({ showPaymentForm: true });
+      } else {
+        const successText = "Added dance check-in for " + this.state.checkin.email
+        this.setState({success: successText});
+        this.addActionsOnSubmit({success: successText});
+      }
     }
-    var onError = (errorText) => {
+    const onError = (errorText) => {
       this.setState({error: errorText});
       window.scrollTo(0, 0);
     }
-    var thisDanceCheckin = Object.assign({...this.state.checkin}, {date: this.state.date});
+    const thisDanceCheckin = Object.assign({...this.state.checkin}, {date: this.state.date});
     // delete convenience attrs
     delete thisDanceCheckin.alreadySigned;
     delete thisDanceCheckin.guest;
@@ -169,6 +181,10 @@ class DanceCheckinForm extends PureComponent<Props, State> {
   };
 
   render() {
+    const { showPaymentForm } = this.state;
+    if (showPaymentForm) {
+      return <PaymentForm />;
+    }
     return (
       <div>
         <McsAlert color="success" text={this.state.success} visible={this.state.success.length > 0} onToggle={this.toggleAlerts.bind(this)}></McsAlert>
@@ -230,5 +246,9 @@ class DanceCheckinForm extends PureComponent<Props, State> {
     );
   }
 }
+
+DanceCheckinForm.defaultProps = {
+  includePaymentForm: !!queryString.parse(window.location.search).self_serve
+};
 
 export default DanceCheckinForm;
