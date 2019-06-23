@@ -156,6 +156,9 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     var newStateCheckin = {...this.defaultCheckin};
     if (value && value.length) {
       newStateCheckin = Object.assign(newStateCheckin, this.state.profileMap[value[0].id]);
+      // Scroll down to the bottom of the form so the submit button is visible.
+      var form_element = document.getElementById("root")
+      form_element.scrollIntoView({ block: 'end',  behavior: 'smooth' })
     } else {
       newStateCheckin = {...this.defaultCheckin};
     }
