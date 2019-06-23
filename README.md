@@ -2,7 +2,7 @@
 
 Primary Owner: [Maggie Moreno](https://github.com/missmaggiemo)
 
-- See the live production app here https://mcs-registration.firebaseapp.com/
+- See the live production app here https://registration.missioncityswing.com/
 
 - See the test/development app https://mcs-reg-test.firebaseapp.com/
 
