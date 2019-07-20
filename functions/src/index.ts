@@ -10,11 +10,10 @@ admin.initializeApp();
 const https = require('https');
 const uuidv1 = require('uuid/v1');
 
-exports.createCharge = functions.https.onCall((data, context) => {
-  // TODO (@missmaggiemo): Replace with MCS access token
-  const SANDBOX_ACCESS_TOKEN = 'EAAAEPhzZ1_bxxI-zoFHW5RY_ESLZdimRPa0jy9DGxqbBw1NSUMcYY3OFLp-3N5P';
-  // TODO (@missmaggiemo): Replace with MCS location id
-  const SANDBOX_LOCATION_ID = 'CBASEG7tJJATw3E_nQsiJ9v_z8kgAQ';
+exports.createCharge = functions.https.onCall(data => {
+  const SANDBOX_ACCESS_TOKEN = functions.config().paymentservice.accesstoken;
+  const SANDBOX_LOCATION_ID = functions.config().paymentservice.locationid;
+
   const url = `https://connect.squareup.com/v2/locations/${SANDBOX_LOCATION_ID}/transactions`;
 
   const payload = JSON.stringify({
