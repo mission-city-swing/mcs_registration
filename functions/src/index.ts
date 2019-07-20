@@ -14,8 +14,6 @@ exports.createCharge = functions.https.onCall(data => {
   const SANDBOX_ACCESS_TOKEN = functions.config().paymentservice.accesstoken;
   const SANDBOX_LOCATION_ID = functions.config().paymentservice.locationid;
 
-  const url = `https://connect.squareup.com/v2/locations/${SANDBOX_LOCATION_ID}/transactions`;
-
   const payload = JSON.stringify({
     "card_nonce": data.nonce,
     "amount_money": {
@@ -29,12 +27,14 @@ exports.createCharge = functions.https.onCall(data => {
     'Content-Type': 'application/json',
   }
   const options = {
+    hostname: 'connect.squareup.com',
+    path: `/v2/locations/${SANDBOX_LOCATION_ID}/transactions`,
     method: 'POST',
     headers
   }
 
   return new Promise((resolve, reject) => {
-    const req = https.request(url, options, (res) => {
+    const req = https.request(options, res => {
       let body = '';
       res.setEncoding('utf8');
       res.on('data', (chunk) => {
