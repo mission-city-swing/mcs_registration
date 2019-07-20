@@ -13,14 +13,18 @@ import McsAlert from "../Utilities/alert.js";
 import { CodeOfConductModalLink } from "../Utilities/conductModal.js";
 import { LiabilityWaiverModalLink } from "../Utilities/waiverModal.js";
 import { Link } from 'react-router-dom';
+import PaymentForm from "../PaymentForm/index.js";
 
+type State = ClassCheckin & {
+  showPaymentForm: boolean,
+  showPaymentConfirmation: boolean
+};
 
-type State = ClassCheckin;
-
-type Props = {};
+type Props = {
+  includePaymentForm: boolean
+};
 
 class ReturningStudentForm extends PureComponent<Props, State> {
-
   defaultCheckin = {
     firstName: "",
     lastName: "",
@@ -41,7 +45,9 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     profileList: [],
     profileMap: {},
     success: "",
-    error: ""
+    error: "",
+    showPaymentForm: false,
+    showPaymentConfirmation: false
   };
 
   componentDidMount() {
@@ -289,8 +295,14 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     }
   };
 
-  render() {
+  handleNonce() {}
 
+  render() {
+    const { includePaymentForm } = this.props;
+    const { showPaymentForm } = this.state;
+    if (includePaymentForm && showPaymentForm) {
+      return <PaymentForm amount={8} handleNonce={this.handleNonce.bind(this)} />;
+    }
     return (
       <div>
         <McsAlert color="success" text={this.state.success} visible={this.state.success.length > 0} onToggle={this.toggleAlerts.bind(this)}></McsAlert>
@@ -387,5 +399,9 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     );
   }
 }
+
+ReturningStudentForm.defaultProps = {
+  includePaymentForm: !!queryString.parse(window.location.search).self_serve
+};
 
 export default ReturningStudentForm;

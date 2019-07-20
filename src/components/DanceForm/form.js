@@ -11,16 +11,15 @@ import McsAlert from "../Utilities/alert.js";
 
 type State = Dance;
 
-type Props = {};
-
 class DanceForm extends PureComponent<Props, State> {
   state: State = {
     date: getAppDate(),
-    title: "",
-    fbLink: "",
-    info: "",
-    success: "",
-    error: ""
+    title: '',
+    fbLink: '',
+    info: '',
+    author: '',
+    success: '',
+    error: ''
   };
 
   getDanceFromQuery = () => {
@@ -121,7 +120,6 @@ class DanceForm extends PureComponent<Props, State> {
   };
 
   render() {
-
     return (
       <div>
         <McsAlert color="success" text={this.state.success} visible={this.state.success.length > 0} onToggle={this.toggleAlerts.bind(this)}></McsAlert>
