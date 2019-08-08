@@ -377,6 +377,26 @@ class AdminStudentInfoForm extends PureComponent<Props, State> {
                 <Input onChange={this.onMultiTypeChange} type="checkbox" name="classes" checked={this.state.classes.indexOf('Intermediate WCS, Monthly Series') !== -1} value="Intermediate WCS, Monthly Series" /> {' '} Intermediate WCS, Monthly Series
               </Label>
             </FormGroup>
+            <FormGroup check>
+              <Label check>
+                <Input onChange={this.onMultiTypeChange} type="checkbox" name="classes" checked={this.state.classes.indexOf('Level 2 WCS, Drop-in') !== -1} value="Level 2 WCS, Drop-in" /> {' '} Level 2 WCS, Drop-in
+              </Label>
+            </FormGroup>
+            <FormGroup check>
+              <Label check>
+                <Input onChange={this.onMultiTypeChange} type="checkbox" name="classes" checked={this.state.classes.indexOf('Level 2 WCS, Monthly Series') !== -1} value="Level 2 WCS, Monthly Series" /> {' '} Level 2 WCS, Monthly Series
+              </Label>
+            </FormGroup>
+            <FormGroup check>
+              <Label check>
+                <Input onChange={this.onMultiTypeChange} type="checkbox" name="classes" checked={this.state.classes.indexOf('Level 3 WCS, Drop-in') !== -1} value="Level 3 WCS, Drop-in" /> {' '} Level 3 WCS, Drop-in
+              </Label>
+            </FormGroup>
+            <FormGroup check>
+              <Label check>
+                <Input onChange={this.onMultiTypeChange} type="checkbox" name="classes" checked={this.state.classes.indexOf('Level 3 WCS, Monthly Series') !== -1} value="Level 3 WCS, Monthly Series" /> {' '} Level 3 WCS, Monthly Series
+              </Label>
+            </FormGroup>
           </FormGroup>
           <br></br>
           <FormGroup tag="fieldset">
