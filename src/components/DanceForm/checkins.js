@@ -127,6 +127,14 @@ class DanceCheckinList extends PureComponent<Props, State> {
                   id: "classes",
                   accessor: (d) => d.classes.join('; ')
                 }, {
+                  Header: "Payment",
+                  accessor: (d) => {
+                    if (d.didPay) {
+                      return `Paid $${d.didPayAmount} online`;
+                    }
+                    return '';
+                  }
+                }, {
                   Header: "Notes",
                   accessor: "info"
                 }]}
@@ -152,6 +160,14 @@ class DanceCheckinList extends PureComponent<Props, State> {
                   Header: "Email",
                   accessor: "email",
                   maxWidth: 300
+                }, {
+                  Header: "Payment",
+                  accessor: (d) => {
+                    if (d.didPay) {
+                      return `Paid $${d.didPayAmount} online`;
+                    }
+                    return '';
+                  }
                 }, {
                   Header: "Notes",
                   accessor: "info"
