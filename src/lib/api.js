@@ -4,16 +4,22 @@ import uuidv3 from "uuid/v3";
 import Cookies from 'universal-cookie';
 // I don't know if I need this
 import firebase from 'firebase';
+
 // I have purposely added fire.js to the .gitignore so we don't check in our keys
 import { StageDB, ProductionDB } from '../fire.js'
 import { MiscException, getMonthString } from './utils.js'
 
+require("firebase/functions");
 
 const cookies = new Cookies();
 const fireDB = StageDB;
+// fireDB.functions();
+fireDB.functions().useFunctionsEmulator('http://localhost:5001');
+
+const createCharge = fireDB.functions().httpsCallable('createCharge');
+
 // generated with UUID cli
 const MCS_APP = "9f9e25a0-3087-11e8-9d77-e3d459600d35";
-
 
 // Current User Cookie APIs
 function setCurrentUser(currentUser: User) {
@@ -261,6 +267,25 @@ export const addNewDanceCheckin = (options: DanceCheckin) => {
   });
 };
 
+export function updateDanceCheckinWithPayment(checkin, nonce, amount) {
+  return createCharge({
+    nonce,
+    amount
+  }).then(data => {
+    const checkinId = uuidv3(checkin.date + checkin.email, MCS_APP);
+    const checkinRef = `dance-checkins/${checkinId}`;
+    return fireDB.database().ref(checkinRef).once("value").then(snapshot => {
+      const checkinAttrs = snapshot.val();
+      const updatedCheckin = {
+        ...checkinAttrs,
+        didPay: true,
+        didPayAmount: amount
+      };
+      return fireDB.database().ref(checkinRef).set(updatedCheckin);
+    });
+  });
+}
+
 export const getDanceCheckinByEmail = (studentEmail) => {
   // get checkins for a student
   return fireDB.database().ref("dance-checkins/").orderByChild("email").equalTo(studentEmail)
@@ -301,6 +326,25 @@ export const addNewClassCheckin = (options: ClassCheckin) => {
     });
   });
 };
+
+export function updateClassCheckinWithPayment(checkin, nonce, amount) {
+  return createCharge({
+    nonce,
+    amount
+  }).then(data => {
+    const checkinId = uuidv3(checkin.date + checkin.email, MCS_APP);
+    const checkinRef = `class-checkins/${checkinId}`;
+    return fireDB.database().ref(checkinRef).once("value").then(snapshot => {
+      const checkinAttrs = snapshot.val();
+      const updatedCheckin = {
+        ...checkinAttrs,
+        didPay: true,
+        didPayAmount: amount
+      };
+      return fireDB.database().ref(checkinRef).set(updatedCheckin);
+    });
+  });
+}
 
 export const getClassCheckinByEmail = (studentEmail) => {
   // get checkins for a student

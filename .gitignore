@@ -20,3 +20,4 @@ functions/etc/*
 # firebase debug logs
 *.log
 *.firebase/
+functions/.runtimeconfig.json
