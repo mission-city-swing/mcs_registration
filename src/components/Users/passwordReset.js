@@ -51,7 +51,6 @@ class SignInUserForm extends PureComponent<Props, State> {
     return (
       <div className="App">
         <h1>Sign In</h1>
-        <p>Admins only</p>
         <McsAlert color="success" text={this.state.success} visible={this.state.success.length > 0}></McsAlert>
         <McsAlert color="danger" text={this.state.error} visible={this.state.error.length > 0}></McsAlert>
         <Form onSubmit={this.onSubmit}>

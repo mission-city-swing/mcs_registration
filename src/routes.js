@@ -13,22 +13,23 @@ import Event from './components/EventForm';
 import DanceCheckinPage from './components/DanceCheckinForm';
 import EventCheckinPage from './components/EventCheckinForm';
 import StudentPage from './components/Students';
+import PrivateRoute from './lib/privateRoute';
 
 const Routes = (props) => (
   <Switch {...props}>
     <Route exact path="/" component={Home} />
-    <Route path="/new-student" component={NewStudentPage} />
-    <Route path="/class-checkin" component={ReturningStudentPage} />
-    <Route path="/dance-checkin" component={DanceCheckinPage} />
-    <Route path="/event-checkin" component={EventCheckinPage} />
-    <Route path="/admin/new-student" component={AdminNewStudentPage} />
-    <Route path="/admin/dance" component={Dance} />
-    <Route path="/admin/event" component={Event} />
-    <Route path="/admin/signin" component={SignInUserForm} />
-    <Route path="/admin/new-user" component={NewUserForm} />
-    <Route path="/admin/reset-password" component={ResetPasswordForm} />
-    <Route path="/admin/student" component={StudentPage} />
-    <Route path="/admin/" component={AdminHome} />
+    <Route path="/signin" component={SignInUserForm} />
+    <Route path="/new-user" component={NewUserForm} />
+    <PrivateRoute path="/new-student" component={NewStudentPage} />
+    <PrivateRoute path="/class-checkin" component={ReturningStudentPage} />
+    <PrivateRoute path="/dance-checkin" component={DanceCheckinPage} />
+    <PrivateRoute path="/event-checkin" component={EventCheckinPage} />
+    <PrivateRoute adminRoute="true" path="/admin/new-student" component={AdminNewStudentPage} />
+    <PrivateRoute adminRoute="true" path="/admin/dance" component={Dance} />
+    <PrivateRoute adminRoute="true" path="/admin/event" component={Event} />
+    <PrivateRoute adminRoute="true" path="/admin/reset-password" component={ResetPasswordForm} />
+    <PrivateRoute adminRoute="true" path="/admin/student" component={StudentPage} />
+    <PrivateRoute adminRoute="true" path="/admin/" component={AdminHome} />
     <Redirect to="/" />
   </Switch>
 );

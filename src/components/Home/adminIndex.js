@@ -55,17 +55,18 @@ class AdminHome extends Component {
           <McsAlert color="success" text={this.state.success} visible={this.state.success.length > 0} onToggle={this.onToggleSuccess.bind(this)}></McsAlert>
           <McsAlert color="danger" text={this.state.error} visible={this.state.error.length > 0} onToggle={this.onToggleError.bind(this)}></McsAlert>
           <Container>
-          {!this.state.currentUser && 
+          { !(this.state.currentUser && this.state.currentUser.admin) &&
             <Row>
               <Col>
                 <Card className="card-body text-center mb-2">
                   <CardTitle>Sign In</CardTitle>
                   <CardText>Sign in or create a new admin user.</CardText>
-                  <Link to="/admin/signin"><Button size="lg">Sign In</Button></Link>
+                  <Link to="/signin"><Button size="lg">Sign In</Button></Link>
                 </Card>
               </Col>
             </Row>
           }
+          { this.state.currentUser && this.state.currentUser.admin &&
             <Row>
               <Col>
                 <Card className="card-body text-center mb-2">
@@ -96,6 +97,7 @@ class AdminHome extends Component {
                 </Card>
               </Col>
             </Row>
+          }
           </Container>
         </div>
       </div>

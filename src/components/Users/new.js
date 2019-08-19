@@ -51,9 +51,9 @@ class NewUserForm extends PureComponent<Props, State> {
   onSubmit = (event: any) => {
     event.preventDefault();
     var onSuccess = () => {
-      var successText = "Created new admin user for " + this.state.email;
+      var successText = "Created new user for " + this.state.email;
       this.setState({success: successText});
-      window.location.href = "/admin/?success=" + encodeURIComponent(successText);
+      window.location.href = "/?success=" + encodeURIComponent(successText);
     }
     var onError = (errorText) => {
       this.setState({error: errorText});
@@ -79,7 +79,6 @@ class NewUserForm extends PureComponent<Props, State> {
     return (
       <div className="App">
         <h1>New User</h1>
-        <p>Just admin stuff</p>
         <McsAlert color="success" text={this.state.success} visible={this.state.success.length > 0} onToggle={this.toggleAlerts.bind(this)}></McsAlert>
         <McsAlert color="danger" text={this.state.error} visible={this.state.error.length > 0} onToggle={this.toggleAlerts.bind(this)}></McsAlert>
         <Form onSubmit={this.onSubmit}>

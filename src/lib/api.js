@@ -76,10 +76,19 @@ export function removeAppEventId() {
 function getCurrentUserId() {
   var currentUser = getCurrentUser();
   if (currentUser == null) {
+    throw MiscException("User must log in to authorize this event", "AuthException")
+  }
+  return currentUser.uuid;
+}
+
+function getCurrentAdminId() {
+  var currentUser = getCurrentUser();
+  if (!(currentUser && currentUser.admin)){
     throw MiscException("Admin must log in to authorize this event", "AuthException")
   }
   return currentUser.uuid;
 }
+
 
 // Real web APIs
 
@@ -110,7 +119,7 @@ export const getProfileByName = (firstName, lastName) => {
 };
 
 export const createOrUpdateProfile = (options: Profile) => {
-  options.author = getCurrentUserId();
+  options.author = getCurrentAdminId();
   if (!(options.waiverAgree && options.conductAgree)) {
     throw MiscException("Must agree to liability waiver and code of conduct", "FormException")
   }
@@ -136,7 +145,7 @@ export const getProfiles = fireDB.database().ref("profiles/");
 
 // Admin Info API
 export const createOrUpdateProfileAdminInfo = (options: ProfileAdminInfo) => {
-  options.author = getCurrentUserId();
+  options.author = getCurrentAdminId();
   if (!options.email) {
     throw MiscException("Must include profile email", "FormException")
   }
@@ -148,7 +157,7 @@ export const createOrUpdateProfileAdminInfo = (options: ProfileAdminInfo) => {
 
 // Cache latest monthly pass on profile
 export const setLatestMonthlyPass = (options: MonthlyPass) => {
-  options.author = getCurrentUserId();
+  options.author = getCurrentAdminId();
   if (!options.email) {
     throw MiscException("Must include profile email", "FormException")
   }
@@ -164,7 +173,7 @@ export const setLatestMonthlyPass = (options: MonthlyPass) => {
 
 // Monthly Pass API
 export const addMonthlyPass = (options: MonthlyPass) => {
-  options.author = getCurrentUserId();
+  options.author = getCurrentAdminId();
   if (!options.email) {
     throw MiscException("Must include profile email", "FormException")
   }
@@ -197,7 +206,7 @@ export const deleteDance = (danceId) => {
 };
 
 export const addNewDance = (options: Dance) => {
-  options.author = getCurrentUserId();
+  options.author = getCurrentAdminId();
   if (!options.date) {
     throw MiscException("Date required", "FormException")
   }
@@ -226,7 +235,7 @@ export const deleteEvent = (eventId) => {
 };
 
 export const addNewEvent = (options: Event) => {
-  options.author = getCurrentUserId();
+  options.author = getCurrentAdminId();
   if (!options.date) {
     throw MiscException("Date required", "FormException")
   }
@@ -237,7 +246,7 @@ export const addNewEvent = (options: Event) => {
 
 // Checkins
 export const addNewDanceCheckin = (options: DanceCheckin) => {
-  options.author = getCurrentUserId();
+  options.author = getCurrentAdminId();
   // check for name, email, and date
   if (!(options.date && options.email && options.firstName && options.lastName)) {
     throw MiscException("First name, last name, email, and date required", "FormException")
@@ -273,7 +282,7 @@ export const getDanceCheckinByDate = (classDate) => {
 
 export const addNewClassCheckin = (options: ClassCheckin) => {
   // set author
-  options.author = getCurrentUserId();
+  options.author = getCurrentAdminId();
   // check for name, email, and date
   if (!(options.date && options.email && options.firstName && options.lastName)) {
     throw MiscException("First name, last name, email, and date required", "FormException")
@@ -313,7 +322,7 @@ export const getClassCheckinByDate = (classDate) => {
 };
 
 export const addNewEventCheckin = (options: EventCheckin) => {
-  options.author = getCurrentUserId();
+  options.author = getCurrentAdminId();
   // check for name, email, and event ID
   if (!(options.eventId && options.email && options.firstName && options.lastName)) {
     throw MiscException("First name, last name, email, and event ID required", "FormException")
