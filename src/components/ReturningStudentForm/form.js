@@ -7,7 +7,7 @@ import { Typeahead } from 'react-bootstrap-typeahead';
 import queryString from 'query-string';
 
 import type { ClassCheckin } from "../../types.js";
-import { addNewClassCheckin, getProfiles, getProfileByEmail, setLatestMonthlyPass, getAppDate, updateClassCheckinWithPayment } from "../../lib/api.js";
+import { addNewClassCheckin, getProfiles, getProfileByEmail, setLatestMonthlyPass, getAppDate, updateClassCheckinWithPayment, isMonthlyPassValid } from "../../lib/api.js";
 import { getSubstringIndex, currentMonthIndex, currentMonthString, currentYear, sortByNameAndEmail, getDateFromStringSafe } from "../../lib/utils.js";
 import McsAlert from "../Utilities/alert.js";
 import { CodeOfConductModalLink } from "../Utilities/conductModal.js";
@@ -310,15 +310,11 @@ class ReturningStudentForm extends PureComponent<Props, State> {
   };
 
   paymentAmount(classes) {
-    if (classes.includes(CLASS_TYPES.FUNDAMENTALS_MONTHLY) || classes.includes(CLASS_TYPES.INTERMEDIATE_MONTHLY)) {
-      return 0;
-    }
     if (classes.length === 1) {
       return 15;
     } else if (classes.length === 2) {
       return 25;
     }
-    return 0;
   }
 
   handleNonce(nonce, amount) {
@@ -416,17 +412,19 @@ class ReturningStudentForm extends PureComponent<Props, State> {
                 /> {' '} {CLASS_TYPES.FUNDAMENTALS_DROPIN}
               </Label>
             </FormGroup>
-            <FormGroup check>
-              <Label check>
-                <Input
-                  onChange={this.onMultiTypeCheckinChange}
-                  type="checkbox"
-                  name="classes"
-                  checked={this.state.checkin.classes.indexOf(CLASS_TYPES.FUNDAMENTALS_MONTHLY) !== -1}
-                  value={CLASS_TYPES.FUNDAMENTALS_MONTHLY}
-                /> {' '} {CLASS_TYPES.FUNDAMENTALS_MONTHLY}
-              </Label>
-            </FormGroup>
+            {!this.includePaymentForm && (
+              <FormGroup check>
+                <Label check>
+                  <Input
+                    onChange={this.onMultiTypeCheckinChange}
+                    type="checkbox"
+                    name="classes"
+                    checked={this.state.checkin.classes.indexOf(CLASS_TYPES.FUNDAMENTALS_MONTHLY) !== -1}
+                    value={CLASS_TYPES.FUNDAMENTALS_MONTHLY}
+                  /> {' '} {CLASS_TYPES.FUNDAMENTALS_MONTHLY}
+                </Label>
+              </FormGroup>
+            )}
             <FormGroup check>
               <Label check>
                 <Input
@@ -438,16 +436,18 @@ class ReturningStudentForm extends PureComponent<Props, State> {
                 /> {' '} {CLASS_TYPES.INTERMEDIATE_DROPIN}
               </Label>
             </FormGroup>
-            <FormGroup check>
-              <Label check>
-                <Input
-                  onChange={this.onMultiTypeCheckinChange}
-                  type="checkbox" name="classes"
-                  checked={this.state.checkin.classes.indexOf(CLASS_TYPES.INTERMEDIATE_MONTHLY) !== -1}
-                  value={CLASS_TYPES.INTERMEDIATE_MONTHLY}
-                /> {' '} {CLASS_TYPES.INTERMEDIATE_MONTHLY}
-              </Label>
-            </FormGroup>
+            {!this.includePaymentForm && (
+              <FormGroup check>
+                <Label check>
+                  <Input
+                    onChange={this.onMultiTypeCheckinChange}
+                    type="checkbox" name="classes"
+                    checked={this.state.checkin.classes.indexOf(CLASS_TYPES.INTERMEDIATE_MONTHLY) !== -1}
+                    value={CLASS_TYPES.INTERMEDIATE_MONTHLY}
+                  /> {' '} {CLASS_TYPES.INTERMEDIATE_MONTHLY}
+                </Label>
+              </FormGroup>
+            )}
             <FormGroup check>
               <Label check>
                 <Input
@@ -459,17 +459,19 @@ class ReturningStudentForm extends PureComponent<Props, State> {
                 /> {' '} {CLASS_TYPES.LEVEL_3_DROPIN}
               </Label>
             </FormGroup>
-            <FormGroup check>
-              <Label check>
-                <Input
-                  onChange={this.onMultiTypeCheckinChange}
-                  type="checkbox"
-                  name="classes"
-                  checked={this.state.checkin.classes.indexOf(CLASS_TYPES.LEVEL_3_MONTHLY) !== -1}
-                  value={CLASS_TYPES.LEVEL_3_MONTHLY}
-                /> {' '} {CLASS_TYPES.LEVEL_3_MONTHLY}
-              </Label>
-            </FormGroup>
+            {!this.includePaymentForm && (
+              <FormGroup check>
+                <Label check>
+                  <Input
+                    onChange={this.onMultiTypeCheckinChange}
+                    type="checkbox"
+                    name="classes"
+                    checked={this.state.checkin.classes.indexOf(CLASS_TYPES.LEVEL_3_MONTHLY) !== -1}
+                    value={CLASS_TYPES.LEVEL_3_MONTHLY}
+                  /> {' '} {CLASS_TYPES.LEVEL_3_MONTHLY}
+                </Label>
+              </FormGroup>
+            )}
           </FormGroup>
           <br></br>
           {this.state.checkin.email.length > 0 &&
