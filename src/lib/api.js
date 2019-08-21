@@ -13,8 +13,9 @@ require("firebase/functions");
 
 const cookies = new Cookies();
 const fireDB = StageDB;
-// fireDB.functions();
-fireDB.functions().useFunctionsEmulator('http://localhost:5001');
+fireDB.functions();
+// For testing locally:
+// fireDB.functions().useFunctionsEmulator('http://localhost:5001');
 
 const createCharge = fireDB.functions().httpsCallable('createCharge');
 
@@ -124,7 +125,7 @@ export const createOrUpdateProfile = (options: Profile) => {
     throw MiscException("First name, last name, and email required", "FormException")
   }
   if (options.birthday) {
-    options.birthday = getMonthString(options.birthday.getMonth()) + " " + options.birthday.getDate();  
+    options.birthday = getMonthString(options.birthday.getMonth()) + " " + options.birthday.getDate();
   }
   options.memberDate = options.memberDate.toDateString()
   const profileId = uuidv3(options.email, MCS_APP);
