@@ -49,55 +49,57 @@ class AdminHome extends Component {
 
   render() {
 
+    let containerContent;
+    if (this.state.currentUser && this.state.currentUser.isAdmin) {
+      containerContent = <Row>
+                          <Col>
+                            <Card className="card-body text-center mb-2">
+                              <CardTitle className="front-page-card">View a Dance</CardTitle>
+                              <CardText className="front-page-card">View or create a dance object to see stats about checkins.</CardText>
+                              <Link to="/admin/dance"><Button size="lg">View a Dance</Button></Link>
+                            </Card>
+                          </Col>
+                          <Col>
+                            <Card className="card-body text-center mb-2">
+                              <CardTitle className="front-page-card">Update Student Info</CardTitle>
+                              <CardText className="front-page-card">Update or add admin info about an existing student.</CardText>
+                              <Link to="/admin/student"><Button size="lg">Update Student Info</Button></Link>
+                            </Card>
+                          </Col>
+                          <Col>
+                            <Card className="card-body text-center mb-2">
+                              <CardTitle className="front-page-card">New Student Form</CardTitle>
+                              <CardText className="front-page-card">Create a student object from paper forms.</CardText>
+                              <Link to="/admin/new-student"><Button size="lg">New Student</Button></Link>
+                            </Card>
+                          </Col>
+                          <Col>
+                            <Card className="card-body text-center mb-2">
+                              <CardTitle className="front-page-card">Create or View an Event</CardTitle>
+                              <CardText className="front-page-card">Create a special event or view stats.</CardText>
+                              <Link to="/admin/event"><Button size="lg">Create or View an Event</Button></Link>
+                            </Card>
+                          </Col>
+                        </Row>
+    } else {
+      containerContent = <Row>
+                            <Col>
+                              <Card className="card-body text-center mb-2">
+                                <CardTitle>Sign In</CardTitle>
+                                <CardText>Sign in or create a new admin user.</CardText>
+                                <Link to="/signin"><Button size="lg">Sign In</Button></Link>
+                              </Card>
+                            </Col>
+                          </Row>
+    }
+
     return (
       <div className="App">
         <div>
           <McsAlert color="success" text={this.state.success} visible={this.state.success.length > 0} onToggle={this.onToggleSuccess.bind(this)}></McsAlert>
           <McsAlert color="danger" text={this.state.error} visible={this.state.error.length > 0} onToggle={this.onToggleError.bind(this)}></McsAlert>
           <Container>
-          { !(this.state.currentUser && this.state.currentUser.isAdmin) &&
-            <Row>
-              <Col>
-                <Card className="card-body text-center mb-2">
-                  <CardTitle>Sign In</CardTitle>
-                  <CardText>Sign in or create a new admin user.</CardText>
-                  <Link to="/signin"><Button size="lg">Sign In</Button></Link>
-                </Card>
-              </Col>
-            </Row>
-          }
-          { this.state.currentUser && this.state.currentUser.isAdmin &&
-            <Row>
-              <Col>
-                <Card className="card-body text-center mb-2">
-                  <CardTitle className="front-page-card">View a Dance</CardTitle>
-                  <CardText className="front-page-card">View or create a dance object to see stats about checkins.</CardText>
-                  <Link to="/admin/dance"><Button size="lg">View a Dance</Button></Link>
-                </Card>
-              </Col>
-              <Col>
-                <Card className="card-body text-center mb-2">
-                  <CardTitle className="front-page-card">Update Student Info</CardTitle>
-                  <CardText className="front-page-card">Update or add admin info about an existing student.</CardText>
-                  <Link to="/admin/student"><Button size="lg">Update Student Info</Button></Link>
-                </Card>
-              </Col>
-              <Col>
-                <Card className="card-body text-center mb-2">
-                  <CardTitle className="front-page-card">New Student Form</CardTitle>
-                  <CardText className="front-page-card">Create a student object from paper forms.</CardText>
-                  <Link to="/admin/new-student"><Button size="lg">New Student</Button></Link>
-                </Card>
-              </Col>
-              <Col>
-                <Card className="card-body text-center mb-2">
-                  <CardTitle className="front-page-card">Create or View an Event</CardTitle>
-                  <CardText className="front-page-card">Create a special event or view stats.</CardText>
-                  <Link to="/admin/event"><Button size="lg">Create or View an Event</Button></Link>
-                </Card>
-              </Col>
-            </Row>
-          }
+            {containerContent}
           </Container>
         </div>
       </div>
