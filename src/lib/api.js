@@ -83,7 +83,7 @@ function getCurrentUserId() {
 
 function getCurrentAdminId() {
   var currentUser = getCurrentUser();
-  if (!(currentUser && currentUser.admin)){
+  if (!(currentUser && currentUser.isAdmin)){
     throw MiscException("Admin must log in to authorize this event", "AuthException")
   }
   return currentUser.uuid;

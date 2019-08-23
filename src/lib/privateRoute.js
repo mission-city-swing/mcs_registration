@@ -12,7 +12,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 
   const currentUser = getCurrentUser();
 
-  const isLoggedIn = rest.adminRoute ? currentUser.admin : true;
+  const isLoggedIn = rest.adminRoute ? currentUser.isAdmin : true;
 
   return (
     <Route

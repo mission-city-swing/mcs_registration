@@ -41,6 +41,7 @@ class CurrentUserNavForm extends PureComponent<Props, State> {
         success: successText,
         currentUser: getCurrentUser(),
       });
+      window.location.href = "/";
     }
     var onError = (errorText) => {
       this.setState({error: errorText});

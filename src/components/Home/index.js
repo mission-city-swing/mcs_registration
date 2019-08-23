@@ -55,7 +55,7 @@ class Home extends Component {
           <McsAlert color="success" text={this.state.success} visible={this.state.success.length > 0} onToggle={this.onToggleSuccess.bind(this)}></McsAlert>
           <McsAlert color="danger" text={this.state.error} visible={this.state.error.length > 0} onToggle={this.onToggleError.bind(this)}></McsAlert>
           <Container>
-          { !(this.state.currentUser && this.state.currentUser.admin) &&
+          { !(this.state.currentUser && this.state.currentUser.isAdmin) &&
             <Row>
               <Col>
                 <Card className="card-body text-center mb-2">
@@ -66,7 +66,7 @@ class Home extends Component {
               </Col>
             </Row>
           }
-          { this.state.currentUser && this.state.currentUser.admin &&
+          { this.state.currentUser && this.state.currentUser.isAdmin &&
             <Row>
               <Col>
                 <Card className="card-body text-center mb-2">
