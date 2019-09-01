@@ -65,7 +65,7 @@ class SignInUserForm extends PureComponent<Props, State> {
   onSubmit = (event: any) => {
     event.preventDefault();
     var onSuccess = () => {
-      var successText = "Signed in admin user for " + this.state.email;
+      var successText = "Signed in user for " + this.state.email;
       this.setState({success: successText});
       window.location.href = "/admin/?success=" + encodeURIComponent(successText);
     }
@@ -105,8 +105,8 @@ class SignInUserForm extends PureComponent<Props, State> {
           <Button outline value="clear" onClick={this.clearFormEvent}>Clear Form</Button>
         </Form>
         <br></br>
-        <p>Forgot your password? <a href="/admin/reset-password">Reset it here.</a></p>
-        <p>Are you a new admin? <a href="/admin/new-user">Create an account here.</a></p>
+        <p>Forgot your password? <a href="/reset-password">Reset it here.</a></p>
+        <p>Are you a new user? <a href="/new-user">Create an account here.</a></p>
       </div>
     );
   }

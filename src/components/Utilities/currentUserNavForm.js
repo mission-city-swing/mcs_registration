@@ -36,15 +36,16 @@ class CurrentUserNavForm extends PureComponent<Props, State> {
   onSubmit = (event: any) => {
     event.preventDefault();
     var onSuccess = () => {
-      var successText = "Signed in admin user " + this.state.email;
+      var successText = "Signed in user " + this.state.email;
       this.setState({
         success: successText,
         currentUser: getCurrentUser(),
       });
+      window.location.href = "/";
     }
     var onError = (errorText) => {
       this.setState({error: errorText});
-      window.location.href = "/admin/signin?error=" + encodeURIComponent(errorText) + "&email=" + this.state.email;
+      window.location.href = "/signin?error=" + encodeURIComponent(errorText) + "&email=" + this.state.email;
     }
     try {
       signInUser({
@@ -77,7 +78,7 @@ class CurrentUserNavForm extends PureComponent<Props, State> {
           </Form>
           <div className="signin-form-info">
             <p>Forgot your password? <a href="/admin/reset-password">Reset it here.</a></p>
-            <p>Create an admin account <a href="/admin/new-user">here.</a></p>
+            <p>Create an account <a href="/new-user">here.</a></p>
           </div>
         </div>
       }
