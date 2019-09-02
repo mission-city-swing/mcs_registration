@@ -11,14 +11,18 @@ const https = require('https');
 const uuidv1 = require('uuid/v1');
 
 exports.createCharge = functions.https.onCall(data => {
+  // Set environment configuration
+  // firebase functions:config:set paymentservice.accesstoken="THE ACCESS TOKEN" paymentservice.locationid="THE LOCATION ID"
+  // For local emulator
+  // firebase functions:config:get > .runtimeconfig.json
   const SANDBOX_ACCESS_TOKEN = functions.config().paymentservice.accesstoken;
   const SANDBOX_LOCATION_ID = functions.config().paymentservice.locationid;
 
   const payload = JSON.stringify({
     "card_nonce": data.nonce,
     "amount_money": {
-        "amount": data.amount * 100,
-        "currency": "USD"
+      "amount": data.amount * 100,
+      "currency": "USD"
     },
     "idempotency_key": uuidv1()
   });

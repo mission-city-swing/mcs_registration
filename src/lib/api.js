@@ -13,8 +13,9 @@ require("firebase/functions");
 
 const cookies = new Cookies();
 const fireDB = StageDB;
-fireDB.functions()
-// fireDB.functions.useFunctionsEmulator('http://localhost:5001');
+fireDB.functions();
+// For local emulator
+// fireDB.functions().useFunctionsEmulator('http://localhost:5001');
 
 const createCharge = fireDB.functions().httpsCallable('createCharge');
 
@@ -276,25 +277,6 @@ export const addNewDanceCheckin = (options: DanceCheckin) => {
   });
 };
 
-export function updateDanceCheckinWithPayment(checkin, nonce, amount) {
-  return createCharge({
-    nonce,
-    amount
-  }).then(data => {
-    const checkinId = uuidv3(checkin.date + checkin.email, MCS_APP);
-    const checkinRef = `dance-checkins/${checkinId}`;
-    return fireDB.database().ref(checkinRef).once("value").then(snapshot => {
-      const checkinAttrs = snapshot.val();
-      const updatedCheckin = {
-        ...checkinAttrs,
-        didPay: true,
-        didPayAmount: amount
-      };
-      return fireDB.database().ref(checkinRef).set(updatedCheckin);
-    });
-  });
-}
-
 export const getDanceCheckinByEmail = (studentEmail) => {
   // get checkins for a student
   return fireDB.database().ref("dance-checkins/").orderByChild("email").equalTo(studentEmail)
@@ -335,25 +317,6 @@ export const addNewClassCheckin = (options: ClassCheckin) => {
     });
   });
 };
-
-export function updateClassCheckinWithPayment(checkin, nonce, amount) {
-  return createCharge({
-    nonce,
-    amount
-  }).then(data => {
-    const checkinId = uuidv3(checkin.date + checkin.email, MCS_APP);
-    const checkinRef = `class-checkins/${checkinId}`;
-    return fireDB.database().ref(checkinRef).once("value").then(snapshot => {
-      const checkinAttrs = snapshot.val();
-      const updatedCheckin = {
-        ...checkinAttrs,
-        didPay: true,
-        didPayAmount: amount
-      };
-      return fireDB.database().ref(checkinRef).set(updatedCheckin);
-    });
-  });
-}
 
 export const getClassCheckinByEmail = (studentEmail) => {
   // get checkins for a student
@@ -453,3 +416,34 @@ export const logOutCurrentUser = () => {
 export const sendResetEmail = (options) => {
   return firebase.auth().sendPasswordResetEmail(options.email)
 };
+
+export function processAndRecordPayment(nonce, classInfo) {
+  const { classType, classPrice } = classInfo;
+  const user = getCurrentUser();
+  return createCharge({
+    nonce,
+    amount: classPrice
+  }).then(data => {
+    const today = new Date();
+    const wednesday = new Date(today.setDate(today.getDate() + (3 + 7 - today.getDay()) % 7));
+    const paymentDateString = wednesday.toDateString();
+    const newPayment = {
+      email: user.email,
+      date: paymentDateString,
+      amount: classPrice,
+      class: classType
+    };
+    const paymentUuid = uuidv3(user.email + paymentDateString, MCS_APP);
+    const paymentsRef = `payments/${paymentUuid}`;
+
+    return fireDB.database().ref(paymentsRef).once("value").then(snapshot => {
+      let payments = snapshot.val();
+      if (payments != null) {
+        payments = payments.concat([newPayment]);
+      } else {
+        payments = [newPayment];
+      }
+      return fireDB.database().ref(paymentsRef).set(payments);
+    });
+  });
+}
