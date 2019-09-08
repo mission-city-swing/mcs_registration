@@ -57,30 +57,36 @@ export default class MyNavbar extends Component {
           <NavbarToggler onClick={this.toggle} />
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav className="ml-auto" navbar>
-              <NavItem><AppDateForm /></NavItem>
-              <UncontrolledDropdown nav inNavbar>
-                <DropdownToggle nav caret>
-                  Dance
-                </DropdownToggle>
-                <DropdownMenu right>
-                  <DropdownItem>
-                    <NavLink href="/dance-checkin">Dance Check-in</NavLink>
-                  </DropdownItem>
-                </DropdownMenu>
-              </UncontrolledDropdown>
-              <UncontrolledDropdown nav inNavbar>
-                <DropdownToggle nav caret>
-                  Students
-                </DropdownToggle>
-                <DropdownMenu right>
-                  <DropdownItem>
-                    <NavLink href="/new-student">New Student Form</NavLink>
-                  </DropdownItem>
-                  <DropdownItem>
-                    <NavLink href="/class-checkin">Class Check-in</NavLink>
-                  </DropdownItem>
-                </DropdownMenu>
-              </UncontrolledDropdown>
+              {this.state.currentUser.isAdmin &&
+                <NavItem><AppDateForm /></NavItem>
+              }
+              {this.state.currentUser.isAdmin &&
+                <UncontrolledDropdown nav inNavbar>
+                  <DropdownToggle nav caret>
+                    Dance
+                  </DropdownToggle>
+                  <DropdownMenu right>
+                    <DropdownItem>
+                      <NavLink href="/dance-checkin">Dance Check-in</NavLink>
+                    </DropdownItem>
+                  </DropdownMenu>
+                </UncontrolledDropdown>
+              }
+              {this.state.currentUser.isAdmin &&
+                <UncontrolledDropdown nav inNavbar>
+                  <DropdownToggle nav caret>
+                    Students
+                  </DropdownToggle>
+                  <DropdownMenu right>
+                    <DropdownItem>
+                      <NavLink href="/new-student">New Student Form</NavLink>
+                    </DropdownItem>
+                    <DropdownItem>
+                      <NavLink href="/class-checkin">Class Check-in</NavLink>
+                    </DropdownItem>
+                  </DropdownMenu>
+                </UncontrolledDropdown>
+              }
               <UncontrolledDropdown nav inNavbar>
                 <DropdownToggle nav caret>
                   Admin
@@ -98,9 +104,11 @@ export default class MyNavbar extends Component {
                     <CurrentUserNavForm />
                   }
                   <DropdownItem divider />
-                  <DropdownItem>
-                    <NavLink href="/admin/">Admin Dashboard</NavLink>
-                  </DropdownItem>
+                  {this.state.currentUser.isAdmin &&
+                    <DropdownItem>
+                      <NavLink href="/admin/">Admin Dashboard</NavLink>
+                    </DropdownItem>
+                  }
                 </DropdownMenu>
               </UncontrolledDropdown>
             </Nav>
