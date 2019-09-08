@@ -57,10 +57,10 @@ export default class MyNavbar extends Component {
           <NavbarToggler onClick={this.toggle} />
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav className="ml-auto" navbar>
-              {this.state.currentUser.isAdmin &&
+              {this.state.currentUser && this.state.currentUser.isAdmin &&
                 <NavItem><AppDateForm /></NavItem>
               }
-              {this.state.currentUser.isAdmin &&
+              {this.state.currentUser && this.state.currentUser.isAdmin &&
                 <UncontrolledDropdown nav inNavbar>
                   <DropdownToggle nav caret>
                     Dance
@@ -72,7 +72,7 @@ export default class MyNavbar extends Component {
                   </DropdownMenu>
                 </UncontrolledDropdown>
               }
-              {this.state.currentUser.isAdmin &&
+              {this.state.currentUser && this.state.currentUser.isAdmin &&
                 <UncontrolledDropdown nav inNavbar>
                   <DropdownToggle nav caret>
                     Students
@@ -104,7 +104,7 @@ export default class MyNavbar extends Component {
                     <CurrentUserNavForm />
                   }
                   <DropdownItem divider />
-                  {this.state.currentUser.isAdmin &&
+                  {this.state.currentUser && this.state.currentUser.isAdmin &&
                     <DropdownItem>
                       <NavLink href="/admin/">Admin Dashboard</NavLink>
                     </DropdownItem>
