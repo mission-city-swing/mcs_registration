@@ -15,7 +15,7 @@ const cookies = new Cookies();
 const fireDB = StageDB;
 fireDB.functions();
 // For local emulator
-fireDB.functions().useFunctionsEmulator('http://localhost:5001');
+// fireDB.functions().useFunctionsEmulator('http://localhost:5001');
 
 const createCharge = fireDB.functions().httpsCallable('createCharge');
 
