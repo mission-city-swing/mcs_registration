@@ -12,7 +12,7 @@ const uuidv1 = require('uuid/v1');
 
 exports.createCharge = functions.https.onCall(data => {
   // Set environment configuration
-  // firebase functions:config:set paymentservice.hostname="https://connect.squareup.com/v2/payments" paymentservice.accesstoken="THE ACCESS TOKEN" paymentservice.locationid="THE LOCATION ID"
+  // firebase functions:config:set paymentservice.hostname="connect.squareup.com" paymentservice.accesstoken="THE ACCESS TOKEN" paymentservice.locationid="THE LOCATION ID"
   // For local emulator
   // firebase functions:config:get > .runtimeconfig.json
   const HOST_NAME = functions.config().paymentservice.hostname;
