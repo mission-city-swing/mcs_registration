@@ -15,7 +15,7 @@ const cookies = new Cookies();
 const fireDB = StageDB;
 fireDB.functions();
 // For local emulator
-// fireDB.functions().useFunctionsEmulator('http://localhost:5001');
+fireDB.functions().useFunctionsEmulator('http://localhost:5001');
 
 const createCharge = fireDB.functions().httpsCallable('createCharge');
 
@@ -417,33 +417,45 @@ export const sendResetEmail = (options) => {
   return firebase.auth().sendPasswordResetEmail(options.email)
 };
 
-export function processAndRecordPayment(nonce, classInfo) {
+export function processAndRecordPayment(nonce, buyerVerificationToken, classInfo) {
   const { classType, classPrice } = classInfo;
   const user = getCurrentUser();
   return createCharge({
     nonce,
+    buyerVerificationToken,
     amount: classPrice
-  }).then(data => {
-    const today = new Date();
-    const wednesday = new Date(today.setDate(today.getDate() + (3 + 7 - today.getDay()) % 7));
-    const paymentDateString = wednesday.toDateString();
-    const newPayment = {
-      email: user.email,
-      date: paymentDateString,
-      amount: classPrice,
-      class: classType
-    };
-    const paymentUuid = uuidv3(user.email + paymentDateString, MCS_APP);
-    const paymentsRef = `payments/${paymentUuid}`;
+  }).then(response => {
+    if (response.data.payment != null) {
+      const today = new Date();
+      const wednesday = new Date(today.setDate(today.getDate() + (3 + 7 - today.getDay()) % 7));
+      const paymentDateString = wednesday.toDateString();
+      const newPayment = {
+        email: user.email,
+        date: paymentDateString,
+        amount: response.data.payment.total_money,
+        class: classType
+      };
+      const paymentUuid = uuidv3(user.email + paymentDateString, MCS_APP);
+      const paymentsRef = `payments/${paymentUuid}`;
 
-    return fireDB.database().ref(paymentsRef).once("value").then(snapshot => {
-      let payments = snapshot.val();
-      if (payments != null) {
-        payments = payments.concat([newPayment]);
-      } else {
-        payments = [newPayment];
-      }
-      return fireDB.database().ref(paymentsRef).set(payments);
-    });
+      return fireDB.database().ref(paymentsRef).once("value").then(snapshot => {
+        let payments = snapshot.val();
+        if (payments != null) {
+          payments = payments.concat([newPayment]);
+        } else {
+          payments = [newPayment];
+        }
+        return fireDB.database().ref(paymentsRef).set(payments).then(() => {
+          return classInfo;
+        })
+      });
+    }
   });
+}
+
+export function retrievePaymentsByEmailAndDateString(email, dateString) {
+  const paymentUuid = uuidv3(email + dateString, MCS_APP);
+  const paymentsRef = `payments/${paymentUuid}`;
+
+  return fireDB.database().ref(paymentsRef);
 }

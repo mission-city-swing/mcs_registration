@@ -12,14 +12,17 @@ const uuidv1 = require('uuid/v1');
 
 exports.createCharge = functions.https.onCall(data => {
   // Set environment configuration
-  // firebase functions:config:set paymentservice.accesstoken="THE ACCESS TOKEN" paymentservice.locationid="THE LOCATION ID"
+  // firebase functions:config:set paymentservice.hostname="https://connect.squareup.com/v2/payments" paymentservice.accesstoken="THE ACCESS TOKEN" paymentservice.locationid="THE LOCATION ID"
   // For local emulator
   // firebase functions:config:get > .runtimeconfig.json
-  const SANDBOX_ACCESS_TOKEN = functions.config().paymentservice.accesstoken;
-  const SANDBOX_LOCATION_ID = functions.config().paymentservice.locationid;
+  const HOST_NAME = functions.config().paymentservice.hostname;
+  const ACCESS_TOKEN = functions.config().paymentservice.accesstoken;
+  const LOCATION_ID = functions.config().paymentservice.locationid;
 
   const payload = JSON.stringify({
-    "card_nonce": data.nonce,
+    "source_id": data.nonce,
+    "verification_token": data.buyerVerificationToken,
+    "location_id": LOCATION_ID,
     "amount_money": {
       "amount": data.amount * 100,
       "currency": "USD"
@@ -27,12 +30,12 @@ exports.createCharge = functions.https.onCall(data => {
     "idempotency_key": uuidv1()
   });
   const headers = {
-    'Authorization': `Bearer ${SANDBOX_ACCESS_TOKEN}`,
+    'Authorization': `Bearer ${ACCESS_TOKEN}`,
     'Content-Type': 'application/json',
   }
   const options = {
-    hostname: 'connect.squareup.com',
-    path: `/v2/locations/${SANDBOX_LOCATION_ID}/transactions`,
+    hostname: HOST_NAME,
+    path: `/v2/payments`,
     method: 'POST',
     headers
   }

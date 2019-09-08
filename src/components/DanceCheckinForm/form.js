@@ -5,7 +5,7 @@ import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { DateTimePicker } from 'react-widgets';
 import { Typeahead } from 'react-bootstrap-typeahead';
 
-import { addNewDanceCheckin, getProfiles, getAppDate } from "../../lib/api.js";
+import { addNewDanceCheckin, getProfiles, getAppDate, retrievePaymentsByEmailAndDateString } from "../../lib/api.js";
 import { sortByNameAndEmail, getDateFromStringSafe } from "../../lib/utils.js";
 import McsAlert from "../Utilities/alert.js";
 import { CodeOfConductModalLink } from "../Utilities/conductModal.js";
@@ -96,7 +96,9 @@ class DanceCheckinForm extends PureComponent<Props, State> {
     } else {
       newStateCheckin[name] = value;
     }
-    this.setState({checkin: newStateCheckin});
+    this.setState({
+      checkin: newStateCheckin
+    });
   };
 
   onCheckinTypeaheadChange = (value) => {
@@ -109,7 +111,17 @@ class DanceCheckinForm extends PureComponent<Props, State> {
     } else {
       newStateCheckin = {...this.defaultCheckin};
     }
-    this.setState({checkin: newStateCheckin});
+
+    retrievePaymentsByEmailAndDateString(newStateCheckin.email, this.state.date.toDateString()).on('value', (snapshot) => {
+      let onlinePayments = [];
+      if (snapshot.val() != null) {
+        onlinePayments = snapshot.val();
+      }
+      this.setState({
+        checkin: newStateCheckin,
+        onlinePayments
+      });
+    });
   };
 
   onCheckinDateChange = (value) => {
