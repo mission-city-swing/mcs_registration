@@ -35,6 +35,7 @@ class DanceCheckinForm extends PureComponent<Props, State> {
     checkin: {...this.defaultCheckin},
     profileMap: {},
     profileList: [],
+    onlinePayments: [],
     success: "",
     error: ""
   };
@@ -101,7 +102,7 @@ class DanceCheckinForm extends PureComponent<Props, State> {
     });
   };
 
-  onCheckinTypeaheadChange = (value) => {
+  onCheckinTypeaheadChange(value) {
     var newStateCheckin = {...this.defaultCheckin};
     if (value && value.length) {
       newStateCheckin = Object.assign(newStateCheckin, this.state.profileMap[value[0].id]);
@@ -112,7 +113,10 @@ class DanceCheckinForm extends PureComponent<Props, State> {
       newStateCheckin = {...this.defaultCheckin};
     }
 
-    retrievePaymentsByEmailAndDateString(newStateCheckin.email, this.state.date.toDateString()).on('value', (snapshot) => {
+    retrievePaymentsByEmailAndDateString(
+      newStateCheckin.email,
+      this.state.date.toDateString()
+    ).on('value', (snapshot) => {
       let onlinePayments = [];
       if (snapshot.val() != null) {
         onlinePayments = snapshot.val();
@@ -122,7 +126,7 @@ class DanceCheckinForm extends PureComponent<Props, State> {
         onlinePayments
       });
     });
-  };
+  }
 
   onCheckinDateChange = (value) => {
     this.setState({date: value});
@@ -202,7 +206,7 @@ class DanceCheckinForm extends PureComponent<Props, State> {
           <Label>Returning Dancer</Label>
           <Typeahead
             placeholder="Returning dancers find your name here"
-            onChange={this.onCheckinTypeaheadChange}
+            onChange={this.onCheckinTypeaheadChange.bind(this)}
             options={this.state.profileList.map((profile) => { return {"id": profile.email, "label": profile.firstName + " " + profile.lastName} })}
           />
           <br></br>
@@ -231,6 +235,11 @@ class DanceCheckinForm extends PureComponent<Props, State> {
               <br></br>
               <CodeOfConductModalLink checked={this.state.checkin.conductAgree} afterConfirm={this.afterConductConfirm.bind(this)} />
               <br></br>
+            </div>
+          }
+          {this.state.onlinePayments.length > 0 &&
+            <div className="alert alert-success" role="alert">
+              This student has already paid online for {this.state.onlinePayments.map(payment => payment.class).join(', ')}
             </div>
           }
           {this.state.checkin.email.length > 0 &&

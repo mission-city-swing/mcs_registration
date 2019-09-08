@@ -432,7 +432,7 @@ export function processAndRecordPayment(nonce, buyerVerificationToken, classInfo
       const newPayment = {
         email: user.email,
         date: paymentDateString,
-        amount: response.data.payment.total_money,
+        money: response.data.payment.total_money,
         class: classType
       };
       const paymentUuid = uuidv3(user.email + paymentDateString, MCS_APP);
