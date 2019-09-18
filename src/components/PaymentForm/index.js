@@ -51,10 +51,17 @@ class PaymentForm extends PureComponent<Props, State> {
     processAndRecordPayment(nonce, buyerVerificationToken, {
       classPrice: classPrice(classType),
       classType
-    }).then(classInfo => {
-      this.setState({
-        successMessage: `You are successfully registered for ${startCase(capitalize(classInfo.classType))}! See you on Wednesday!`
-      });
+    }).then(response => {
+      if (response.errors != null) {
+        this.setState({
+          errorMessages: response.errors.map(error => error.detail)
+        });
+      } else {
+        const classInfo = response.data;
+        this.setState({
+          successMessage: `You are successfully registered for ${startCase(capitalize(classInfo.classType))}! See you on Wednesday!`
+        });
+      }
     })
   }
 

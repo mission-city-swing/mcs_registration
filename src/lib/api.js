@@ -14,8 +14,10 @@ require("firebase/functions");
 const cookies = new Cookies();
 const fireDB = StageDB;
 fireDB.functions();
-// For local emulator
-// fireDB.functions().useFunctionsEmulator('http://localhost:5001');
+if (!process.env.NODE_ENV === 'production') {
+  // Use local emulator
+  fireDB.functions().useFunctionsEmulator('http://localhost:5001');
+}
 
 const createCharge = fireDB.functions().httpsCallable('createCharge');
 
@@ -446,9 +448,15 @@ export function processAndRecordPayment(nonce, buyerVerificationToken, classInfo
           payments = [newPayment];
         }
         return fireDB.database().ref(paymentsRef).set(payments).then(() => {
-          return classInfo;
+          return {
+            data: classInfo
+          };
         })
       });
+    } else {
+      return {
+        errors: response.data.errors
+      };
     }
   });
 }
