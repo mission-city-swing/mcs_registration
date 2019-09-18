@@ -420,6 +420,17 @@ export const addNewUser = (options: User) => {
     };
     const userId = uuidv3(options.email, MCS_APP);
     fireDB.database().ref("users/" + userId).set(currentUser);
+
+    // Create profile for autocomplete
+    getProfileById(userId).on('value', (snapshot) => {
+      if (!snapshot.val()) {
+        fireDB.database().ref("profiles/" + userId + "/profile").set({
+          ...currentUser,
+          memberDate: (getAppDate()).toDateString()
+        });
+      }
+    });
+
     currentUser.uuid = userId;
     return setCurrentUser(currentUser);
   }).catch(function(error) {
