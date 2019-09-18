@@ -14,7 +14,7 @@ require("firebase/functions");
 const cookies = new Cookies();
 const fireDB = StageDB;
 fireDB.functions();
-if (!process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV !== 'production') {
   // Use local emulator
   fireDB.functions().useFunctionsEmulator('http://localhost:5001');
 }
