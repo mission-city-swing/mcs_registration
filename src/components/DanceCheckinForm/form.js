@@ -5,7 +5,7 @@ import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { DateTimePicker } from 'react-widgets';
 import { Typeahead } from 'react-bootstrap-typeahead';
 
-import { addNewDanceCheckin, getProfiles, getAppDate } from "../../lib/api.js";
+import { addNewDanceCheckin, getProfiles, getAppDate, retrievePaymentsByEmailAndDateString } from "../../lib/api.js";
 import { sortByNameAndEmail, getDateFromStringSafe } from "../../lib/utils.js";
 import McsAlert from "../Utilities/alert.js";
 import { CodeOfConductModalLink } from "../Utilities/conductModal.js";
@@ -35,6 +35,7 @@ class DanceCheckinForm extends PureComponent<Props, State> {
     checkin: {...this.defaultCheckin},
     profileMap: {},
     profileList: [],
+    onlinePayments: [],
     success: "",
     error: ""
   };
@@ -96,10 +97,12 @@ class DanceCheckinForm extends PureComponent<Props, State> {
     } else {
       newStateCheckin[name] = value;
     }
-    this.setState({checkin: newStateCheckin});
+    this.setState({
+      checkin: newStateCheckin
+    });
   };
 
-  onCheckinTypeaheadChange = (value) => {
+  onCheckinTypeaheadChange(value) {
     var newStateCheckin = {...this.defaultCheckin};
     if (value && value.length) {
       newStateCheckin = Object.assign(newStateCheckin, this.state.profileMap[value[0].id]);
@@ -109,8 +112,21 @@ class DanceCheckinForm extends PureComponent<Props, State> {
     } else {
       newStateCheckin = {...this.defaultCheckin};
     }
-    this.setState({checkin: newStateCheckin});
-  };
+
+    retrievePaymentsByEmailAndDateString(
+      newStateCheckin.email,
+      this.state.date.toDateString()
+    ).on('value', (snapshot) => {
+      let onlinePayments = [];
+      if (snapshot.val() != null) {
+        onlinePayments = snapshot.val();
+      }
+      this.setState({
+        checkin: newStateCheckin,
+        onlinePayments
+      });
+    });
+  }
 
   onCheckinDateChange = (value) => {
     this.setState({date: value});
@@ -190,7 +206,7 @@ class DanceCheckinForm extends PureComponent<Props, State> {
           <Label>Returning Dancer</Label>
           <Typeahead
             placeholder="Returning dancers find your name here"
-            onChange={this.onCheckinTypeaheadChange}
+            onChange={this.onCheckinTypeaheadChange.bind(this)}
             options={this.state.profileList.map((profile) => { return {"id": profile.email, "label": profile.firstName + " " + profile.lastName} })}
           />
           <br></br>
@@ -219,6 +235,11 @@ class DanceCheckinForm extends PureComponent<Props, State> {
               <br></br>
               <CodeOfConductModalLink checked={this.state.checkin.conductAgree} afterConfirm={this.afterConductConfirm.bind(this)} />
               <br></br>
+            </div>
+          }
+          {this.state.onlinePayments.length > 0 &&
+            <div className="alert alert-success" role="alert">
+              This student has already paid online for {this.state.onlinePayments.map(payment => payment.class).join(', ')}
             </div>
           }
           {this.state.checkin.email.length > 0 &&
