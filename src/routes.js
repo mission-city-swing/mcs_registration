@@ -21,9 +21,9 @@ const Routes = (props) => (
     <Route path="/signin" component={SignInUserForm} />
     <Route path="/new-user" component={NewUserForm} />
     <PrivateRoute path="/new-student" component={NewStudentPage} />
-    <PrivateRoute path="/class-checkin" component={ReturningStudentPage} />
-    <PrivateRoute path="/dance-checkin" component={DanceCheckinPage} />
-    <PrivateRoute path="/event-checkin" component={EventCheckinPage} />
+    <PrivateRoute adminRoute="true" path="/class-checkin" component={ReturningStudentPage} />
+    <PrivateRoute adminRoute="true" path="/dance-checkin" component={DanceCheckinPage} />
+    <PrivateRoute adminRoute="true" path="/event-checkin" component={EventCheckinPage} />
     <PrivateRoute adminRoute="true" path="/admin/new-student" component={AdminNewStudentPage} />
     <PrivateRoute adminRoute="true" path="/admin/dance" component={Dance} />
     <PrivateRoute adminRoute="true" path="/admin/event" component={Event} />

@@ -125,7 +125,8 @@ export const getProfileByName = (firstName, lastName) => {
 };
 
 export const createOrUpdateProfile = (options: Profile) => {
-  options.author = getCurrentAdminId();
+  options.author = getCurrentUserId();
+
   if (!(options.waiverAgree && options.conductAgree)) {
     throw MiscException("Must agree to liability waiver and code of conduct", "FormException")
   }
@@ -411,32 +412,35 @@ export const getEventCheckinByEventId = (eventId) => {
 // Question: What is the difference between exporting function and exporting const?
 
 export const addNewUser = (options: User) => {
+  if (!(options.waiverAgree && options.conductAgree)) {
+    throw MiscException("Must agree to liability waiver and code of conduct", "FormException")
+  }
+  if (!(options.email && options.firstName && options.lastName)) {
+    throw MiscException("First name, last name, and email required", "FormException")
+  }
+
   var currentUser = {};
-  return fireDB.auth().createUserWithEmailAndPassword(options.email, options.password).then(function(){
-    currentUser = {
-      firstName: options.firstName,
-      lastName: options.lastName,
-      email: options.email
-    };
-    const userId = uuidv3(options.email, MCS_APP);
-    fireDB.database().ref("users/" + userId).set(currentUser);
-
-    // Create profile for autocomplete
-    getProfileById(userId).on('value', (snapshot) => {
-      if (!snapshot.val()) {
-        fireDB.database().ref("profiles/" + userId + "/profile").set({
-          ...currentUser,
-          memberDate: (getAppDate()).toDateString()
-        });
+  var newProfile = {};
+  return fireDB.auth().createUserWithEmailAndPassword(options.email, options.password).then(() => {
+    return fireDB.auth().signInWithEmailAndPassword(options.email, options.password).then((data) => {
+      // Set current user info
+      currentUser = {
+        uuid: uuidv3(options.email, MCS_APP),
+        firstName: options.firstName,
+        lastName: options.lastName,
+        email: options.email
+      };
+      setCurrentUser(currentUser);
+      // Create an abbreviated student profile for the current user
+      newProfile = {
+        conductAgree: options.conductAgree,
+        waiverAgree: options.waiverAgree
       }
+      newProfile = Object.assign({...currentUser}, newProfile)
+      return createOrUpdateProfile(newProfile)
     });
-
-    currentUser.uuid = userId;
-    return setCurrentUser(currentUser);
   }).catch(function(error) {
-    var errorCode = error.code;
-    var errorMessage = error.message;
-    console.log([errorCode, errorMessage]);
+    console.log(error.message);
   });
 };
 

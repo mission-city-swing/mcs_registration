@@ -5,6 +5,8 @@ import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import type { User } from "../../types.js";
 import { addNewUser } from "../../lib/api.js";
 import McsAlert from "../Utilities/alert.js";
+import { CodeOfConductModalLink } from "../Utilities/conductModal.js";
+import { LiabilityWaiverModalLink } from "../Utilities/waiverModal.js";
 
 type State = User;
 
@@ -17,7 +19,9 @@ class NewUserForm extends PureComponent<Props, State> {
     email: "",
     password: "",
     success: "",
-    error: ""
+    error: "",
+    waiverAgree: false,
+    conductAgree: false
   };
 
   onChange = (event: any) => {
@@ -35,6 +39,14 @@ class NewUserForm extends PureComponent<Props, State> {
       password: ""
     });
   };
+
+  afterWaiverConfirm(args) {
+    this.setState({waiverAgree: args.agree});
+  }
+
+  afterConductConfirm(args) {
+    this.setState({conductAgree: args.agree});
+  }
 
   clearFormEvent = (event: any) => {
     event.preventDefault();
@@ -63,7 +75,9 @@ class NewUserForm extends PureComponent<Props, State> {
         firstName: this.state.firstName,
         lastName: this.state.lastName,
         email: this.state.email,
-        password: this.state.password
+        password: this.state.password,
+        waiverAgree: this.state.waiverAgree,
+        conductAgree: this.state.conductAgree
       }).then(function() {
         onSuccess()
       }).catch((error) => {
@@ -94,6 +108,11 @@ class NewUserForm extends PureComponent<Props, State> {
           <FormGroup>
             <Label form="password" type="password">Password</Label><Input onChange={this.onChange} value={this.state.password} type="password" id="password" name="password" />
           </FormGroup>
+          <br></br>
+          <h5>Legal Stuff</h5>
+          <LiabilityWaiverModalLink checked={this.state.waiverAgree} afterConfirm={this.afterWaiverConfirm.bind(this)}  />
+          <br></br>
+          <CodeOfConductModalLink checked={this.state.conductAgree} afterConfirm={this.afterConductConfirm.bind(this)} />
           <br></br>
           <Button color="primary" type="submit" value="Submit">Submit</Button>
           <span className="mr-1"></span>
