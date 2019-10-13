@@ -20,3 +20,5 @@ functions/etc/*
 # firebase debug logs
 *.log
 *.firebase/
+# intellij cruft
+.idea/
