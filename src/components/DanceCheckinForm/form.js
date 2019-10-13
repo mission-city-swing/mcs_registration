@@ -5,7 +5,7 @@ import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { DateTimePicker } from 'react-widgets';
 import { Typeahead } from 'react-bootstrap-typeahead';
 
-import { addNewDanceCheckin, getProfiles, getAppDate } from "../../lib/api.js";
+import { addNewDanceCheckin, maybeAddGuestMessage, getProfiles, getAppDate } from "../../lib/api.js";
 import { sortByNameAndEmail, getDateFromStringSafe } from "../../lib/utils.js";
 import McsAlert from "../Utilities/alert.js";
 import { CodeOfConductModalLink } from "../Utilities/conductModal.js";
@@ -146,8 +146,9 @@ class DanceCheckinForm extends PureComponent<Props, State> {
   }
 
   onSubmit = (options={}) => {
-    var onSuccess = () => {
+    var onSuccess = (profile_snapshot) => {
       var successText = "Added dance check-in for " + this.state.checkin.email
+      successText = maybeAddGuestMessage(successText, profile_snapshot)
       this.setState({success: successText});
       this.addActionsOnSubmit({success: successText});
     }
@@ -161,8 +162,8 @@ class DanceCheckinForm extends PureComponent<Props, State> {
     delete thisDanceCheckin.guest;
     // DB request
     try {
-      addNewDanceCheckin(thisDanceCheckin).then(function(){
-        onSuccess();
+      addNewDanceCheckin(thisDanceCheckin).then(function(profile_snapshot){
+        onSuccess(profile_snapshot);
       }).catch(function(error){
         onError(error.toString());
       });

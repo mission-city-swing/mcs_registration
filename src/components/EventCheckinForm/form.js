@@ -4,7 +4,7 @@ import React, { PureComponent } from "react";
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { Typeahead } from 'react-bootstrap-typeahead';
 
-import { addNewEventCheckin, getProfiles, getEvents, getEvent, setAppEventId, getAppEventId, getAppDate, setAppDate } from "../../lib/api.js";
+import { addNewEventCheckin, maybeAddGuestMessage, getProfiles, getEvents, getEvent, setAppEventId, getAppEventId, getAppDate, setAppDate } from "../../lib/api.js";
 import { sortByNameAndEmail, sortByDate, getDateFromStringSafe } from "../../lib/utils.js";
 import McsAlert from "../Utilities/alert.js";
 import { CodeOfConductModalLink } from "../Utilities/conductModal.js";
@@ -205,8 +205,9 @@ class EventCheckinForm extends PureComponent<Props, State> {
   }
 
   onSubmit = (options={}) => {
-    var onSuccess = () => {
+    var onSuccess = (profile_snapshot) => {
       var successText = "Added event check-in for " + this.state.checkin.email
+      successText = maybeAddGuestMessage(successText, profile_snapshot)
       this.setState({success: successText});
       this.addActionsOnSubmit({success: successText});
     }
@@ -223,8 +224,8 @@ class EventCheckinForm extends PureComponent<Props, State> {
     delete thisEventCheckin.guest;
     // DB request
     try {
-      addNewEventCheckin(thisEventCheckin).then(function(){
-        onSuccess();
+      addNewEventCheckin(thisEventCheckin).then(function(profile_snapshot){
+        onSuccess(profile_snapshot);
       }).catch(function(error){
         onError(error.toString());
       });
