@@ -276,8 +276,6 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     // DB request
     try {
       addNewClassCheckin(thisCheckin).then((profile_snapshot) => {
-        console.info(profile_snapshot)
-        // console.info(profile_snapshot.val().profile.firstName)
         // Additionally update the monthly pass status
         this.updateMonthlyPass().then((success) => {
           onSuccess(profile_snapshot);
