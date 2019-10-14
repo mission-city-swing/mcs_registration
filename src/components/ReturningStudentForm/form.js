@@ -7,7 +7,7 @@ import { Typeahead } from 'react-bootstrap-typeahead';
 import queryString from 'query-string';
 
 import type { ClassCheckin } from "../../types.js";
-import { addNewClassCheckin, getProfiles, getProfileByEmail, setLatestMonthlyPass, getAppDate } from "../../lib/api.js";
+import { addNewClassCheckin, maybeAddGuestMessage, getProfiles, getProfileByEmail, setLatestMonthlyPass, getAppDate } from "../../lib/api.js";
 import { getSubstringIndex, currentMonthIndex, currentMonthString, currentYear, sortByNameAndEmail, getDateFromStringSafe } from "../../lib/utils.js";
 import McsAlert from "../Utilities/alert.js";
 import { CodeOfConductModalLink } from "../Utilities/conductModal.js";
@@ -254,9 +254,10 @@ class ReturningStudentForm extends PureComponent<Props, State> {
 
   onSubmit = (options) => {
     // Error handling
-    var onSuccess = () => {
+    var onSuccess = (profile_snapshot) => {
       var classesStr = this.state.checkin.classes.join("; ")
       var successText = `Added class check-in for ${this.state.checkin.firstName} ${this.state.checkin.lastName}: ${classesStr}`
+      successText = maybeAddGuestMessage(successText, profile_snapshot)
       this.setState({
         success: successText,
         error: ""
@@ -274,10 +275,10 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     delete thisCheckin.completedFundamentals;
     // DB request
     try {
-      addNewClassCheckin(thisCheckin).then((success) => {
+      addNewClassCheckin(thisCheckin).then((profile_snapshot) => {
         // Additionally update the monthly pass status
         this.updateMonthlyPass().then((success) => {
-          onSuccess();
+          onSuccess(profile_snapshot);
         }).catch((error) => {
           onError(error.toString());
         });

@@ -133,7 +133,7 @@ export const createOrUpdateProfile = (options: Profile) => {
     throw MiscException("First name, last name, and email required", "FormException")
   }
   if (options.birthday) {
-    options.birthday = getMonthString(options.birthday.getMonth()) + " " + options.birthday.getDate();  
+    options.birthday = getMonthString(options.birthday.getMonth()) + " " + options.birthday.getDate();
   }
   options.memberDate = options.memberDate.toDateString()
   const profileId = uuidv3(options.email, MCS_APP);
@@ -323,7 +323,7 @@ export const addNewClassCheckin = (options: ClassCheckin) => {
   const checkin = uuidv3(options.date + options.email, MCS_APP);
   return fireDB.database().ref("class-checkins/" + checkin).set(options).then(function() {
     const profileId = uuidv3(options.email, MCS_APP);
-    fireDB.database().ref("profiles/" + profileId).once("value").then(function(snapshot){
+    return fireDB.database().ref("profiles/" + profileId).once("value").then(function(snapshot){
       if (snapshot.val() == null) {
         var profile = {...options};
         profile.memberDate = (getAppDate()).toDateString();
@@ -404,6 +404,17 @@ export const getEventCheckinByDate = (eventDate) => {
 export const getEventCheckinByEventId = (eventId) => {
   // get checkins for a specific event ID
   return fireDB.database().ref("event-checkins").orderByChild("eventId").equalTo(eventId)
+};
+
+// If the dancer is a guest of the venue, add a status message to be displayed
+// to the volunteer.
+export const maybeAddGuestMessage = (successText, profile_snapshot) => {
+  var adminInfo = profile_snapshot.val().adminInfo
+  if (adminInfo && adminInfo.guest) {
+    successText += "  NOTE: This dancer is our guest and does not need " +
+      "to pay. They're probably famous or something."
+  }
+  return successText
 };
 
 
