@@ -43,3 +43,20 @@ div.App form {
 .required-text {
 	color: red;
 }
+
+
+.form-check {
+  margin-top: 1em;
+  padding-left: 2em;
+}
+
+.form-check-label {
+  margin-top: 0;
+  line-height: 1.5em;
+}
+.form-check-input {
+  margin-top: 0;
+  width: 1.5em;
+  height: 1.5em;
+  margin-left: -2em;
+}
