@@ -24,7 +24,6 @@ class DanceCheckinForm extends PureComponent<Props, State> {
     email: "",
     info: "",
     guest: false,
-    student: false,
     waiverAgree: false,
     conductAgree: false,
     alreadySigned: false
@@ -205,13 +204,6 @@ class DanceCheckinForm extends PureComponent<Props, State> {
           </FormGroup>
           <FormGroup>
             <Label for="email">Email <span className="required-text">*</span></Label><Input placeholder="Email" value={this.state.checkin.email} onChange={this.onCheckinChange} name="email" />
-          </FormGroup>
-          <br></br>
-          <FormGroup check>
-            <Label check>
-              <Input onChange={this.onCheckinChange} name="student" type="checkbox" checked={this.state.checkin.student} />
-              <strong>Full time student, must show valid student ID</strong>
-            </Label>
           </FormGroup>
           <br></br>
           { !this.state.checkin.alreadySigned &&
