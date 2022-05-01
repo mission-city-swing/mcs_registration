@@ -38,7 +38,7 @@ class LiabilityWaiverModalLink extends React.Component {
       <FormGroup check>
         <Label check>
           <Input name="waiverAgree" type="checkbox" onChange={this.toggle} checked={this.props.checked} />
-          <strong>I agree to the Mission City Swing Liability Waiver</strong>
+          <strong>I agree to the Mission City Swing Liability Waiver (updated 2021-06-23)</strong>
           <Modal {...this.props.modalOptions} size="lg" isOpen={this.state.modalOpen} toggle={this.toggle}>
             <ModalHeader toggle={this.toggle}>Mission City Swing Waiver and Release Form</ModalHeader>
             <ModalBody>
