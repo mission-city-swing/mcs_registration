@@ -24,6 +24,7 @@ class DanceCheckinForm extends PureComponent<Props, State> {
     email: "",
     info: "",
     guest: false,
+    health_attestation_agree: false,
     waiverAgree: false,
     conductAgree: false,
     alreadySigned: false
@@ -204,6 +205,13 @@ class DanceCheckinForm extends PureComponent<Props, State> {
           </FormGroup>
           <FormGroup>
             <Label for="email">Email <span className="required-text">*</span></Label><Input placeholder="Email" value={this.state.checkin.email} onChange={this.onCheckinChange} name="email" />
+          </FormGroup>
+          <br></br>
+          <FormGroup check>
+            <Label check>
+              <Input name="healthAttestationAgree" type="checkbox" onChange={this.onCheckinChange} checked={this.state.checkin.healthAttestationAgree} />
+              <strong>Health attestation:</strong> I promise that I am in good health. Additionally, I promise to tell the MCS Leadership Team if I feel ill, sick, congested, or otherwise unwell within 1 week of attending the dance. I understand that the Leadership Team will let the community know anonymously that someone got sick after attending the dance.
+            </Label>
           </FormGroup>
           <br></br>
           { !this.state.checkin.alreadySigned &&
