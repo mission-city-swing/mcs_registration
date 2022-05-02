@@ -7,8 +7,8 @@ import { Typeahead } from 'react-bootstrap-typeahead';
 import queryString from 'query-string';
 
 import type { ClassCheckin } from "../../types.js";
-import { addNewClassCheckin, maybeAddGuestMessage, getProfiles, getProfileByEmail, setLatestMonthlyPass, getAppDate } from "../../lib/api.js";
-import { getSubstringIndex, currentMonthIndex, currentMonthString, currentYear, sortByNameAndEmail, getDateFromStringSafe } from "../../lib/utils.js";
+import { addNewClassCheckin, maybeAddGuestMessage, getProfiles, getProfileByEmail, getAppDate } from "../../lib/api.js";
+import { getSubstringIndex, sortByNameAndEmail, getDateFromStringSafe } from "../../lib/utils.js";
 import McsAlert from "../Utilities/alert.js";
 import { CodeOfConductModalLink } from "../Utilities/conductModal.js";
 import { LiabilityWaiverModalLink } from "../Utilities/waiverModal.js";
@@ -26,12 +26,12 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     lastName: "",
     email: "",
     info: "",
-    student: false,
+    healthAttestationAgree: false,
+    vaccinationCheck: false,
     waiverAgree: false,
     conductAgree: false,
     completedFundamentals: false,
     alreadySigned: false,
-    latestMonthlyPass: {},
     classes: []
   }
 
@@ -100,21 +100,22 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     // Helper method for getting the appropriate info from a profile
     // for the class check-in
     var newCheckinState = {...this.defaultCheckin};
+    // Set form info from profile like thier name and waiver check
     Object.keys(newCheckinState).forEach(function(key){
-      newCheckinState[key] = profileObj.profile[key] ? profileObj.profile[key] : newCheckinState[key]
+      if (key !== "classes") {
+        // 🐛 This is a bug-- if the student was taking classes when they originally joined MCS,
+        // a "classes" array is stored on their profile, and it interferes with the classes
+        // we want to store now
+        newCheckinState[key] = profileObj.profile[key] ? profileObj.profile[key] : newCheckinState[key]
+      }
     });
     newCheckinState.completedFundamentals = (profileObj.adminInfo ? profileObj.adminInfo : {}).completedFundamentals ? true : false
-    newCheckinState.latestMonthlyPass = profileObj.latestMonthlyPass ? profileObj.latestMonthlyPass : {}
     var info = []
     // Make sure to note if they're a new dancer
     if ((profileObj.adminInfo ? profileObj.adminInfo : {}).guest) { info.push("Guest") }
     // Make sure to note if profile is a guest of MCS
     if (newDancer) { info.push("New Dancer") }
     newCheckinState.info = info.join(", ")
-    // Set latest monthly pass info, including classes
-    if (newCheckinState.latestMonthlyPass.monthName === currentMonthString() && newCheckinState.latestMonthlyPass.year === currentYear()) {
-      newCheckinState.classes = [...newCheckinState.latestMonthlyPass.classes]
-    }
     newCheckinState.alreadySigned = profileObj.profile.waiverAgree && profileObj.profile.conductAgree;
     return newCheckinState
   }
@@ -224,34 +225,6 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     this.setState({checkin: newStateCheckin});
   }
 
-  updateMonthlyPass() {
-    if (this.state.checkin.latestMonthlyPass.monthName === currentMonthString() && this.state.checkin.latestMonthlyPass.year === currentYear()) {
-      return new Promise(function(resolve, reject) {
-        resolve("Already have a monthly pass for this month");
-      })
-    } else {
-      var monthClasses = [];
-      if (this.state.date.getMonth() === currentMonthIndex()) {
-        monthClasses = this.state.checkin.classes.filter((className) => {
-          return className.toLowerCase().includes("month")
-        })
-      }
-      if (monthClasses.length > 0) {
-        return setLatestMonthlyPass({
-          email: this.state.checkin.email,
-          numClasses: monthClasses.length,
-          classes: monthClasses,
-          monthName: currentMonthString(),
-          year: currentYear()
-        })
-      } else {
-        return new Promise(function(resolve, reject) {
-          resolve("No new monthly pass for this month");
-        })
-      }
-    }
-  }
-
   onSubmit = (options) => {
     // Error handling
     var onSuccess = (profile_snapshot) => {
@@ -270,18 +243,12 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     }
     var thisCheckin = Object.assign({...this.state.checkin}, {date: this.state.date});
     // // Remove helper data not necessary for checkin object
-    delete thisCheckin.latestMonthlyPass;
     delete thisCheckin.alreadySigned;
     delete thisCheckin.completedFundamentals;
     // DB request
     try {
       addNewClassCheckin(thisCheckin).then((profile_snapshot) => {
-        // Additionally update the monthly pass status
-        this.updateMonthlyPass().then((success) => {
-          onSuccess(profile_snapshot);
-        }).catch((error) => {
-          onError(error.toString());
-        });
+        onSuccess(profile_snapshot);
       }).catch((error) => {
         onError(error.toString());
       });
@@ -325,9 +292,6 @@ class ReturningStudentForm extends PureComponent<Props, State> {
           {this.state.checkin.completedFundamentals &&
             <p><strong>{this.state.checkin.firstName} {this.state.checkin.lastName} has completed the MCS fundamentals course.</strong></p>
           }
-          {this.state.checkin.latestMonthlyPass.monthName === currentMonthString() && this.state.checkin.latestMonthlyPass.year === currentYear() &&
-            <p><strong>Student has a monthly pass for {this.state.checkin.latestMonthlyPass.numClasses} classes for {this.state.checkin.latestMonthlyPass.monthName} {this.state.checkin.latestMonthlyPass.year}</strong></p>
-          }
           <FormGroup>
             <Label for="firstName">First Name <span className="required-text">*</span></Label><Input placeholder="First Name" value={this.state.checkin.firstName} onChange={this.onCheckinChange} name="firstName" />
           </FormGroup>
@@ -337,10 +301,18 @@ class ReturningStudentForm extends PureComponent<Props, State> {
           <FormGroup>
             <Label form="email" type="email">Email <span className="required-text">*</span></Label><Input placeholder="me@example.com" onChange={this.onCheckinChange} value={this.state.checkin.email} type="email" id="email" name="email" />
           </FormGroup>
+          <br></br>
           <FormGroup check>
             <Label check>
-              <Input onChange={this.onCheckinChange} name="student" type="checkbox" checked={this.state.checkin.student} />
-              Full time student, must show valid student ID
+              <Input name="vaccinationCheck" type="checkbox" onChange={this.onCheckinChange} checked={this.state.checkin.vaccinationCheck} />
+              <strong>Vaccination check:</strong> I promise that I have been fully vaccinated (i.e., 2 shots of any of the leading COVID vaccines such as Moderna or Pfizer). Additionally, I promise that I have had a COVID booster shot in the past 6 months or have presented a negative COVID test.
+            </Label>
+          </FormGroup>
+          <br></br>
+          <FormGroup check>
+            <Label check>
+              <Input name="healthAttestationAgree" type="checkbox" onChange={this.onCheckinChange} checked={this.state.checkin.healthAttestationAgree} />
+              <strong>Health attestation:</strong> I promise that I am currently in good health. Additionally, I promise to tell the MCS Leadership Team if I feel ill, sick, congested, or otherwise unwell within 1 week of attending the dance. I understand that the Leadership Team will let the community know anonymously that someone got sick after attending the dance.
             </Label>
           </FormGroup>
           <br></br>
@@ -356,32 +328,32 @@ class ReturningStudentForm extends PureComponent<Props, State> {
             <legend>Checking in for... (Select all that apply.)</legend>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onMultiTypeCheckinChange} type="checkbox" name="classes" checked={this.state.checkin.classes.indexOf('WCS Fundamentals, Drop-in') !== -1} value="WCS Fundamentals, Drop-in" /> {' '} WCS Fundamentals, Drop-in
+                <Input onChange={this.onMultiTypeCheckinChange} type="checkbox" name="classes" checked={this.state.checkin.classes.indexOf('WCS Fundamentals, First Class Only') !== -1} value="WCS Fundamentals, First Class Only" /> {' '} WCS Fundamentals, First Class Only
               </Label>
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onMultiTypeCheckinChange} type="checkbox" name="classes" checked={this.state.checkin.classes.indexOf('WCS Fundamentals, Monthly Series') !== -1} value="WCS Fundamentals, Monthly Series" /> {' '} WCS Fundamentals, Monthly Series
+                <Input onChange={this.onMultiTypeCheckinChange} type="checkbox" name="classes" checked={this.state.checkin.classes.indexOf('WCS Fundamentals, 6-Week Series') !== -1} value="WCS Fundamentals, 6-Week Series" /> {' '} WCS Fundamentals, 6-Week Series
               </Label>
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onMultiTypeCheckinChange} type="checkbox" name="classes" checked={this.state.checkin.classes.indexOf('Level 2 WCS, Drop-in') !== -1} value="Level 2 WCS, Drop-in" /> {' '} Level 2 WCS, Drop-in
+                <Input onChange={this.onMultiTypeCheckinChange} type="checkbox" name="classes" checked={this.state.checkin.classes.indexOf('Level 2 WCS, First Class Only') !== -1} value="Level 2 WCS, First Class Only" /> {' '} Level 2 WCS, First Class Only
               </Label>
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onMultiTypeCheckinChange} type="checkbox" name="classes" checked={this.state.checkin.classes.indexOf('Level 2 WCS, Monthly Series') !== -1} value="Level 2 WCS, Monthly Series" /> {' '} Level 2 WCS, Monthly Series
+                <Input onChange={this.onMultiTypeCheckinChange} type="checkbox" name="classes" checked={this.state.checkin.classes.indexOf('Level 2 WCS, 6-Week Series') !== -1} value="Level 2 WCS, 6-Week Series" /> {' '} Level 2 WCS, 6-Week Series
               </Label>
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onMultiTypeCheckinChange} type="checkbox" name="classes" checked={this.state.checkin.classes.indexOf('Level 3 WCS, Drop-in') !== -1} value="Level 3 WCS, Drop-in" /> {' '} Level 3 WCS, Drop-in
+                <Input onChange={this.onMultiTypeCheckinChange} type="checkbox" name="classes" checked={this.state.checkin.classes.indexOf('Level 3 WCS, First Class Only') !== -1} value="Level 3 WCS, First Class Only" /> {' '} Level 3 WCS, First Class Only
               </Label>
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onMultiTypeCheckinChange} type="checkbox" name="classes" checked={this.state.checkin.classes.indexOf('Level 3 WCS, Monthly Series') !== -1} value="Level 3 WCS, Monthly Series" /> {' '} Level 3 WCS, Monthly Series
+                <Input onChange={this.onMultiTypeCheckinChange} type="checkbox" name="classes" checked={this.state.checkin.classes.indexOf('Level 3 WCS, 6-Week Series') !== -1} value="Level 3 WCS, 6-Week Series" /> {' '} Level 3 WCS, 6-Week Series
               </Label>
             </FormGroup>
           </FormGroup>

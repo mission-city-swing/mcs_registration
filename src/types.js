@@ -63,6 +63,8 @@ export type DanceCheckin = {
   email: string,
   student: boolean,
   info: string,
+  healthAttestationAgree: boolean,
+  vaccinationCheck: boolean,
   waiverAgree: boolean,
   conductAgree: boolean,
   author: string
@@ -75,6 +77,8 @@ export type ClassCheckin = {
   email: string,
   student: boolean,
   info: string,
+  healthAttestationAgree: boolean,
+  vaccinationCheck: boolean,
   waiverAgree: boolean,
   conductAgree: boolean,
   classes: [],
@@ -90,6 +94,7 @@ export type EventCheckin = {
   student: boolean,
   checkinItems: [],
   info: string,
+  healthAttestationAgree: boolean,
   waiverAgree: boolean,
   conductAgree: boolean,
   author: string

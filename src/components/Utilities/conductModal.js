@@ -40,7 +40,7 @@ class CodeOfConductModalLink extends React.Component {
       <FormGroup check>
         <Label check>
           <Input onChange={this.toggle} name="conductAgree" type="checkbox" checked={this.props.checked} />
-          <strong>I agree to the Mission City Swing Code of Conduct</strong>
+          <strong>I agree to the Mission City Swing Code of Conduct (updated 2017)</strong>
           <Modal {...this.props.modalOptions} size="lg" isOpen={this.state.modalOpen} toggle={this.toggle}>
             <ModalHeader toggle={this.toggle}>Mission City Swing Code of Conduct</ModalHeader>
             <ModalBody>

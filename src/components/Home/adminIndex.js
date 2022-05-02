@@ -68,13 +68,6 @@ class AdminHome extends Component {
                           </Col>
                           <Col>
                             <Card className="card-body text-center mb-2">
-                              <CardTitle className="front-page-card">New Student Form</CardTitle>
-                              <CardText className="front-page-card">Create a student object from paper forms.</CardText>
-                              <Link to="/admin/new-student"><Button size="lg">New Student</Button></Link>
-                            </Card>
-                          </Col>
-                          <Col>
-                            <Card className="card-body text-center mb-2">
                               <CardTitle className="front-page-card">Create or View an Event</CardTitle>
                               <CardText className="front-page-card">Create a special event or view stats.</CardText>
                               <Link to="/admin/event"><Button size="lg">Create or View an Event</Button></Link>
