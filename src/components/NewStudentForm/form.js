@@ -273,13 +273,6 @@ class StudentInfoForm extends PureComponent<Props, State> {
             <Button outline onClick={this.clearBirthday}>Clear Date</Button>
           </FormGroup>
           <br></br>
-          <FormGroup check>
-            <Label check>
-              <Input onChange={this.onChange} name="student" type="checkbox" checked={this.state.student} />
-              <strong>Full time student (must show valid student ID)</strong>
-            </Label>
-          </FormGroup>
-          <br></br>
           <FormGroup tag="fieldset">
             <legend className="h5">How did you hear about us?</legend>
             <FormGroup check>
