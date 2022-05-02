@@ -24,7 +24,8 @@ class DanceCheckinForm extends PureComponent<Props, State> {
     email: "",
     info: "",
     guest: false,
-    health_attestation_agree: false,
+    healthAttestationAgree: false,
+    vaccinationCheck: false,
     waiverAgree: false,
     conductAgree: false,
     alreadySigned: false
@@ -209,8 +210,15 @@ class DanceCheckinForm extends PureComponent<Props, State> {
           <br></br>
           <FormGroup check>
             <Label check>
+              <Input name="vaccinationCheck" type="checkbox" onChange={this.onCheckinChange} checked={this.state.checkin.vaccinationCheck} />
+              <strong>Vaccination check:</strong> I promise that I have been fully vaccinated (i.e., 2 shots of any of the leading COVID vaccines such as Moderna or Pfizer). Additionally, I promise that I have had a COVID booster shot in the past 6 months or have presented a negative COVID test.
+            </Label>
+          </FormGroup>
+          <br></br>
+          <FormGroup check>
+            <Label check>
               <Input name="healthAttestationAgree" type="checkbox" onChange={this.onCheckinChange} checked={this.state.checkin.healthAttestationAgree} />
-              <strong>Health attestation:</strong> I promise that I am in good health. Additionally, I promise to tell the MCS Leadership Team if I feel ill, sick, congested, or otherwise unwell within 1 week of attending the dance. I understand that the Leadership Team will let the community know anonymously that someone got sick after attending the dance.
+              <strong>Health attestation:</strong> I promise that I am currently in good health. Additionally, I promise to tell the MCS Leadership Team if I feel ill, sick, congested, or otherwise unwell within 1 week of attending the dance. I understand that the Leadership Team will let the community know anonymously that someone got sick after attending the dance.
             </Label>
           </FormGroup>
           <br></br>
