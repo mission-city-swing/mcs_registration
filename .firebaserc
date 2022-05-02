@@ -1,6 +1,7 @@
 {
   "projects": {
     "default": "mcs-registration",
+    "production": "mcs-registration",
     "staging": "mcs-reg-test"
   }
 }

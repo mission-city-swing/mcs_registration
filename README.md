@@ -31,6 +31,15 @@ $ yarn install
 $ yarn start
 ```
 
+Deploy -- mostly follow these instruction here https://firebase.google.com/docs/cli#macos
+```
+$ yarn build
+$ npm install -g firebase-tools
+$ firebase login:ci
+$ firebase use [env]
+$ firebase deploy --only hosting
+```
+
 This is a [ReactJS](https://reactjs.org/) app bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app) and built on top of [Firebase](https://firebase.google.com/). That means that all of the middleware/backend is taken care of by Firebase, and when you clone this repo, all you will see is the ReactJS codebase. Don't be alarmed.
 
 Second, the codebase as-is has the backend-for-frontend API calls but doesn't have the database(s) set up. So if you want to contribute more than just a typo fix, you'll have to reach out to me, [Maggie Moreno](https://github.com/missmaggiemo), and I'll help you get set up.
