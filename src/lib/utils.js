@@ -87,4 +87,17 @@ function getDateFromStringSafe(dateString) {
   return date
 };
 
-export { getSubstringIndex, MiscException, sortByDate, sortDateStrings, sortByNameAndEmail, currentMonthIndex, currentMonthString, getMonthString, reactTableFuzzyMatchFilter, currentYear, getDateFromStringSafe }
+function addDaysToDate(date, days) {
+    date.setDate(date.getDate() + days);
+    return date;
+};
+
+function getDaysBetweenDates(dateStart, dateEnd) {
+  var betweenDates = [];
+  for (var d = dateStart; d <= dateEnd; d.setDate(d.getDate() + 1)) {
+    betweenDates.push(new Date(d));
+  }
+  return betweenDates
+};
+
+export { getSubstringIndex, MiscException, sortByDate, sortDateStrings, sortByNameAndEmail, currentMonthIndex, currentMonthString, getMonthString, reactTableFuzzyMatchFilter, currentYear, getDateFromStringSafe, addDaysToDate, getDaysBetweenDates }
