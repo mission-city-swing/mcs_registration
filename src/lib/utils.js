@@ -30,6 +30,18 @@ function sortByDate(a, b) {
   }
 };
 
+function sortByStartDate(a, b) {
+  // For class series specifically
+  var [dateA, dateB] = [new Date(a.startDate), new Date(b.startDate)]
+  if (dateA > dateB) {
+    return -1
+  } else if (dateA < dateB) {
+    return 1
+  } else if (dateA === dateB) {
+    return 0
+  }
+};
+
 function sortDateStrings(a, b) {
   var [aDate, bDate] = [new Date(a), new Date(b)];
   if (aDate > bDate) {
@@ -100,4 +112,4 @@ function getDaysBetweenDates(dateStart, dateEnd) {
   return betweenDates
 };
 
-export { getSubstringIndex, MiscException, sortByDate, sortDateStrings, sortByNameAndEmail, currentMonthIndex, currentMonthString, getMonthString, reactTableFuzzyMatchFilter, currentYear, getDateFromStringSafe, addDaysToDate, getDaysBetweenDates }
+export { getSubstringIndex, MiscException, sortByDate, sortDateStrings, sortByNameAndEmail, currentMonthIndex, currentMonthString, getMonthString, reactTableFuzzyMatchFilter, currentYear, getDateFromStringSafe, addDaysToDate, getDaysBetweenDates, sortByStartDate }

@@ -7,7 +7,7 @@ import { getAllClassSeries } from "../../lib/api.js";
 import ClassSeriesForm from "./form.js"
 import ClassSeriesCheckinList from "./checkins.js"
 // import ClassSeriesAttendeeList from "./attendees.js"
-import { sortByDate } from '../../lib/utils.js';
+import { sortByStartDate } from '../../lib/utils.js';
 import McsAlert from '../Utilities/alert.js';
 
 type State = {};
@@ -64,7 +64,7 @@ class ClassSeriesPage extends PureComponent<Props, State> {
         Object.keys(classSeriesSnap).forEach((uid => {
           classSeriesList.push(Object.assign({uid: uid}, classSeriesSnap[uid]))
         }))
-        classSeriesList.sort(sortByDate)
+        classSeriesList.sort(sortByStartDate)
       }
       this.setState({classSeriesList: classSeriesList});
     });
