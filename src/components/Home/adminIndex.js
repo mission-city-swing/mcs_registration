@@ -51,29 +51,41 @@ class AdminHome extends Component {
 
     let containerContent;
     if (this.state.currentUser && this.state.currentUser.isAdmin) {
-      containerContent = <Row>
-                          <Col>
-                            <Card className="card-body text-center mb-2">
-                              <CardTitle className="front-page-card">View a Dance</CardTitle>
-                              <CardText className="front-page-card">View or create a dance object to see stats about checkins.</CardText>
-                              <Link to="/admin/dance"><Button size="lg">View a Dance</Button></Link>
-                            </Card>
-                          </Col>
-                          <Col>
-                            <Card className="card-body text-center mb-2">
-                              <CardTitle className="front-page-card">Update Student Info</CardTitle>
-                              <CardText className="front-page-card">Update or add admin info about an existing student.</CardText>
-                              <Link to="/admin/student"><Button size="lg">Update Student Info</Button></Link>
-                            </Card>
-                          </Col>
-                          <Col>
-                            <Card className="card-body text-center mb-2">
-                              <CardTitle className="front-page-card">Create or View an Event</CardTitle>
-                              <CardText className="front-page-card">Create a special event or view stats.</CardText>
-                              <Link to="/admin/event"><Button size="lg">Create or View an Event</Button></Link>
-                            </Card>
-                          </Col>
-                        </Row>
+      containerContent = <div>
+                          <Row>
+                            <Col>
+                              <Card className="card-body text-center mb-2">
+                                <CardTitle className="front-page-card">View a Dance</CardTitle>
+                                <CardText className="front-page-card">View or create a dance object to see stats about checkins.</CardText>
+                                <Link to="/admin/dance"><Button size="lg">View a Dance</Button></Link>
+                              </Card>
+                            </Col>
+
+                          </Row>
+                          <Row>
+                            <Col>
+                              <Card className="card-body text-center mb-2">
+                                <CardTitle className="front-page-card">Update Student Info</CardTitle>
+                                <CardText className="front-page-card">Update or add admin info about an existing student.</CardText>
+                                <Link to="/admin/student"><Button size="lg">Update Student Info</Button></Link>
+                              </Card>
+                            </Col>
+                            <Col>
+                              <Card className="card-body text-center mb-2">
+                                <CardTitle className="front-page-card">Create or View an Class Series</CardTitle>
+                                <CardText className="front-page-card">Create a class series or view stats.</CardText>
+                                <Link to="/admin/class-series"><Button size="lg">Create or View a Class Series</Button></Link>
+                              </Card>
+                            </Col>
+                            <Col>
+                              <Card className="card-body text-center mb-2">
+                                <CardTitle className="front-page-card">Create or View an Event</CardTitle>
+                                <CardText className="front-page-card">Create a special event or view stats.</CardText>
+                                <Link to="/admin/event"><Button size="lg">Create or View an Event</Button></Link>
+                              </Card>
+                            </Col>
+                          </Row>
+                        </div>
     } else {
       containerContent = <Row>
                             <Col>

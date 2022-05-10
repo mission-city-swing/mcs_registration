@@ -40,7 +40,6 @@ class ClassSeriesCheckinList extends PureComponent<Props, State> {
   makeCsvData = (classSeriesCheckinList) => {
     var csvRows = [];
     var headers = ['ClassSeries ID', 'Date', 'Check-in ID', 'Name', 'Email', 'Checkin Items', 'Checkin Info']
-    console.log(classSeriesCheckinList);
     classSeriesCheckinList.map( (checkin) => {
       return csvRows.push([
         checkin.classSeriesId || this.state.classSeriesId,
