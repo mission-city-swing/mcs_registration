@@ -97,6 +97,11 @@ class ClassSeriesCheckinList extends PureComponent<Props, State> {
           <ReactTable
             data={this.state.classSeriesCheckinList}
             columns={[{
+              Header: "Date",
+              accessor: "date",
+              id: "date",
+              maxWidth: 200
+            }, {
               Header: "Name",
               accessor: (d) => [d.firstName, d.lastName].join(' '),
               id: "name",

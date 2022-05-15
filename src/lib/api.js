@@ -280,6 +280,7 @@ export const addNewDanceCheckin = (options: DanceCheckin) => {
   });
 };
 
+// Not in use yet
 export function updateDanceCheckinWithPayment(checkin, nonce, amount) {
   return createCharge({
     nonce,
@@ -376,18 +377,21 @@ export const getClassCheckinByDate = (classDate) => {
 
 export const getClassCheckinByDateAndLevel = (classDate, levelName) => {
   // get checkins for a specific date and level
-  return fireDB.database().ref("class-checkins").orderByChild("date").equalTo(classDate).once("value", (snapshot) => {
-    var classCheckinList = [];
-    const checkinListObj = snapshot.val();
-    if (checkinListObj) {
-      Object.keys(checkinListObj).map(function(uid) {
-        const classes = checkinListObj[uid].classes.join(',')
-        if (classes.match(levelName)) {
-          classCheckinList.push(Object.assign({uid: uid}, checkinListObj[uid]))
-        }
-      })
-    }
-    return classCheckinList;
+  return new Promise(function(resolve, reject) {
+    fireDB.database().ref("class-checkins").orderByChild("date").equalTo(classDate).once("value", (snapshot) => {
+      var classCheckinList = [];
+      const checkinListObj = snapshot.val();
+      if (checkinListObj) {
+        Object.keys(checkinListObj).map(function(uid) {
+          const classes = checkinListObj[uid].classes.join(',')
+          if (!(classes.match(levelName) === null)) {
+            classCheckinList.push(Object.assign({uid: uid}, checkinListObj[uid]))
+          }
+        })
+      }
+      resolve(classCheckinList);
+    });
+
   });
 };
 
@@ -477,18 +481,7 @@ export const getClassSeriesCheckinsByClassSeriesId = (classSeriesId) => {
         throw MiscException("Class series does not exist", "ClassSeriesException")
       } else {
         getDaysBetweenDates(new Date(classSeries.startDate), new Date(classSeries.endDate)).forEach(date => {
-          seriesCheckinPromises.push(new Promise((resolve, reject) => {
-            getClassCheckinByDateAndLevel(date.toDateString(), classSeries.level).then(snapshot => {
-              const checkinsSnapshot = snapshot.val() || {};
-              var checkins = [];
-              if(checkinsSnapshot) {
-                Object.keys(checkinsSnapshot).forEach(uid => {
-                  checkins.push(checkinsSnapshot[uid])
-                })                
-              }
-              resolve(checkins);
-            });
-          }));
+          seriesCheckinPromises.push(getClassCheckinByDateAndLevel(date.toDateString(), classSeries.level));
         });
 
         resolve(Promise.all(seriesCheckinPromises).then((checkinLists) => {
@@ -503,7 +496,7 @@ export const getClassSeriesCheckinsByClassSeriesId = (classSeriesId) => {
       }
     })
   })
-}
+};
 
 export const getClassSeriesAttendees = (classSeriesId) => {
   return getClassSeriesCheckinsByClassSeriesId.on("value", (checkinList) => {
