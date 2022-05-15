@@ -7,7 +7,7 @@ import firebase from 'firebase';
 
 // I have purposely added fire.js to the .gitignore so we don't check in our keys
 import { StageDB, ProductionDB } from '../fire.js'
-import { MiscException, getMonthString } from './utils.js'
+import { MiscException, getMonthString, sortByNameAndEmail, sortByDate, getDaysBetweenDates } from './utils.js'
 
 require("firebase/functions");
 
@@ -250,7 +250,8 @@ export const addNewEvent = (options: Event) => {
   return fireDB.database().ref("events/" + eventId).set(options);
 };
 
-// Checkins
+// Dance Checkins
+
 export const addNewDanceCheckin = (options: DanceCheckin) => {
   options.author = getCurrentAdminId();
   // check for name, email, and date
@@ -307,6 +308,8 @@ export const getDanceCheckinByDate = (classDate) => {
   // get checkins for a specific date
   return fireDB.database().ref("dance-checkins").orderByChild("date").equalTo(classDate)
 };
+
+// Class Checkins
 
 export const addNewClassCheckin = (options: ClassCheckin) => {
   // set author
@@ -371,6 +374,25 @@ export const getClassCheckinByDate = (classDate) => {
   return fireDB.database().ref("class-checkins").orderByChild("date").equalTo(classDate)
 };
 
+export const getClassCheckinByDateAndLevel = (classDate, levelName) => {
+  // get checkins for a specific date and level
+  return fireDB.database().ref("class-checkins").orderByChild("date").equalTo(classDate).once("value", (snapshot) => {
+    var classCheckinList = [];
+    const checkinListObj = snapshot.val();
+    if (checkinListObj) {
+      Object.keys(checkinListObj).map(function(uid) {
+        const classes = checkinListObj[uid].classes.join(',')
+        if (classes.match(levelName)) {
+          classCheckinList.push(Object.assign({uid: uid}, checkinListObj[uid]))
+        }
+      })
+    }
+    return classCheckinList;
+  });
+};
+
+// Event checkins
+
 export const addNewEventCheckin = (options: EventCheckin) => {
   options.author = getCurrentAdminId();
   // check for name, email, and event ID
@@ -421,6 +443,88 @@ export const maybeAddGuestMessage = (successText, profile_snapshot) => {
       "to pay. They're probably famous or something."
   }
   return successText
+};
+
+// Class Series API
+
+export const addNewClassSeries = (options: Event) => {
+  options.author = getCurrentAdminId();
+  if (!(options.startDate && options.endDate && options.level)) {
+    throw MiscException("Start date, end date, and level required", "FormException")
+  }
+  options.startDate = options.startDate.toDateString();
+  options.endDate = options.endDate.toDateString();
+  const classSeriesId = uuidv3(options.startDate + options.level, MCS_APP);
+  return fireDB.database().ref("class-series/" + classSeriesId).set(options);
+};
+
+export const getAllClassSeries = fireDB.database().ref("class-series/").orderByChild('startDate');
+
+export const getOneClassSeries = (classSeriesId) => {
+  return fireDB.database().ref("class-series/" + classSeriesId);
+};
+
+export const getClassSeriesByDate = (dateString) => {
+  return fireDB.database().ref("class-series/").orderByChild('startDate').equalTo(dateString);
+};
+
+export const getClassSeriesCheckinsByClassSeriesId = (classSeriesId) => {
+  return new Promise(function(resolve, reject) {
+    getOneClassSeries(classSeriesId).on("value", (snapshot) => {
+      const classSeries = snapshot.val();
+      var seriesCheckinPromises = [];
+      if (classSeries == null) {
+        throw MiscException("Class series does not exist", "ClassSeriesException")
+      } else {
+        getDaysBetweenDates(new Date(classSeries.startDate), new Date(classSeries.endDate)).forEach(date => {
+          seriesCheckinPromises.push(new Promise((resolve, reject) => {
+            getClassCheckinByDateAndLevel(date.toDateString(), classSeries.level).then(snapshot => {
+              const checkinsSnapshot = snapshot.val() || {};
+              var checkins = [];
+              if(checkinsSnapshot) {
+                Object.keys(checkinsSnapshot).forEach(uid => {
+                  checkins.push(checkinsSnapshot[uid])
+                })                
+              }
+              resolve(checkins);
+            });
+          }));
+        });
+
+        resolve(Promise.all(seriesCheckinPromises).then((checkinLists) => {
+          var seriesCheckins = [];
+          checkinLists.forEach(checkinList => {
+            seriesCheckins = seriesCheckins.concat(checkinList);
+          });
+          seriesCheckins.sort(sortByNameAndEmail);
+          seriesCheckins.sort(sortByDate);
+          return seriesCheckins;
+        }));
+      }
+    })
+  })
+}
+
+export const getClassSeriesAttendees = (classSeriesId) => {
+  return getClassSeriesCheckinsByClassSeriesId.on("value", (checkinList) => {
+    var attendeesObj = {};
+    var attendees = [];
+    checkinList.forEach(checkin => {
+      // Using destruction assignment as shorthand https://stackoverflow.com/a/39333479
+      attendeesObj[checkin.email] = (({ email, firstName, lastName }) => ({ email, firstName, lastName }))(checkin);
+    });
+    Object.keys(attendeesObj).forEach((email) => attendees.push(attendeesObj[email]));
+    attendees.sort(sortByNameAndEmail);
+    return attendees;
+  });
+};
+
+export const deleteClassSeries = (classSeriesId) => {
+  if (classSeriesId) {
+    return fireDB.database().ref("class-series/" + classSeriesId).remove();
+  } else {
+    throw MiscException("No class series ID given", "DataException")
+  }
 };
 
 

@@ -107,3 +107,13 @@ export type User = {
   password: string,
   isAdmin: boolean
 };
+
+export type ClassSeries = {
+  startDate: Date,
+  endDate: Date,
+  title: string,
+  level: string,
+  teachers: string,
+  documentationLink: string,
+  info: string
+};

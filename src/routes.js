@@ -10,6 +10,7 @@ import AdminNewStudentPage from './components/NewStudentForm/adminIndex.js';
 import ReturningStudentPage from './components/ReturningStudentForm';
 import Dance from './components/DanceForm';
 import Event from './components/EventForm';
+import ClassSeries from './components/ClassSeriesForm';
 import DanceCheckinPage from './components/DanceCheckinForm';
 import EventCheckinPage from './components/EventCheckinForm';
 import StudentPage from './components/Students';
@@ -27,6 +28,7 @@ const Routes = (props) => (
     <PrivateRoute adminRoute="true" path="/admin/new-student" component={AdminNewStudentPage} />
     <PrivateRoute adminRoute="true" path="/admin/dance" component={Dance} />
     <PrivateRoute adminRoute="true" path="/admin/event" component={Event} />
+    <PrivateRoute adminRoute="true" path="/admin/class-series" component={ClassSeries} />
     <PrivateRoute adminRoute="true" path="/admin/reset-password" component={ResetPasswordForm} />
     <PrivateRoute adminRoute="true" path="/admin/student" component={StudentPage} />
     <PrivateRoute adminRoute="true" path="/admin/" component={AdminHome} />
