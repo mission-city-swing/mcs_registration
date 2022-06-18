@@ -12,6 +12,7 @@ import { MiscException, getMonthString, sortByNameAndEmail, sortByDate, getDaysB
 require("firebase/functions");
 
 const cookies = new Cookies();
+// To deploy, change this to point to ProductionDB
 const fireDB = StageDB;
 fireDB.functions()
 // fireDB.functions.useFunctionsEmulator('http://localhost:5001');
