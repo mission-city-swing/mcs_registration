@@ -12,6 +12,7 @@ import { MiscException, getMonthString, sortByNameAndEmail, sortByDate, getDaysB
 require("firebase/functions");
 
 const cookies = new Cookies();
+// To deploy, change this to point to ProductionDB
 const fireDB = StageDB;
 fireDB.functions()
 // fireDB.functions.useFunctionsEmulator('http://localhost:5001');
@@ -126,9 +127,6 @@ export const getProfileByName = (firstName, lastName) => {
 
 export const createOrUpdateProfile = (options: Profile) => {
   options.author = getCurrentAdminId();
-  if (!(options.waiverAgree && options.conductAgree)) {
-    throw MiscException("Must agree to liability waiver and code of conduct", "FormException")
-  }
   if (!(options.email && options.firstName && options.lastName)) {
     throw MiscException("First name, last name, and email required", "FormException")
   }
@@ -441,10 +439,12 @@ export const getEventCheckinByEventId = (eventId) => {
 // If the dancer is a guest of the venue, add a status message to be displayed
 // to the volunteer.
 export const maybeAddGuestMessage = (successText, profile_snapshot) => {
-  var adminInfo = profile_snapshot.val().adminInfo
-  if (adminInfo && adminInfo.guest) {
-    successText += "  NOTE: This dancer is our guest and does not need " +
-      "to pay. They're probably famous or something."
+  if (profile_snapshot != null) {
+    var adminInfo = profile_snapshot.val().adminInfo
+    if (adminInfo && adminInfo.guest) {
+      successText += "  NOTE: This dancer is our guest and does not need " +
+        "to pay. They're probably famous or something."
+    }
   }
   return successText
 };
