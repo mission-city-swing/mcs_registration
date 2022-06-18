@@ -127,9 +127,6 @@ export const getProfileByName = (firstName, lastName) => {
 
 export const createOrUpdateProfile = (options: Profile) => {
   options.author = getCurrentAdminId();
-  if (!(options.waiverAgree && options.conductAgree)) {
-    throw MiscException("Must agree to liability waiver and code of conduct", "FormException")
-  }
   if (!(options.email && options.firstName && options.lastName)) {
     throw MiscException("First name, last name, and email required", "FormException")
   }
