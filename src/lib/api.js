@@ -441,10 +441,12 @@ export const getEventCheckinByEventId = (eventId) => {
 // If the dancer is a guest of the venue, add a status message to be displayed
 // to the volunteer.
 export const maybeAddGuestMessage = (successText, profile_snapshot) => {
-  var adminInfo = profile_snapshot.val().adminInfo
-  if (adminInfo && adminInfo.guest) {
-    successText += "  NOTE: This dancer is our guest and does not need " +
-      "to pay. They're probably famous or something."
+  if (profile_snapshot != null) {
+    var adminInfo = profile_snapshot.val().adminInfo
+    if (adminInfo && adminInfo.guest) {
+      successText += "  NOTE: This dancer is our guest and does not need " +
+        "to pay. They're probably famous or something."
+    }
   }
   return successText
 };
