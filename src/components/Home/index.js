@@ -70,13 +70,6 @@ class Home extends Component {
             <Row>
               <Col>
                 <Card className="card-body text-center mb-2">
-                  <CardTitle className="front-page-card">New Student Form</CardTitle>
-                  <CardText className="front-page-card">Fill out new student details form.</CardText>
-                  <Link to="/new-student"><Button size="lg">New Student</Button></Link>
-                </Card>
-              </Col>
-              <Col>
-                <Card className="card-body text-center mb-2">
                   <CardTitle className="front-page-card">Returning Student Class Check-in</CardTitle>
                   <CardText className="front-page-card">Returning students check in here.</CardText>
                   <Link to="/class-checkin"><Button size="lg">Class Check-in</Button></Link>

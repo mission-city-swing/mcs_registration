@@ -74,9 +74,6 @@ export default class MyNavbar extends Component {
                 </DropdownToggle>
                 <DropdownMenu right>
                   <DropdownItem>
-                    <NavLink href="/new-student">New Student Form</NavLink>
-                  </DropdownItem>
-                  <DropdownItem>
                     <NavLink href="/class-checkin">Class Check-in</NavLink>
                   </DropdownItem>
                 </DropdownMenu>
