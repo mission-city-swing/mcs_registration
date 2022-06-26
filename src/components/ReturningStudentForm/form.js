@@ -12,7 +12,6 @@ import { getSubstringIndex, sortByNameAndEmail, getDateFromStringSafe } from "..
 import McsAlert from "../Utilities/alert.js";
 import { CodeOfConductModalLink } from "../Utilities/conductModal.js";
 import { LiabilityWaiverModalLink } from "../Utilities/waiverModal.js";
-import { Link } from 'react-router-dom';
 
 
 type State = ClassCheckin;
@@ -280,14 +279,14 @@ class ReturningStudentForm extends PureComponent<Props, State> {
             onChange={this.onCheckinTypeaheadChange}
             options={this.state.profileList.map((profile) => { return {"id": profile.email, "label": profile.firstName + " " + profile.lastName} })}
           />
+          <br></br>
+          <hr></hr>
           { !this.state.checkin.email &&
             <div>
               <br></br>
-              <Link to="/new-student?redirect=true"><Button color="primary" size="md">New Students Fill Out Form Here</Button></Link>
+              <p><span role="img" aria-label="Down arrow">⬇️</span> <strong>New students</strong> please fill out the form below. <span role="img" aria-label="Down arrow">⬇️</span></p>
             </div>
           }
-          <br></br>
-          <hr></hr>
           <br></br>
           {this.state.checkin.completedFundamentals &&
             <p><strong>{this.state.checkin.firstName} {this.state.checkin.lastName} has completed the MCS fundamentals course.</strong></p>
