@@ -60,7 +60,6 @@ class AdminHome extends Component {
                                 <Link to="/admin/dance"><Button size="lg">View a Dance</Button></Link>
                               </Card>
                             </Col>
-
                           </Row>
                           <Row>
                             <Col>
@@ -82,6 +81,15 @@ class AdminHome extends Component {
                                 <CardTitle className="front-page-card">Create or View an Event</CardTitle>
                                 <CardText className="front-page-card">Create a special event or view stats.</CardText>
                                 <Link to="/admin/event"><Button size="lg">Create or View an Event</Button></Link>
+                              </Card>
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col>
+                              <Card className="card-body text-center mb-2">
+                                <CardTitle className="front-page-card">Bulk Enter Student Data</CardTitle>
+                                <CardText className="front-page-card">Bulk create new student profiles from class form data.</CardText>
+                                <Link to="/admin/bulk-student-entry"><Button size="lg">Got to Bulk Entry Form</Button></Link>
                               </Card>
                             </Col>
                           </Row>
