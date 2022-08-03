@@ -116,6 +116,8 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     if (newDancer) { info.push("New Dancer") }
     newCheckinState.info = info.join(", ")
     newCheckinState.alreadySigned = profileObj.profile.waiverAgree && profileObj.profile.conductAgree;
+    newCheckinState.profileHealthAttestationAgree = profileObj.profile.healthAttestationAgree;
+    newCheckinState.profileVaccinationCheck = profileObj.profile.vaccinationCheck;
     return newCheckinState
   }
 
@@ -244,6 +246,8 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     // // Remove helper data not necessary for checkin object
     delete thisCheckin.alreadySigned;
     delete thisCheckin.completedFundamentals;
+    delete thisCheckin.profileVaccinationCheck;
+    delete thisCheckin.profileHealthAttestationAgree;
     // DB request
     try {
       addNewClassCheckin(thisCheckin).then((profile_snapshot) => {
@@ -301,19 +305,23 @@ class ReturningStudentForm extends PureComponent<Props, State> {
             <Label form="email" type="email">Email <span className="required-text">*</span></Label><Input placeholder="me@example.com" onChange={this.onCheckinChange} value={this.state.checkin.email} type="email" id="email" name="email" />
           </FormGroup>
           <br></br>
-          <FormGroup check>
+          { !this.state.checkin.profileVaccinationCheck &&
+            <FormGroup check>
             <Label check>
               <Input name="vaccinationCheck" type="checkbox" onChange={this.onCheckinChange} checked={this.state.checkin.vaccinationCheck} />
-              <strong>Vaccination check:</strong> I promise that I have been fully vaccinated (i.e., 2 shots of any of the leading COVID vaccines such as Moderna or Pfizer). Additionally, I promise that I have had a COVID booster shot in the past 6 months or have presented a negative COVID test.
+              <strong>Vaccination check:</strong> I promise that I have been fully vaccinated (i.e., 2 shots of any of the leading COVID vaccines such as Moderna or Pfizer). Additionally, I promise that I have received a COVID booster shot or have presented a negative COVID test.
             </Label>
-          </FormGroup>
+            </FormGroup>
+          }
           <br></br>
-          <FormGroup check>
+          { !this.state.checkin.profileHealthAttestationAgree &&
+            <FormGroup check>
             <Label check>
               <Input name="healthAttestationAgree" type="checkbox" onChange={this.onCheckinChange} checked={this.state.checkin.healthAttestationAgree} />
               <strong>Health attestation:</strong> I promise that I am currently in good health. Additionally, I promise to tell the MCS Leadership Team if I feel ill, sick, congested, or otherwise unwell within 1 week of attending the dance. I understand that the Leadership Team will let the community know anonymously that someone got sick after attending the dance.
             </Label>
-          </FormGroup>
+            </FormGroup>
+          }
           <br></br>
           { !this.state.checkin.alreadySigned &&
             <div>

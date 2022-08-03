@@ -76,6 +76,8 @@ class DanceCheckinForm extends PureComponent<Props, State> {
     var guest = profile.adminInfo ? profile.adminInfo.guest : false;
     newCheckinState.info = guest ? "Guest" : "";
     newCheckinState.alreadySigned = profile.waiverAgree && profile.conductAgree;
+    newCheckinState.profileHealthAttestationAgree = profile.healthAttestationAgree;
+    newCheckinState.profileVaccinationCheck = profile.vaccinationCheck;
     return newCheckinState
   }
 
@@ -161,6 +163,8 @@ class DanceCheckinForm extends PureComponent<Props, State> {
     // delete convenience attrs
     delete thisDanceCheckin.alreadySigned;
     delete thisDanceCheckin.guest;
+    delete thisDanceCheckin.profileVaccinationCheck;
+    delete thisDanceCheckin.profileHealthAttestationAgree;
     // DB request
     try {
       addNewDanceCheckin(thisDanceCheckin).then(function(profile_snapshot){
@@ -214,19 +218,23 @@ class DanceCheckinForm extends PureComponent<Props, State> {
             <Label for="email">Email <span className="required-text">*</span></Label><Input placeholder="Email" value={this.state.checkin.email} onChange={this.onCheckinChange} name="email" />
           </FormGroup>
           <br></br>
-          <FormGroup check>
+          { !this.state.checkin.profileVaccinationCheck &&
+            <FormGroup check>
             <Label check>
               <Input name="vaccinationCheck" type="checkbox" onChange={this.onCheckinChange} checked={this.state.checkin.vaccinationCheck} />
-              <strong>Vaccination check:</strong> I promise that I have been fully vaccinated (i.e., 2 shots of any of the leading COVID vaccines such as Moderna or Pfizer). Additionally, I promise that I have had a COVID booster shot in the past 6 months or have presented a negative COVID test.
+              <strong>Vaccination check:</strong> I promise that I have been fully vaccinated (i.e., 2 shots of any of the leading COVID vaccines such as Moderna or Pfizer). Additionally, I promise that I have received a COVID booster shot or have presented a negative COVID test.
             </Label>
-          </FormGroup>
+            </FormGroup>
+          }
           <br></br>
-          <FormGroup check>
+          { !this.state.checkin.profileHealthAttestationAgree &&
+            <FormGroup check>
             <Label check>
               <Input name="healthAttestationAgree" type="checkbox" onChange={this.onCheckinChange} checked={this.state.checkin.healthAttestationAgree} />
               <strong>Health attestation:</strong> I promise that I am currently in good health. Additionally, I promise to tell the MCS Leadership Team if I feel ill, sick, congested, or otherwise unwell within 1 week of attending the dance. I understand that the Leadership Team will let the community know anonymously that someone got sick after attending the dance.
             </Label>
-          </FormGroup>
+            </FormGroup>
+          }
           <br></br>
           { !this.state.checkin.alreadySigned &&
             <div>
