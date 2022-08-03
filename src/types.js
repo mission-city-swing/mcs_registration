@@ -17,6 +17,7 @@ export type Profile = {
   emailOptOut: boolean,
   waiverAgree: boolean,
   conductAgree: boolean,
+  vaccinationCheck: boolean,
   author: string,
   paymentType: string,
   amt: int,

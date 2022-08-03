@@ -268,13 +268,12 @@ export const addNewDanceCheckin = (options: DanceCheckin) => {
   fireDB.database().ref("dance-checkins/" + checkin).set(options);
   const profileId = uuidv3(options.email, MCS_APP);
   return fireDB.database().ref("profiles/" + profileId).once("value").then(function(snapshot){
+    // Always update profile with waiver and health attestation and stuff
+    var profile = {...options};
     if (snapshot.val() == null) {
-      var profile = {...options};
       profile.memberDate = (getAppDate()).toDateString();
-      return fireDB.database().ref("profiles/" + profileId + "/profile").set(profile);
-    } else {
-      return fireDB.database().ref("profiles/" + profileId).once("value")
     }
+    return fireDB.database().ref("profiles/" + profileId + "/profile").set(profile);
   });
 };
 
@@ -332,15 +331,15 @@ export const addNewClassCheckin = (options: ClassCheckin) => {
   return fireDB.database().ref("class-checkins/" + checkin).set(options).then(function() {
     const profileId = uuidv3(options.email, MCS_APP);
     return fireDB.database().ref("profiles/" + profileId).once("value").then(function(snapshot){
+      // Always update profile with waiver and health attestation and stuff
+      var profile = {...options};
+      delete profile.classes;
       if (snapshot.val() == null) {
-        var profile = {...options};
         profile.memberDate = (getAppDate()).toDateString();
-        delete profile.classes;
-        return fireDB.database().ref("profiles/" + profileId + "/profile").set(profile);
-      } else {
-        return fireDB.database().ref("profiles/" + profileId).once("value")
       }
+      return fireDB.database().ref("profiles/" + profileId + "/profile").set(profile);
     });
+
   });
 };
 
