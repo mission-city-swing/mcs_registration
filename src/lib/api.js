@@ -139,6 +139,8 @@ export const createOrUpdateProfile = (options: Profile) => {
     var profileToWrite = {...options};
     if (snapshot.val() && snapshot.val()["profile"]) {
       var oldProfile = snapshot.val()["profile"];
+      // Don't overwrite the date of the original profile
+      delete profileToWrite.memberDate;
       profileToWrite = Object.assign(oldProfile, profileToWrite);
     }
     return fireDB.database().ref("profiles/" + profileId + "/profile").set(profileToWrite);
@@ -146,6 +148,36 @@ export const createOrUpdateProfile = (options: Profile) => {
 };
 
 export const getProfiles = fireDB.database().ref("profiles/");
+
+export const createProfileBulk = (profiles) => {
+  // Expecting a list of profiles
+  return new Promise(function(resolve, reject) {
+    var profileCreationPromises = [];
+    const requiredHeaders = ['firstName', 'lastName', 'email', 'memberDate'];
+    // For each profile object, create a promise to create/update the profile
+    profiles.forEach(profileObj => {
+      profileCreationPromises.push(new Promise(function(resolve, reject) {
+        // Validation: skip the row if we don't have values for all critical attrs
+        requiredHeaders.forEach(reqHeader => {
+          if (!profileObj[reqHeader]) {
+            reject('Missing ' + reqHeader);
+          }
+        });
+        // Call to create/update the profile
+        createOrUpdateProfile(profileObj).then(function(success) {
+          resolve(success);
+        }).catch(function(error) {
+          reject(error.toString());
+        });
+      }));
+    });
+    // Resolve the promises and return the results
+    resolve(Promise.all(profileCreationPromises).then((profiles) => {
+      return "Created or updated " + profiles.length + " profiles!";
+    }));
+  });
+};
+
 
 // Admin Info API
 export const createOrUpdateProfileAdminInfo = (options: ProfileAdminInfo) => {
