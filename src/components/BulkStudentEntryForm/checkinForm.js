@@ -1,9 +1,9 @@
 // @flow
-// src/components/BulkStudentEntryForm/form.js
+// src/components/BulkCheckinEntryForm/form.js
 import React, { PureComponent } from "react";
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 
-import { createProfileBulk, getAppDate } from "../../lib/api.js";
+import { createClassCheckinBulk, getAppDate } from "../../lib/api.js";
 import { getDateFromStringSafe } from "../../lib/utils.js";
 import McsAlert from "../Utilities/alert.js";
 
@@ -12,12 +12,12 @@ type State = {};
 
 type Props = {};
 
-class BulkStudentEntryForm extends PureComponent<Props, State> {
+class BulkCheckinEntryForm extends PureComponent<Props, State> {
   state: State = {
     date: getAppDate(),
-    rawStudentData: "",
-    profileMap: {},
-    profileList: [],
+    rawCheckinData: "",
+    classCheckinMap: {},
+    classCheckinList: [],
     success: "",
     error: ""
   };
@@ -31,35 +31,40 @@ class BulkStudentEntryForm extends PureComponent<Props, State> {
     }
   };
 
-  transformBulkData = (newStudentDataString) => {
-    var newStudentArray = [];
-    // Expecting a CSV string: firstName, lastName, email, memberDate
+  transformBulkData = (newCheckinDataString) => {
+    var newCheckinArray = [];
+    // Expecting a CSV string: firstName, lastName, email, date, classes (semicolon ";" separated)
     // Requires a header
-    var inputRows = newStudentDataString.split('\n');
+    var inputRows = newCheckinDataString.split('\n');
     // Let us send whatever headers
-    const inputHeaders = inputRows.shift().split(',');
+    var inputHeaders = inputRows.shift().split(',');
+    delete inputHeaders['classes'];
 
     // Turn rows into objects
-    inputRows.forEach(profileRow => {
-      const profileAttrs = profileRow.split(',');
-      var profileObj = {};
+    inputRows.forEach(classCheckinRow => {
+      const [rawClassCheckinAttrs, classes, _] = classCheckinRow.split("\"");
+      const classCheckinAttrs = rawClassCheckinAttrs.split(',');
+      var classCheckinObj = {};
       for (var i = 0; i < inputHeaders.length; i ++) {
-        profileObj[inputHeaders[i]] = profileAttrs[i];
+        classCheckinObj[inputHeaders[i]] = classCheckinAttrs[i];
+        classCheckinObj['classes'] = classes;
       }
-      profileObj.memberDate = getDateFromStringSafe(profileObj.memberDate);
-      newStudentArray.push(profileObj);
+      classCheckinObj.date = getDateFromStringSafe(classCheckinObj.date);
+      classCheckinObj.classes = classCheckinObj.classes.split(';');
+      console.log(classCheckinObj);
+      newCheckinArray.push(classCheckinObj);
     });
-    return newStudentArray;
+    return newCheckinArray;
   }
 
   onBulkDataChange = (event: any) => {
-    var newStudentData = event.target.value;
+    var newCheckinData = event.target.value;
     // Do we want to transform or validate anything here instead of in the API call?
-    this.setState({rawStudentData: newStudentData});
+    this.setState({rawCheckinData: newCheckinData});
   };
 
   clearForm() {
-    this.setState({rawStudentData: ""});
+    this.setState({rawCheckinData: ""});
   };
 
   clearFormEvent = (event: any) => {
@@ -82,10 +87,10 @@ class BulkStudentEntryForm extends PureComponent<Props, State> {
       this.setState({error: bulkEntryError});
       window.scrollTo(0, 0);
     }
-    const bulkDataToCommit = this.transformBulkData(this.state.rawStudentData)
+    const bulkDataToCommit = this.transformBulkData(this.state.rawCheckinData)
     // DB request
     try {
-      createProfileBulk(bulkDataToCommit).then(function(bulkEntryResponse){
+      createClassCheckinBulk(bulkDataToCommit).then(function(bulkEntryResponse){
         onSuccess(bulkEntryResponse);
       }).catch(function(error){
         onError(error.toString());
@@ -100,13 +105,13 @@ class BulkStudentEntryForm extends PureComponent<Props, State> {
       <div>
         <McsAlert color="success" text={this.state.success} visible={this.state.success.length > 0} onToggle={this.toggleAlerts.bind(this)}></McsAlert>
         <McsAlert color="danger" text={this.state.error} visible={this.state.error.length > 0} onToggle={this.toggleAlerts.bind(this)}></McsAlert>
-        <p>These are the headers that will translate directly to our new student form: firstName (required), lastName (required), email (required), memberDate (required), phoneNumber, discoveryMethod, discoveryMethodFriend, discoveryMethodOther</p>
+        <p>These are the required headers: firstName, lastName, email, date (the library prefers the format like 12/5/2023), classes (in quotes, semicolon ";" separated)</p>
 
         <Form onSubmit={this.onSubmit}>
           <FormGroup>
-            <Label for="csv">New Student Data CSV (Header Required) <span className="required-text">*</span></Label><Input type="textarea" placeholder="CSV with header and minimum header values" value={this.state.rawStudentData} onChange={this.onBulkDataChange} name="csv" />
+            <Label for="csv">New Checkin Data CSV (Header Required) <span className="required-text">*</span></Label><Input type="textarea" placeholder="CSV with header and minimum header values" value={this.state.rawCheckinData} onChange={this.onBulkDataChange} name="csv" />
           </FormGroup>      
-          {this.state.rawStudentData.length > 0 &&
+          {this.state.rawCheckinData.length > 0 &&
             <div>
               <Button color="primary" onClick={this.onSubmit}>Submit</Button>
               <span className="mr-1"></span>
@@ -119,4 +124,4 @@ class BulkStudentEntryForm extends PureComponent<Props, State> {
   }
 }
 
-export default BulkStudentEntryForm;
+export default BulkCheckinEntryForm;
