@@ -288,8 +288,8 @@ export const addNewDanceCheckin = (options: DanceCheckin) => {
   if (!(options.date && options.email && options.firstName && options.lastName)) {
     throw MiscException("First name, last name, email, and date required", "FormException")
   }
-  if (!(options.healthAttestationAgree && options.vaccinationCheck)) {
-    throw MiscException("Must agree to health attestation and pass vaccination check", "FormException")
+  if (!(options.healthAttestationAgree)) {
+    throw MiscException("Must agree to health attestation", "FormException")
   }
   if (!(options.waiverAgree && options.conductAgree)) {
     throw MiscException("Must agree to liability waiver and code of conduct", "FormException")
@@ -351,8 +351,8 @@ export const addNewClassCheckin = (options: ClassCheckin) => {
   if (options.classes.length < 1) {
     throw MiscException("Must check in for at least one class", "FormException")
   }
-  if (!(options.healthAttestationAgree && options.vaccinationCheck)) {
-    throw MiscException("Must agree to health attestation and pass vaccination check", "FormException")
+  if (!(options.healthAttestationAgree)) {
+    throw MiscException("Must agree to health attestation", "FormException")
   }
   if (!(options.waiverAgree && options.conductAgree)) {
     throw MiscException("Must agree to liability waiver and code of conduct", "FormException")

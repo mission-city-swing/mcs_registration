@@ -25,7 +25,6 @@ class DanceCheckinForm extends PureComponent<Props, State> {
     info: "",
     guest: false,
     healthAttestationAgree: false,
-    vaccinationCheck: false,
     waiverAgree: false,
     conductAgree: false,
     alreadySigned: false
@@ -77,7 +76,6 @@ class DanceCheckinForm extends PureComponent<Props, State> {
     newCheckinState.info = guest ? "Guest" : "";
     newCheckinState.alreadySigned = profile.waiverAgree && profile.conductAgree;
     newCheckinState.profileHealthAttestationAgree = profile.healthAttestationAgree;
-    newCheckinState.profileVaccinationCheck = profile.vaccinationCheck;
     return newCheckinState
   }
 
@@ -163,7 +161,6 @@ class DanceCheckinForm extends PureComponent<Props, State> {
     // delete convenience attrs
     delete thisDanceCheckin.alreadySigned;
     delete thisDanceCheckin.guest;
-    delete thisDanceCheckin.profileVaccinationCheck;
     delete thisDanceCheckin.profileHealthAttestationAgree;
     // DB request
     try {
@@ -217,15 +214,6 @@ class DanceCheckinForm extends PureComponent<Props, State> {
           <FormGroup>
             <Label for="email">Email <span className="required-text">*</span></Label><Input placeholder="Email" value={this.state.checkin.email} onChange={this.onCheckinChange} name="email" />
           </FormGroup>
-          <br></br>
-          { !this.state.checkin.profileVaccinationCheck &&
-            <FormGroup check>
-            <Label check>
-              <Input name="vaccinationCheck" type="checkbox" onChange={this.onCheckinChange} checked={this.state.checkin.vaccinationCheck} />
-              <strong>Vaccination check:</strong> I promise that I have been fully vaccinated (i.e., 2 shots of any of the leading COVID vaccines such as Moderna or Pfizer). Additionally, I promise that I have received a COVID booster shot or have presented a negative COVID test.
-            </Label>
-            </FormGroup>
-          }
           <br></br>
           { !this.state.checkin.profileHealthAttestationAgree &&
             <FormGroup check>

@@ -26,7 +26,6 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     email: "",
     info: "",
     healthAttestationAgree: false,
-    vaccinationCheck: false,
     waiverAgree: false,
     conductAgree: false,
     completedFundamentals: false,
@@ -117,7 +116,6 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     newCheckinState.info = info.join(", ")
     newCheckinState.alreadySigned = profileObj.profile.waiverAgree && profileObj.profile.conductAgree;
     newCheckinState.profileHealthAttestationAgree = profileObj.profile.healthAttestationAgree;
-    newCheckinState.profileVaccinationCheck = profileObj.profile.vaccinationCheck;
     return newCheckinState
   }
 
@@ -246,7 +244,6 @@ class ReturningStudentForm extends PureComponent<Props, State> {
     // // Remove helper data not necessary for checkin object
     delete thisCheckin.alreadySigned;
     delete thisCheckin.completedFundamentals;
-    delete thisCheckin.profileVaccinationCheck;
     delete thisCheckin.profileHealthAttestationAgree;
     // DB request
     try {
@@ -304,15 +301,6 @@ class ReturningStudentForm extends PureComponent<Props, State> {
           <FormGroup>
             <Label form="email" type="email">Email <span className="required-text">*</span></Label><Input placeholder="me@example.com" onChange={this.onCheckinChange} value={this.state.checkin.email} type="email" id="email" name="email" />
           </FormGroup>
-          <br></br>
-          { !this.state.checkin.profileVaccinationCheck &&
-            <FormGroup check>
-            <Label check>
-              <Input name="vaccinationCheck" type="checkbox" onChange={this.onCheckinChange} checked={this.state.checkin.vaccinationCheck} />
-              <strong>Vaccination check:</strong> I promise that I have been fully vaccinated (i.e., 2 shots of any of the leading COVID vaccines such as Moderna or Pfizer). Additionally, I promise that I have received a COVID booster shot or have presented a negative COVID test.
-            </Label>
-            </FormGroup>
-          }
           <br></br>
           { !this.state.checkin.profileHealthAttestationAgree &&
             <FormGroup check>

@@ -1,7 +1,6 @@
 // @flow
 // src/components/BulkStudentEntryForm/index.js
 import React, { PureComponent } from "react";
-import type { Profile } from "../../types.js";
 import BulkEntryForm from "./form.js"
 import ErrorBoundary from "../Utilities/catch.js"
 
