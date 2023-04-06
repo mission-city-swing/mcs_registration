@@ -17,7 +17,6 @@ export type Profile = {
   emailOptOut: boolean,
   waiverAgree: boolean,
   conductAgree: boolean,
-  vaccinationCheck: boolean,
   author: string,
   paymentType: string,
   amt: int,
@@ -65,7 +64,6 @@ export type DanceCheckin = {
   student: boolean,
   info: string,
   healthAttestationAgree: boolean,
-  vaccinationCheck: boolean,
   waiverAgree: boolean,
   conductAgree: boolean,
   author: string
@@ -79,7 +77,6 @@ export type ClassCheckin = {
   student: boolean,
   info: string,
   healthAttestationAgree: boolean,
-  vaccinationCheck: boolean,
   waiverAgree: boolean,
   conductAgree: boolean,
   classes: [],
