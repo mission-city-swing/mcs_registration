@@ -1,7 +1,9 @@
 // @flow
 // src/components/BulkStudentEntryForm/index.js
 import React, { PureComponent } from "react";
-import BulkEntryForm from "./form.js"
+import { Alert } from 'reactstrap';
+import BulkStudentEntryForm from "./form.js"
+import BulkCheckinEntryForm from "./checkinForm.js"
 import ErrorBoundary from "../Utilities/catch.js"
 
 type State = {};
@@ -28,10 +30,15 @@ class BulkStudentEntryPage extends PureComponent<Props, State> {
   render() {
     return (
       <div className="App">
-        <h1>Admin Bulk Student Entry Form</h1>
-        <p>Admins only!</p>
+        <h1>Admin Bulk Entry Form</h1>
+        <Alert color="warning">Admins only </Alert>
         <ErrorBoundary>
-          <BulkEntryForm addActionsOnSubmit={this.addActionsOnSubmit}></BulkEntryForm>
+          <br></br>
+          <h3>Bulk student profile entry</h3>
+          <BulkStudentEntryForm addActionsOnSubmit={this.addActionsOnSubmit}></BulkStudentEntryForm>
+          <br></br>
+          <h3>Bulk class check-in entry</h3>
+          <BulkCheckinEntryForm addActionsOnSubmit={this.addActionsOnSubmit}></BulkCheckinEntryForm>
         </ErrorBoundary>
         <br></br>
       </div>

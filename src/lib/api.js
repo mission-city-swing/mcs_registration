@@ -424,6 +424,43 @@ export const getClassCheckinByDateAndLevel = (classDate, levelName) => {
   });
 };
 
+export const createClassCheckinBulk = (checkins) => {
+  // Expecting a list of checkins
+  return new Promise(function(resolve, reject) {
+    var checkinCreationPromises = [];
+    const requiredHeaders = ["date", "email", "firstName", "lastName", "classes"];
+    const requiredAgreements = {
+      healthAttestationAgree: true,
+      waiverAgree: true,
+      conductAgree: true 
+    }
+    // For each profile object, create a promise to create/update the profile
+    checkins.forEach(checkinObj => {
+      checkinCreationPromises.push(new Promise(function(resolve, reject) {
+        // Validation: skip the row if we don't have values for all critical attrs
+        requiredHeaders.forEach(reqHeader => {
+          if (!checkinObj[reqHeader]) {
+            reject("Missing " + reqHeader);
+          }
+        });
+        // Add waiver, code of conduct, and health attestation agreement fields as "true"
+
+        const newCheckinObj = {...checkinObj, ...requiredAgreements}
+        // Call to create/update the checkin
+        addNewClassCheckin(newCheckinObj).then(function(success) {
+          resolve(success);
+        }).catch(function(error) {
+          reject(error.toString());
+        });
+      }));
+    });
+    // Resolve the promises and return the results
+    resolve(Promise.all(checkinCreationPromises).then((checkins) => {
+      return "Created or updated " + checkins.length + " checkins!";
+    }));
+  });
+};
+
 // Event checkins
 
 export const addNewEventCheckin = (options: EventCheckin) => {
