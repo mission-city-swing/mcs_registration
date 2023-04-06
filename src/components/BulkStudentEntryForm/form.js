@@ -2,14 +2,10 @@
 // src/components/BulkStudentEntryForm/form.js
 import React, { PureComponent } from "react";
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
-import { DateTimePicker } from 'react-widgets';
-import { Typeahead } from 'react-bootstrap-typeahead';
 
 import { createProfileBulk, getAppDate } from "../../lib/api.js";
 import { getDateFromStringSafe } from "../../lib/utils.js";
 import McsAlert from "../Utilities/alert.js";
-import { CodeOfConductModalLink } from "../Utilities/conductModal.js";
-import { LiabilityWaiverModalLink } from "../Utilities/waiverModal.js";
 
 
 type State = {};
