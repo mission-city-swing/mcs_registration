@@ -333,17 +333,12 @@ class ReturningStudentForm extends PureComponent<Props, State> {
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onMultiTypeCheckinChange} type="checkbox" name="classes" checked={this.state.checkin.classes.indexOf('Level 2 WCS, First Class Only') !== -1} value="Level 2 WCS, First Class Only" /> {' '} Level 2 WCS, First Class Only
+                <Input onChange={this.onMultiTypeCheckinChange} type="checkbox" name="classes" checked={this.state.checkin.classes.indexOf('Level 2A WCS, 6-Week Series') !== -1} value="Level 2A WCS, 6-Week Series" /> {' '} Level 2A WCS, 6-Week Series
               </Label>
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input onChange={this.onMultiTypeCheckinChange} type="checkbox" name="classes" checked={this.state.checkin.classes.indexOf('Level 2 WCS, 6-Week Series') !== -1} value="Level 2 WCS, 6-Week Series" /> {' '} Level 2 WCS, 6-Week Series
-              </Label>
-            </FormGroup>
-            <FormGroup check>
-              <Label check>
-                <Input onChange={this.onMultiTypeCheckinChange} type="checkbox" name="classes" checked={this.state.checkin.classes.indexOf('Level 3 WCS, First Class Only') !== -1} value="Level 3 WCS, First Class Only" /> {' '} Level 3 WCS, First Class Only
+                <Input onChange={this.onMultiTypeCheckinChange} type="checkbox" name="classes" checked={this.state.checkin.classes.indexOf('Level 2B WCS, 6-Week Series') !== -1} value="Level 2B WCS, 6-Week Series" /> {' '} Level 2B WCS, 6-Week Series
               </Label>
             </FormGroup>
             <FormGroup check>
