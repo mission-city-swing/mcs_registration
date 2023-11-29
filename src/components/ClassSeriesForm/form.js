@@ -184,6 +184,7 @@ class ClassSeriesForm extends PureComponent<Props, State> {
             <Input type="select" name="level" value={this.state.level} onChange={this.onLevelChange}>
               <option value="">-</option>
               <option value="Fundamentals">Fundamentals</option>
+              <option value="Level 2">Level 2</option>
               <option value="Level 2A">Level 2A</option>
               <option value="Level 2B">Level 2B</option>
               <option value="Level 3">Level 3</option>
