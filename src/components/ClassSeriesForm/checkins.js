@@ -84,11 +84,13 @@ class ClassSeriesCheckinList extends PureComponent<Props, State> {
               <th>Total Checkins</th>
               {/* Would like to have the count of checkins per checkin type, need a helper method to pull the checkins per type */}
               {/* Need a helper method to pull the checkins per type */}
+              <th>Unique Students</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td>{this.state.classSeriesCheckinList.length}</td>
+              <td>{[...new Set(this.state.classSeriesCheckinList.map((checkin) => checkin.email))].length}</td>
             </tr>
           </tbody>
         </Table>
