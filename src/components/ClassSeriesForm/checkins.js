@@ -6,7 +6,7 @@ import { CSVLink } from 'react-csv';
 import ReactTable from 'react-table';
 import queryString from 'query-string';
 import { getOneClassSeries, getClassSeriesCheckinsByClassSeriesId } from "../../lib/api.js";
-import { reactTableFuzzyMatchFilter } from '../../lib/utils.js'
+import { getDateFromStringSafe, sortDateStrings, reactTableFuzzyMatchFilter, averageValueOfArray } from '../../lib/utils.js'
 
 type State = {};
 
@@ -18,6 +18,12 @@ class ClassSeriesCheckinList extends PureComponent<Props, State> {
     classSeriesCheckinList: [],
     csvData: [],
     csvHeaders: [],
+    classSeriesUniqueStudents: 0,
+    classSeriesFirstWeek: null,
+    classSeriesLastWeek: null,
+    classSeriesCheckinsFirstWeek: 0,
+    classSeriesCheckinsLastWeek: 0,
+    classSeriesAverageCheckinsPerWeek: 0,
   }
 
   getClassSeriesCheckinsFromQuery = () => {
@@ -57,6 +63,8 @@ class ClassSeriesCheckinList extends PureComponent<Props, State> {
   setCheckinDataFromList = (classSeriesCheckinList) => {
     this.setState({classSeriesCheckinList: classSeriesCheckinList});
     this.makeCsvData(classSeriesCheckinList);
+    this.setState({classSeriesUniqueStudents: [...new Set(classSeriesCheckinList.map((checkin) => checkin.email))].length});
+    this.getAverageCheckinsPerWeekFromList(classSeriesCheckinList);
   };
 
   getCheckinsFromClassSeries = (classSeriesId) => {
@@ -66,6 +74,33 @@ class ClassSeriesCheckinList extends PureComponent<Props, State> {
       }
     });
   };
+
+  getAverageCheckinsPerWeekFromList = (classSeriesCheckinList) => {
+    var checkinDates = [...new Set(classSeriesCheckinList.map((checkin) => checkin.date))];
+    sortDateStrings(checkinDates);
+    var checkinsByDate = {};
+    // Fill out checkinsByDate
+    checkinDates.map( (checkinDate) => {
+      checkinsByDate[checkinDate] = 0;
+    });
+    classSeriesCheckinList.map( (checkin) => {
+      var checkinDate = checkin.date;
+      checkinsByDate[checkinDate] = checkinsByDate[checkinDate] + 1;
+    });
+    // Pull checkins for first and last dates
+    var maxDate = checkinDates[0];
+    var minDate = checkinDates[checkinDates.length - 1];
+    this.setState({
+      classSeriesFirstWeek: minDate,
+      classSeriesLastWeek: maxDate,
+      classSeriesCheckinsFirstWeek: checkinsByDate[minDate],
+      classSeriesCheckinsLastWeek: checkinsByDate[maxDate],
+    });
+    // Average class checkin count
+    var averageCheckins = 0;
+    averageCheckins = averageValueOfArray(Object.values(checkinsByDate));
+    this.setState({classSeriesAverageCheckinsPerWeek: averageCheckins});
+  }
 
   componentDidMount() {
     this.getClassSeriesCheckinsFromQuery();
@@ -82,13 +117,19 @@ class ClassSeriesCheckinList extends PureComponent<Props, State> {
           <thead>
             <tr>
               <th>Total Checkins</th>
-              {/* Would like to have the count of checkins per checkin type, need a helper method to pull the checkins per type */}
-              {/* Need a helper method to pull the checkins per type */}
+              <th>Unique Students</th>
+              <th>First Week Checkins | {this.state.classSeriesFirstWeek}</th>
+              <th>Last Week Checkins | {this.state.classSeriesLastWeek}</th>
+              <th>Average Checkins Per Week</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td>{this.state.classSeriesCheckinList.length}</td>
+              <td>{this.state.classSeriesUniqueStudents}</td>
+              <td>{this.state.classSeriesCheckinsFirstWeek}</td>
+              <td>{this.state.classSeriesCheckinsLastWeek}</td>
+              <td>{this.state.classSeriesAverageCheckinsPerWeek}</td>
             </tr>
           </tbody>
         </Table>
