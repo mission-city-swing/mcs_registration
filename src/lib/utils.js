@@ -112,4 +112,8 @@ function getDaysBetweenDates(dateStart, dateEnd) {
   return betweenDates
 };
 
-export { getSubstringIndex, MiscException, sortByDate, sortDateStrings, sortByNameAndEmail, currentMonthIndex, currentMonthString, getMonthString, reactTableFuzzyMatchFilter, currentYear, getDateFromStringSafe, addDaysToDate, getDaysBetweenDates, sortByStartDate }
+function averageValueOfArray(arrayOfNumbers) {
+  return arrayOfNumbers.reduce((a, b) => a + b, 0) / arrayOfNumbers.length
+}
+
+export { getSubstringIndex, MiscException, sortByDate, sortDateStrings, sortByNameAndEmail, currentMonthIndex, currentMonthString, getMonthString, reactTableFuzzyMatchFilter, currentYear, getDateFromStringSafe, addDaysToDate, getDaysBetweenDates, sortByStartDate, averageValueOfArray }
